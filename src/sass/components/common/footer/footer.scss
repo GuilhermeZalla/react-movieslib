@@ -1,0 +1,32 @@
+@charset "UTF-8";
+.home__footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 3%;
+    &>.home__list {
+        display: inherit;
+        a {
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 5px 15px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 2px solid transparent;
+            &:hover {
+                border-bottom: 2px solid $clr-mark;
+            }
+            &:active {
+                color: $clr-mark;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 990px) {
+    .home__footer {
+        margin-bottom: 85px;
+    }
+}
