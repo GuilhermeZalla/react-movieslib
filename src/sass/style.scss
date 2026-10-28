@@ -1,0 +1,24 @@
+/* Import Colors */
+
+@import './variables/colors/colors.scss';
+
+/* Import Fonts */
+
+@import 'https://fonts.googleapis.com/css2?family=PT+Sans:wght@700&family=Source+Sans+Pro:wght@400;600;700&display=swap';
+@import './variables/fonts/fonts.scss';
+
+/* Import Common */
+
+@import './variables/common/common.scss';
+
+/* Import React Components */
+
+@import './components/home/home.scss';
+@import './components/home/filmCard/filmCard.scss';
+@import './components/common/header/header.scss';
+@import './components/common/aside/aside.scss';
+@import './components/common/footer/footer.scss';
+@import './components/common/asideMobile/asideMobile.scss';
+@import './components/movie-details/movie-details.scss';
+@import './components/castDetails/castDetails.scss';
+@import './components/home/castCatalog/castCatalog.scss';

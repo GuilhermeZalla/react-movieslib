@@ -1,0 +1,213 @@
+@charset "UTF-&";
+.main {
+    padding: 10% 15% 5% 15%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    color: $clr-neutral-1;
+    .main__img {
+        border-radius: 10px;
+        img {
+            box-shadow: 0 0 8px 0 #000000;
+            border-radius: inherit;
+            width: 20vw;
+            object-fit: cover;
+        }
+    }
+    .container {
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 150px;
+    }
+    .main__article {
+        display: flex;
+        align-self: flex-start;
+        flex-direction: column;
+        gap: 15px;
+        .main__title {
+            font-size: 2rem;
+            font-weight: bold;
+            font-family: $fnt-titles;
+        }
+        .movie-year {
+            font-size: 1.1rem;
+            &>span {
+                font-size: .90rem;
+                &:first-child {
+                    font-weight: bold;
+                    margin-left: 20px;
+                }
+            }
+        }
+        .main__subtitle {
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+        .main__paragraph {
+            font-size: 1.1rem;
+            line-height: .7cm;
+        }
+        .main__list {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            .main__item {
+                &>svg {
+                    font-size: 1.2rem;
+                    color: $clr-mark;
+                }
+                font-size: 1rem;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                span {
+                    font-weight: normal;
+                }
+            }
+            &:last-child {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                &>.main__item {
+                    font-size: .85rem;
+                    border: 2px solid $clr-neutral-1;
+                    border-radius: 20px;
+                    padding: 7px 20px;
+                    &:hover {
+                        border: 2px solid $clr-mark;
+                        a {
+                            color: $clr-mark;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .container-cast,
+    .container-credits {
+        border-top: 1px solid #aabbcc56;
+        width: 100%;
+        margin-top: 12%;
+        padding-top: 20px;
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 2fr));
+        grid-template-rows: repeat(auto-fill, minmax(180px, 2fr));
+        &::before {
+            content: 'Cast';
+            font-size: 1.4rem;
+            position: absolute;
+            top: -30px;
+            left: 0;
+            font-weight: bold;
+            font-family: $fnt-titles;
+            color: $clr-mark;
+        }
+        .cast {
+            position: relative;
+            display: flex;
+            justify-content: flex-start;
+        }
+        img {
+            width: 190px;
+            filter: brightness(50%);
+            cursor: pointer;
+            transition: all 250ms ease-in-out;
+            display: block;
+            &:hover {
+                filter: brightness(100%);
+                &~.cast__title {
+                    display: none;
+                    &~h3 {
+                        display: block;
+                    }
+                }
+            }
+        }
+        .cast__title,
+        h3 {
+            position: absolute;
+            bottom: 15px;
+            left: 10px;
+            z-index: 10;
+            color: $clr-neutral;
+            font-size: 1.1rem;
+            font-weight: normal;
+        }
+        h3 {
+            display: none;
+        }
+    }
+    .container-credits {
+        gap: 10px;
+        &::before {
+            content: 'Cast in the follow movies';
+        }
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .main {
+        padding: 10% 20px 15% 20px;
+        .main__img {
+            margin: 0 28%;
+            justify-self: center;
+            img {
+                text-align: center;
+                width: 40vw;
+            }
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .main__article {
+            margin-bottom: 15%;
+            .main__title {
+                text-align: center;
+            }
+            .movie-year {
+                text-align: center;
+            }
+        }
+        .container-credits {
+            margin: 70px 0;
+        }
+    }
+}
+
+@media screen and (min-width: 601px) and (max-width: 990px) {
+    .main {
+        padding: 0 30px 25% 30px;
+        .main__img {
+            margin: 10% 20%;
+            justify-self: center;
+            img {
+                width: 50vw;
+            }
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .main__article {
+            margin-bottom: 15%;
+            .main__title {
+                text-align: center;
+            }
+            .movie-year {
+                text-align: center;
+            }
+        }
+    }
+}

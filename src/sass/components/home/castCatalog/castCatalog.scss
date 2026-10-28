@@ -1,0 +1,111 @@
+@charset 'UTF-8';
+.main {
+    &.main-casts {
+        padding: 0 30px 8% 100px;
+        .main__navbar {
+            margin: 10% 30% 8% 30%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            position: relative;
+            &>input {
+                background-color: transparent;
+                padding: 10px 40px 10px 15px;
+                width: 100%;
+                border: none;
+                outline: none;
+                border: 1px solid $clr-mark;
+                border-radius: 10px;
+                font-family: $fnt-general;
+                font-size: 1rem;
+                color: $clr-neutral-1;
+                &:focus {
+                    box-shadow: 0px 0px 6px 0px #f7d35487;
+                }
+            }
+            &>button {
+                background-color: transparent;
+                position: absolute;
+                right: 0;
+                border-radius: 0 10px 10px 0;
+                border: 1px solid $clr-mark;
+                padding: 10px;
+                font-size: 1.2rem;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                color: $clr-mark;
+            }
+        }
+    }
+    .casts {
+        border-top: 1px solid #aabbcc56;
+        width: 100%;
+        padding-top: 15px;
+        position: relative;
+        display: grid;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(190px, 2fr));
+        grid-template-rows: repeat(auto-fill, minmax(190px, 2fr));
+        grid-auto-rows: initial;
+        gap: 10px;
+        &::before {
+            content: 'Cast';
+            font-size: 1.4rem;
+            position: absolute;
+            top: -30px;
+            left: 0;
+            font-weight: bold;
+            font-family: $fnt-titles;
+            color: $clr-mark;
+        }
+        .cast {
+            position: relative;
+            display: flex;
+            justify-content: flex-start;
+        }
+        img {
+            width: 190px;
+            filter: brightness(70%);
+            cursor: pointer;
+            border-radius: 10px;
+        }
+        .cast__title {
+            position: absolute;
+            bottom: 15px;
+            left: 10px;
+            z-index: 10;
+            color: $clr-neutral;
+            font-size: 1.1rem;
+            font-weight: normal;
+        }
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .main {
+        &.main-casts {
+            padding: 0 20px 30% 20px;
+        }
+    }
+}
+
+@media screen and (max-width: 990px) {
+    .main {
+        &.main-casts {
+            .main__navbar {
+                margin: 60px 10% 80px 10%;
+                width: 100%;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 601px) and (max-width: 990px) {
+    .main {
+        &.main-casts {
+            padding: 0 20px 15% 20px;
+        }
+    }
+}

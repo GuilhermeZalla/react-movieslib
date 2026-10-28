@@ -1,0 +1,133 @@
+@charset "UTF-8";
+.aside {
+    background-color: #14181C;
+    box-shadow: 2px 0 5px 1px rgba(0, 0, 0, 0.418);
+    padding: 5px 0px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    z-index: 12;
+    width: 70px;
+    overflow: hidden;
+    transition: all 250ms ease-in-out;
+    .aside__list {
+        display: flex;
+        flex-direction: column;
+        .aside__item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 15px 0;
+            font-size: 1.1rem;
+            border-bottom: 1px solid rgba(128, 128, 128, 0.082);
+            user-select: none;
+            button {
+                background-color: transparent;
+                border: none;
+                outline: none;
+                cursor: pointer;
+                margin-left: 15px;
+                &>svg {
+                    font-size: 1.5rem;
+                    color: $clr-neutral-1;
+                }
+                &:hover {
+                    &>svg {
+                        color: $clr-mark;
+                    }
+                }
+            }
+            a {
+                display: inherit;
+                justify-content: space-between;
+                align-items: center;
+                &:hover {
+                    color: $clr-mark;
+                }
+                .arrow {
+                    transition: all 450ms ease-in-out;
+                }
+            }
+            .aside__dropdown {
+                width: 100%;
+                padding-right: 30px;
+                cursor: pointer;
+                & svg {
+                    font-size: 1.5rem;
+                }
+            }
+            &.menu-dropdown {
+                padding: 0;
+                width: 100%;
+                height: 0;
+                overflow-x: hidden;
+                scroll-behavior: smooth;
+                transition: all 350ms ease-in-out;
+                &::-webkit-scrollbar {
+                    width: 6px;
+                }
+                &::-webkit-scrollbar-track {
+                    background-color: $clr-header-bg;
+                }
+                &::-webkit-scrollbar-thumb {
+                    background-color: $clr-neutral-1;
+                    border-radius: 20px;
+                }
+                &::-webkit-scrollbar-thumb:hover {
+                    background-color: $clr-mark;
+                }
+                .aside__sub-list {
+                    height: 230px;
+                    display: flex;
+                    align-items: flex-start;
+                    flex-direction: column;
+                    .aside__sub-item {
+                        padding: 10px 70px;
+                        width: 100%;
+                        font-size: .95rem;
+                        &:hover {
+                            background-color: rgba(100, 100, 100, 0.199);
+                        }
+                    }
+                }
+            }
+            &:first-child {
+                border-bottom: none;
+                font-weight: bold;
+                &>a {
+                    font-size: 1.3rem;
+                    font-family: $fnt-titles;
+                    color: $clr-mark;
+                    display: flex;
+                    align-items: center;
+                    gap: 7px;
+                    margin-left: 40px;
+                    &>svg {
+                        font-size: 1.5rem;
+                    }
+                }
+            }
+            &:last-child {
+                width: 250px;
+                line-height: .6cm;
+                padding: 10px 0;
+            }
+            &:nth-last-child(7) {
+                margin: 5% 30px;
+            }
+            &+.aside__item {
+                &:not(.menu-dropdown) {
+                    &:hover {
+                        background-color: rgba(100, 100, 100, 0.199);
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 990px) {
+    .aside {
+        display: none;
+    }
+}
