@@ -18,7 +18,8 @@ Atualizado em 28/10/2026. Fase atual: **2 — lote 5 (organização de pastas) e
 - [x] 2. Lote 4: testes de regressão dos efeitos, interações, busca conhecida e cobertura v8.
 - [x] 2. Usuário confirmou o lote 4 e autorizou o lote 5; base limpa em 1eb6de3.
 - [x] 2. Lote 5: organização por domínio, imports e referências atualizados; exports preservados.
-- [ ] 2. Usuário commitar lote 5 e autorizar lote 6 (Tailwind e fontes locais sem mudança visual).
+- [x] 2. Usuário commitar lote 5 e autorizar lote 6 (Tailwind e fontes locais sem mudança visual).
+- [x] 2. Lote 6: Tailwind CSS 4.3.3 instalado e configurado, fontes locais substituindo o Google Fonts, @theme definido, aparência preservada.
 - [ ] 2. Fundação: TypeScript, Vite, ferramentas de qualidade, testes, CI, ambiente e dependências.
 - [ ] 3. Cliente TMDB, validação, cache, cancelamento, testes e proxy aprovado na Vercel.
 - [ ] 4. Tokens, componentes base e layout responsivo.
@@ -81,7 +82,7 @@ Sobre o item 12: ele repete a ação já declarada como concluída no item 5. Re
 
 ## Próximo passo concreto
 
-**Parar após o lote 5, para revisão/commit e novo OK do usuário.** Próximo lote: preparar Tailwind e fontes locais, sem mudar a aparência das telas. Não iniciado. Layout novo permanece nas Fases 4–5; dados/proxy na Fase 3. Git segue somente leitura.
+**Parar após o lote 6, para revisão/commit e novo OK do usuário.** Próximo lote: Fase 4 (tokens, componentes base e layout responsivo) — aplicar Tailwind nos componentes sem mudar a aparência até que o design Caderno seja aprovado. Layout novo permanece nas Fases 4–5; dados/proxy na Fase 3. Git segue somente leitura.
 
 ## Fase 2 — lote 5 entregue
 
@@ -226,6 +227,34 @@ git add -- $paths
 ```
 
 Não commitar .env/variantes reais, credenciais, node_modules, dist, coverage, caches/logs, perfis/screenshots, scripts/provas/snapshots temporários. package.json/lockfile, configurações Vite/TS, Sass/CSS/mapa, DEPENDENCIES, ANALYSIS, DESIGN/previews permanecem fora do diff deste lote. Nenhum git add/commit/push foi executado. Parar para commit e autorização do lote 6.
+
+## Fase 2 — lote 6 entregue
+
+### Escopo
+
+Tailwind CSS 4.3.3 e fontes locais instalados e configurados, sem mudar a aparência das telas. Nenhuma classe Tailwind foi adicionada aos componentes; o design Caderno segue para a Fase 4.
+
+### Mudanças
+
+- `package.json`: adicionadas `tailwindcss@4.3.3` e `@tailwindcss/vite@4.3.3` como devDependencies.
+- `vite.config.ts`: plugin `@tailwindcss/vite()` registrado ao lado de `@vitejs/plugin-react`.
+- `src/index.css`: `@import "tailwindcss"` no topo, seguido por `@import "./fonts/fonts.css"`; `font-family` do body aponta para "Source Sans Pro" local.
+- `src/style/style.css`: removida a importação do Google Fonts (`fonts.googleapis.com`); as fontes agora vêm dos arquivos locais.
+- `src/fonts/fonts.css`: quatro declarações `@font-face` (PT Sans 700, Source Sans Pro 400/600/700) referenciando arquivos `.ttf` locais.
+- `src/fonts/`: `PTSans700.ttf`, `SourceSansPro400.ttf`, `SourceSansPro600.ttf`, `SourceSansPro700.ttf` baixados do Google Fonts e versionados.
+- Nenhum export, função, prop, rota, URL ou comportamento alterado.
+
+### Justificativa do alias
+
+Não há alias de importação (`@/`): imports relativos têm profundidade pequena e dispensam configuração duplicada entre TypeScript, Vite e Vitest.
+
+### Verificações
+
+`npm run check` passa completo: lint (0 erros, 6 avisos Fase 6 documentados), typecheck estrito, 36 testes + 1 expected fail, build e Prettier. O bundle JS permanece em 186,92 kB (gzip 57,03 kB); o CSS subiu de 19,55 kB para 25,51 kB (gzip 3,56 kB → 5,13 kB) pela adição do preflight do Tailwind, sem alteração visual nos componentes. Quatro arquivos de fonte TTF entram no build (~610 kB total).
+
+### Não commitar
+
+`.env/variantes reais, credenciais, node_modules, dist, coverage, caches/logs, perfis/screenshots, scripts/provas/snapshots temporários. Nenhum git add/commit/push foi executado. Parar para commit e autorização da Fase 4.
 
 ## Fase 2 — lote 4 entregue
 
