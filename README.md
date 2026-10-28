@@ -36,6 +36,46 @@ Tema claro/escuro e trailer youtube-nocookie aprovados; preservar pessoa/filmogr
 
 Cache aprovado: apenas memória no TanStack Query e borda curta no proxy. Minha lista guardará somente IDs validados, sem metadados/respostas TMDB em localStorage. **Pendência: o proprietário conferirá os termos**; essa política provisória não comprova conformidade contratual.
 
+## Estrutura do código
+
+```text
+src/
+  main.tsx
+  app/
+    App.tsx
+    LayoutRoutes.tsx
+  pages/
+    home/
+    movies/
+    movie-details/
+    genres/
+    people/
+    person-details/
+    not-found/
+  components/
+    layout/
+    movies/
+    people/
+  test/
+    fixtures/
+    helpers/
+    setup.ts
+    effects.test.tsx
+    interactions.test.tsx
+    navigation.test.tsx
+    nullability.test.tsx
+    searchPagination.test.tsx
+  types/tmdb.ts
+  index.css
+  sass/
+  style/
+  vite-env.d.ts
+```
+
+app contém App e LayoutRoutes; pages preserva as telas e seus wrappers existentes. components agrupa layout, filmes e pessoas; test guarda os testes e dados fictícios. Componentes usam PascalCase; utilitários/testes, camelCase; pastas, minúsculas/kebab-case. Imports relativos simples, sem alias. Os exports e as URLs existentes permanecem iguais.
+
+src/sass e src/style continuam no lugar durante a transição. O app ainda consome o CSS legado compilado e seu mapa; não há novo tema, fonte ou Preflight aplicado.
+
 ## Como rodar
 
 1. Use Node.js **24.15.0** e npm **11.12.1**, ambiente validado. .node-version, engines e packageManager registram a configuração.
@@ -94,6 +134,12 @@ Abra coverage/index.html após o comando. coverage/ é ignorado pelo Git. O rela
 O it.fails compara as páginas esperadas 1–5 com as chamadas atuais 1,2,3,3,3. Se o bug for corrigido, esse teste falhará por passar inesperadamente e deverá virar it normal na Fase 3. Testes de cliques dos menus não certificam acessibilidade por teclado; essa revisão continua na Fase 6.
 
 Auditoria do novo lockfile em 28/10/2026: **2 entradas moderadas no Router, 0 críticas e 0 altas**. A fotografia anterior tinha 96 entradas afetadas. Atualização do Router e riscos restantes no lote de dependências, antes da publicação; sem audit fix --force. Detalhes em [DEPENDENCIES.md](docs/DEPENDENCIES.md).
+
+## Conferência rápida de rotas
+
+1. Execute npm run dev e, em http://127.0.0.1:5173, abra diretamente /, /catalog/popular/1, /movie-details/1, /cast/2 e /endereco-inexistente. Recarregue cada URL. As demais categorias/gêneros mantêm os caminhos da tabela completa abaixo.
+2. Quando houver dados disponíveis, abra um card, confira o detalhe e use Voltar do navegador. Na 404, use Voltar ao início. Sem o proxy, dados preenchidos dependem das fixtures dos testes; não coloque credenciais no frontend.
+3. Execute npm run build e npm run preview. Repita as mesmas URLs e a navegação em http://127.0.0.1:4173.
 
 ## Roteiro manual do lote 1
 

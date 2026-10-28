@@ -1,12 +1,12 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
-import App from '../App';
-import Header from '../components/common/header/header';
-import Genres from '../components/common/aside/genres/genres';
-import FilmCard from '../components/home/filmCard/filmCard';
-import Cast from '../components/movie-details/cast/cast';
-import BannerImg from '../components/home/bannerImg/bannerImg';
+import App from '../app/App';
+import Header from '../components/layout/Header';
+import Genres from '../components/layout/Genres';
+import FilmCard from '../components/movies/FilmCard';
+import Cast from '../components/people/Cast';
+import BannerImg from '../components/movies/BannerImg';
 import fixture from './fixtures/tmdb.json';
 import { fixtureFetch } from './fixtures/fetch';
 import { searchControls } from './helpers/controls';

@@ -85,13 +85,13 @@ export default tseslint.config(
   },
   {
     files: [
-      'src/components/common/aside/aside.tsx',
-      'src/components/common/asideMobile/asideMobile.tsx',
-      'src/components/home/castCatalog/castCatalog.tsx',
-      'src/components/home/castDetails/castDetails.tsx',
-      'src/components/home/genresCatalog/genresCatalog.tsx',
-      'src/components/home/moviesCatalog/moviesCatalog.tsx',
-      'src/components/movie-details/movie-details.tsx',
+      'src/components/layout/Aside.tsx',
+      'src/components/layout/AsideMobile.tsx',
+      'src/pages/people/CastCatalog.tsx',
+      'src/pages/person-details/CastDetails.tsx',
+      'src/pages/genres/GenresCatalog.tsx',
+      'src/pages/movies/MoviesCatalog.tsx',
+      'src/pages/movie-details/MovieDetails.tsx',
     ],
     rules: {
       // These legacy fetches assert DTOs without runtime validation. Keep defensive JSON
@@ -101,8 +101,8 @@ export default tseslint.config(
   },
   {
     files: [
-      'src/components/common/aside/aside.tsx',
-      'src/components/common/asideMobile/asideMobile.tsx',
+      'src/components/layout/Aside.tsx',
+      'src/components/layout/AsideMobile.tsx',
     ],
     rules: {
       // Only the two legacy Genres dropdown anchors are deferred to Phase 6 (STATUS.md).

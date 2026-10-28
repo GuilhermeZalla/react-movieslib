@@ -1,6 +1,6 @@
 # Status do MoviesLib
 
-Atualizado em 28/10/2026. Fase atual: **2 — lote 4 (ampliação de testes) entregue, aguardando commit e OK do usuário para o lote 5**. Usuário aprovou o lote 3 e informou dois commits; a inspeção deste checkout ainda mostra HEAD em bd51e61 e os arquivos do lote 3 pendentes. O estado de entrada foi preservado; ver ressalva de Git neste lote. Sem mudança de comportamento, Tailwind, fontes ou redesign. Dados reais/proxy e termos TMDB continuam pendentes das fases previstas.
+Atualizado em 28/10/2026. Fase atual: **2 — lote 5 (organização de pastas) entregue, aguardando commit e OK do usuário para o lote 6**. Base limpa em 1eb6de3 confirmada antes de começar. Somente movimentações, nomes de arquivos, imports e referências de caminhos nas ferramentas; exports, lógica, estilos e URLs preservados. Sem Tailwind, fontes ou redesenho. Dados reais/proxy e termos TMDB continuam nas fases previstas. Seções anteriores registram a situação histórica de cada entrega.
 
 ## Fases
 
@@ -16,7 +16,9 @@ Atualizado em 28/10/2026. Fase atual: **2 — lote 4 (ampliação de testes) ent
 - [x] 2. Lote 3: regras tipadas, React/hooks/a11y/segurança, formatação e check sequencial.
 - [x] 2. Usuário aprovou o lote 3 e autorizou o lote 4; informou dois commits (divergência no checkout registrada).
 - [x] 2. Lote 4: testes de regressão dos efeitos, interações, busca conhecida e cobertura v8.
-- [ ] 2. Usuário commitar lote 4 e autorizar lote 5.
+- [x] 2. Usuário confirmou o lote 4 e autorizou o lote 5; base limpa em 1eb6de3.
+- [x] 2. Lote 5: organização por domínio, imports e referências atualizados; exports preservados.
+- [ ] 2. Usuário commitar lote 5 e autorizar lote 6 (Tailwind e fontes locais sem mudança visual).
 - [ ] 2. Fundação: TypeScript, Vite, ferramentas de qualidade, testes, CI, ambiente e dependências.
 - [ ] 3. Cliente TMDB, validação, cache, cancelamento, testes e proxy aprovado na Vercel.
 - [ ] 4. Tokens, componentes base e layout responsivo.
@@ -79,7 +81,151 @@ Sobre o item 12: ele repete a ação já declarada como concluída no item 5. Re
 
 ## Próximo passo concreto
 
-**Parar após o lote 4, para revisão/commit e novo OK do usuário.** Próximo lote: organizar pastas por responsabilidade conforme a sequência aprovada, preservando URLs/comportamento. Não iniciado. Sem Tailwind/fontes, redesign, CI ou cliente/proxy nesta entrega. Git segue somente leitura.
+**Parar após o lote 5, para revisão/commit e novo OK do usuário.** Próximo lote: preparar Tailwind e fontes locais, sem mudar a aparência das telas. Não iniciado. Layout novo permanece nas Fases 4–5; dados/proxy na Fase 3. Git segue somente leitura.
+
+## Fase 2 — lote 5 entregue
+
+### Observação de histórico confirmada
+
+Os lotes 3 e 4 foram reunidos no commit **1eb6de3** (53 arquivos), em vez dos grupos separados originalmente propostos. O lote 4 foi reaplicado a partir do backup após a retirada temporária, e a árvore voltou a ficar limpa nesse HEAD. Usuário confirmou essa base. Não tentar separar esses commits nem reescrever o histórico. Os relatos de checkout pendente nas seções anteriores descrevem o momento daquelas inspeções, não o estado de entrada deste lote.
+
+### Organização e convenção
+
+- app reúne composição e rotas; pages reúne conteúdo de página e os wrappers Screen existentes, sem fundi-los ou removê-los. components agrupa layout, movies e people. test mantém fixtures/helpers/casos, sem mover testes para o produto. main.tsx permanece na raiz do src, como no plano aprovado.
+- Arquivos de componentes React em **PascalCase**, preservando todos os nomes de exports. LayoutRoutes.tsx recebe esse nome por exportar um componente React. Helpers/utilitários e nomes-base de testes em **camelCase** (controlledFetch.ts e searchPagination.test.tsx); pastas em minúsculas/kebab-case. Entradas main.tsx/vite-env.d.ts e o contrato tmdb.ts mantêm seus nomes convencionais.
+- **Sem alias:** imports relativos têm profundidade pequena e dispensam configuração duplicada entre TypeScript, Vite e Vitest. Nenhuma alteração nesses três mecanismos de resolução.
+- Movidos 26 arquivos pelo sistema de arquivos; não usado git mv. Ajustados imports da entrada, das páginas, dos componentes e dos testes. Sem renomear exports, funções, props ou classes CSS; sem alterações no JSX além de seus imports.
+- eslint.config.js e scripts/lint.mjs recebem somente os caminhos novos das mesmas exceções. As regras, severidades, lista de seis avisos e lógica do gate permanecem iguais.
+- src/sass inteiro, src/style/style.css e mapa, index.css, index.html, package.json/lockfile, vite.config.ts e tsconfig.json preservados byte a byte. App.tsx importa ../style/style.css e main.tsx mantém a ordem dos estilos; Sass/compilados saem apenas na Fase 4. Nenhum pacote instalado, token criado, fonte incorporada ou redesign aplicado.
+
+```text
+src/
+  main.tsx
+  app/
+    App.tsx
+    LayoutRoutes.tsx
+  pages/
+    home/
+    movies/
+    movie-details/
+    genres/
+    people/
+    person-details/
+    not-found/
+  components/
+    layout/
+    movies/
+    people/
+  test/
+    fixtures/
+    helpers/
+    setup.ts
+    effects.test.tsx
+    interactions.test.tsx
+    navigation.test.tsx
+    nullability.test.tsx
+    searchPagination.test.tsx
+  types/tmdb.ts
+  index.css
+  sass/
+  style/
+  vite-env.d.ts
+```
+
+### Mapa completo de movimentações
+
+| Caminho anterior                                    | Caminho atual                                  |
+| --------------------------------------------------- | ---------------------------------------------- |
+| src/App.tsx                                         | src/app/App.tsx                                |
+| src/routes.tsx                                      | src/app/LayoutRoutes.tsx                       |
+| src/components/common/aside/aside.tsx               | src/components/layout/Aside.tsx                |
+| src/components/common/aside/genres/genres.tsx       | src/components/layout/Genres.tsx               |
+| src/components/common/asideMobile/asideMobile.tsx   | src/components/layout/AsideMobile.tsx          |
+| src/components/common/footer/footer.tsx             | src/components/layout/Footer.tsx               |
+| src/components/common/header/header.tsx             | src/components/layout/Header.tsx               |
+| src/components/home/bannerImg/bannerImg.tsx         | src/components/movies/BannerImg.tsx            |
+| src/components/home/filmCard/filmCard.tsx           | src/components/movies/FilmCard.tsx             |
+| src/components/movie-details/genres/genres.tsx      | src/components/movies/Genres.tsx               |
+| src/components/movie-details/cast/cast.tsx          | src/components/people/Cast.tsx                 |
+| src/components/home/home.tsx                        | src/pages/home/Home.tsx                        |
+| src/components/home/moviesCatalog/moviesCatalog.tsx | src/pages/movies/MoviesCatalog.tsx             |
+| src/components/home/genresCatalog/genresCatalog.tsx | src/pages/genres/GenresCatalog.tsx             |
+| src/components/home/castCatalog/castCatalog.tsx     | src/pages/people/CastCatalog.tsx               |
+| src/components/home/castDetails/castDetails.tsx     | src/pages/person-details/CastDetails.tsx       |
+| src/components/movie-details/movie-details.tsx      | src/pages/movie-details/MovieDetails.tsx       |
+| src/screens/homeScreen.tsx                          | src/pages/home/HomeScreen.tsx                  |
+| src/screens/moviesCatalogScreen.tsx                 | src/pages/movies/MoviesCatalogScreen.tsx       |
+| src/screens/genresCatalogScreen.tsx                 | src/pages/genres/GenresCatalogScreen.tsx       |
+| src/screens/castCatalogScreen.tsx                   | src/pages/people/CastCatalogScreen.tsx         |
+| src/screens/castDetailsScreen.tsx                   | src/pages/person-details/CastDetailsScreen.tsx |
+| src/screens/movie-detailsScreen.tsx                 | src/pages/movie-details/MovieDetailsScreen.tsx |
+| src/screens/notFoundScreen.tsx                      | src/pages/not-found/NotFoundScreen.tsx         |
+| src/test/fixtures/controlled-fetch.ts               | src/test/fixtures/controlledFetch.ts           |
+| src/test/search-pagination.test.tsx                 | src/test/searchPagination.test.tsx             |
+
+main.tsx, os quatro testes não renomeados, eslint.config.js e scripts/lint.mjs ficam no lugar com referências ajustadas. README/STATUS documentam a entrega. Não há outros arquivos novos.
+
+### Verificações e limites
+
+<!-- LOTE5_RESULTS -->
+
+O roteiro reduzido está no README: URLs diretas/recarregar, card → detalhe → voltar e 404, repetidos em dev e preview. Navegador usa fixtures e bloqueia recursos externos; o proxy real continua pendente. Nenhum modo demo foi incluído no app. Auditoria não repetida (dependências idênticas ao lote 4: fotografia anterior com 2 moderadas no Router e 0 altas/críticas); Lighthouse não medido. Os seis avisos a11y da Fase 6 e o it.fails das páginas repetidas da Fase 3 continuam preservados.
+
+### Plano de commits do lote 5
+
+Um único commit com todas as movimentações, referências e documentação. Os 26 pares listam tanto os caminhos removidos quanto os novos; os nove arquivos restantes entram inteiros nesse mesmo commit. Sem staging parcial ou alteração de pacotes. Snapshot de instalação limpa verifica este conjunto como um único commit sobre 1eb6de3. A identificação visual das renomeações será feita pelo Git quando o usuário executar o staging.
+
+```text
+refactor: organizar arquivos por domínio preservando o legado
+
+Agrupa composição, páginas e componentes e padroniza nomes de arquivos.
+Ajusta imports e referências de lint sem alterar exports, estilos ou rotas.
+```
+
+PowerShell a partir da raiz; executar somente pelo usuário:
+
+```powershell
+$paths = @(
+    'src/App.tsx', 'src/app/App.tsx'
+    'src/routes.tsx', 'src/app/LayoutRoutes.tsx'
+    'src/components/common/aside/aside.tsx', 'src/components/layout/Aside.tsx'
+    'src/components/common/aside/genres/genres.tsx', 'src/components/layout/Genres.tsx'
+    'src/components/common/asideMobile/asideMobile.tsx', 'src/components/layout/AsideMobile.tsx'
+    'src/components/common/footer/footer.tsx', 'src/components/layout/Footer.tsx'
+    'src/components/common/header/header.tsx', 'src/components/layout/Header.tsx'
+    'src/components/home/bannerImg/bannerImg.tsx', 'src/components/movies/BannerImg.tsx'
+    'src/components/home/filmCard/filmCard.tsx', 'src/components/movies/FilmCard.tsx'
+    'src/components/movie-details/genres/genres.tsx', 'src/components/movies/Genres.tsx'
+    'src/components/movie-details/cast/cast.tsx', 'src/components/people/Cast.tsx'
+    'src/components/home/home.tsx', 'src/pages/home/Home.tsx'
+    'src/components/home/moviesCatalog/moviesCatalog.tsx', 'src/pages/movies/MoviesCatalog.tsx'
+    'src/components/home/genresCatalog/genresCatalog.tsx', 'src/pages/genres/GenresCatalog.tsx'
+    'src/components/home/castCatalog/castCatalog.tsx', 'src/pages/people/CastCatalog.tsx'
+    'src/components/home/castDetails/castDetails.tsx', 'src/pages/person-details/CastDetails.tsx'
+    'src/components/movie-details/movie-details.tsx', 'src/pages/movie-details/MovieDetails.tsx'
+    'src/screens/homeScreen.tsx', 'src/pages/home/HomeScreen.tsx'
+    'src/screens/moviesCatalogScreen.tsx', 'src/pages/movies/MoviesCatalogScreen.tsx'
+    'src/screens/genresCatalogScreen.tsx', 'src/pages/genres/GenresCatalogScreen.tsx'
+    'src/screens/castCatalogScreen.tsx', 'src/pages/people/CastCatalogScreen.tsx'
+    'src/screens/castDetailsScreen.tsx', 'src/pages/person-details/CastDetailsScreen.tsx'
+    'src/screens/movie-detailsScreen.tsx', 'src/pages/movie-details/MovieDetailsScreen.tsx'
+    'src/screens/notFoundScreen.tsx', 'src/pages/not-found/NotFoundScreen.tsx'
+    'src/test/fixtures/controlled-fetch.ts', 'src/test/fixtures/controlledFetch.ts'
+    'src/test/search-pagination.test.tsx', 'src/test/searchPagination.test.tsx'
+    'src/main.tsx'
+    'src/test/effects.test.tsx'
+    'src/test/interactions.test.tsx'
+    'src/test/navigation.test.tsx'
+    'src/test/nullability.test.tsx'
+    'eslint.config.js'
+    'scripts/lint.mjs'
+    'README.md'
+    'docs/STATUS.md'
+)
+git add -- $paths
+```
+
+Não commitar .env/variantes reais, credenciais, node_modules, dist, coverage, caches/logs, perfis/screenshots, scripts/provas/snapshots temporários. package.json/lockfile, configurações Vite/TS, Sass/CSS/mapa, DEPENDENCIES, ANALYSIS, DESIGN/previews permanecem fora do diff deste lote. Nenhum git add/commit/push foi executado. Parar para commit e autorização do lote 6.
 
 ## Fase 2 — lote 4 entregue
 
@@ -366,8 +512,8 @@ Não commitar .env/variantes reais, credenciais, node_modules, dist, coverage, c
 
 Os dois efeitos já haviam sido corrigidos no **lote 1**, antes desta solicitação. Nenhuma nova reescrita de lógica foi necessária neste lote; preservadas as dependências existentes:
 
-- Catálogo: [moviesCatalog.tsx](../src/components/home/moviesCatalog/moviesCatalog.tsx#L22), efeito nas linhas 22–33, dependências category/page. Antes da correção histórica dependia dos dados que atualizava.
-- Pessoa: [castDetails.tsx](../src/components/home/castDetails/castDetails.tsx#L27), efeito nas linhas 27–49, dependência id. Antes da correção histórica não tinha array de dependências.
+- Catálogo: [moviesCatalog.tsx](../src/pages/movies/MoviesCatalog.tsx#L22), efeito nas linhas 22–33, dependências category/page. Antes da correção histórica dependia dos dados que atualizava.
+- Pessoa: [castDetails.tsx](../src/pages/person-details/CastDetails.tsx#L27), efeito nas linhas 27–49, dependência id. Antes da correção histórica não tinha array de dependências.
 - Detalhe de filme continua acompanhando id (linhas 20–35 de movie-details.tsx), como no lote 1. Apenas a guarda de id ausente foi adicionada nos detalhes durante a tipagem.
 - Para a Fase 3: busca de filmes ainda repete page=3 nos fetches das linhas 64, 74 e 84 de moviesCatalog.tsx. Sem deduplicação/cache/cancelamento ou checagem response.ok. Não corrigidos agora para preservar o escopo e a lógica legada.
 

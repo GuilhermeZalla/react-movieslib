@@ -6,11 +6,11 @@ import { ESLint } from 'eslint';
 // Match the source rather than a line number so formatting cannot invalidate the list.
 const deferredFiles = new Map([
   [
-    'src/components/common/aside/aside.tsx',
+    'src/components/layout/Aside.tsx',
     '<a role="button" className="aside__dropdown" onClick={handleDropDown}>',
   ],
   [
-    'src/components/common/asideMobile/asideMobile.tsx',
+    'src/components/layout/AsideMobile.tsx',
     '<a role="button" onClick={handleDropUpMenu}>',
   ],
 ]);

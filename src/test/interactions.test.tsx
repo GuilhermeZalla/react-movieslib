@@ -1,12 +1,12 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter, useLocation } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import App from '../App';
-import Aside from '../components/common/aside/aside';
-import AsideMobile from '../components/common/asideMobile/asideMobile';
-import Footer from '../components/common/footer/footer';
-import FilmCard from '../components/home/filmCard/filmCard';
-import NotFoundScreen from '../screens/notFoundScreen';
+import App from '../app/App';
+import Aside from '../components/layout/Aside';
+import AsideMobile from '../components/layout/AsideMobile';
+import Footer from '../components/layout/Footer';
+import FilmCard from '../components/movies/FilmCard';
+import NotFoundScreen from '../pages/not-found/NotFoundScreen';
 import { fixtureFetch } from './fixtures/fetch';
 import { genreFixture } from './fixtures/genres';
 import { searchControls } from './helpers/controls';

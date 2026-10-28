@@ -2,9 +2,9 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
 import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
-import MoviesCatalog from '../components/home/moviesCatalog/moviesCatalog';
-import CastDetails from '../components/home/castDetails/castDetails';
-import { controlledFetch } from './fixtures/controlled-fetch';
+import MoviesCatalog from '../pages/movies/MoviesCatalog';
+import CastDetails from '../pages/person-details/CastDetails';
+import { controlledFetch } from './fixtures/controlledFetch';
 
 function Scenario({ kind }: { kind: 'catalog' | 'person' }) {
   const [revision, setRevision] = useState(0);
