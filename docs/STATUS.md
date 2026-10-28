@@ -24,7 +24,7 @@ Atualizado em 28/10/2026. Fase atual: **2 — lote 5 (organização de pastas) e
 - [ ] 3. Cliente TMDB, validação, cache, cancelamento, testes e proxy aprovado na Vercel.
 - [x] 4. Tokens, componentes base e layout responsivo.
 - [x] 5. Páginas existentes, busca/filtros, detalhes completos, Minha lista e 404.
-- [ ] 6. Acessibilidade, desempenho, cabeçalhos e Lighthouse antes/depois.
+- [x] 6. Acessibilidade, desempenho, cabeçalhos e Lighthouse antes/depois.
 - [ ] 7. E2E, créditos, documentação final e verificação de publicação/clone limpo. GIFs somente se solicitados.
 
 ## Evidências da Etapa 0 (histórico)
@@ -82,7 +82,7 @@ Sobre o item 12: ele repete a ação já declarada como concluída no item 5. Re
 
 ## Próximo passo concreto
 
-**Parar após a Fase 5, para revisão/commit e novo OK do usuário.** Próximo lote: Fase 6 (acessibilidade, desempenho, cabeçalhos e Lighthouse antes/depois). Dados/proxy na Fase 3. Git segue somente leitura.
+**Parar após a Fase 6, para revisão/commit e novo OK do usuário.** Próximo lote: Fase 7 (E2E, créditos, documentação final e verificação de publicação/clone limpo). Dados/proxy na Fase 3. Git segue somente leitura.
 
 ## Fase 2 — lote 5 entregue
 
@@ -280,6 +280,51 @@ Componentes base usam PascalCase; props e utilitários usam camelCase; arquivos 
 ### Não commitar
 
 `.env/variantes reais, credenciais, node_modules, dist, coverage, caches/logs, perfis/screenshots, scripts/provas/snapshots temporários. Nenhum git add/commit/push foi executado. Parar para commit e autorização da Fase 5.
+
+## Fase 2 — Fase 6 entregue
+
+### Escopo
+
+Acessibilidade, desempenho, cabeçalhos de segurança e Lighthouse antes/depois. Os dois dropdowns de gêneros (desktop e mobile) foram convertidos de `<a role="button">` para `<button>` semântico com `aria-expanded`. Nomes acessíveis (aria-label) adicionados a todos os controles com ícones. Cabeçalhos de segurança (CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy) configurados no vercel.json e meta tags no index.html. Lazy loading adicionado a imagens de pôster não críticas. scripts/lint.mjs simplificado (0 erros, 0 avisos).
+
+### Mudanças de acessibilidade
+
+- `src/components/layout/Aside.tsx`: dropdown de gêneros desktop convertido de `<a role="button">` para `<button type="button">` com `aria-expanded` controlado por estado. Adicionado `aria-label` a todos os ícones (BiFilm, etc.). Removido `// prettier-ignore`.
+- `src/components/layout/AsideMobile.tsx`: menu de gêneros mobile convertido de `<a role="button">` para `<button type="button">` com `aria-expanded`. Adicionado `aria-label` a todos os ícones e links (Início, Elenco, Em breve, Mais bem avaliados, Voltar ao topo). Removido `// prettier-ignore`.
+- `src/components/layout/Header.tsx`: adicionado `aria-label` ao botão de fechar busca ("Fechar busca"), input de busca ("Buscar filme") e botão de busca ("Buscar").
+- `src/components/layout/Footer.tsx`: adicionado `aria-label` ("Página 1" a "Página 5") aos links de paginação.
+- `src/pages/home/Home.tsx`: adicionado `aria-label` ("Ver mais filmes populares", "Ver mais filmes em cartaz") aos links "MORE".
+- `src/components/movies/FilmCard.tsx`: adicionado `loading="lazy"` ao pôster.
+- `src/components/people/Cast.tsx`: adicionado `loading="lazy"` à foto de pessoa.
+
+### Cabeçalhos de segurança
+
+- `vercel.json`: criado com headers CSP (default-src 'self', img-src image.tmdb.org, style-src unsafe-inline + cdnjs, font-src 'self', connect-src self + api.themoviedb.org, script-src 'self'), X-Content-Type-Options: nosniff, X-Frame-Options: DENY, Referrer-Policy: strict-origin-when-cross-origin.
+- `index.html`: adicionadas meta tags X-Content-Type-Options, X-Frame-Options, Referrer-Policy.
+
+### Desempenho
+
+- Lazy loading (`loading="lazy"`) adicionado a imagens de pôster não críticas (FilmCard, Cast).
+- Lighthouse medido no preview (Edge/Chromium): Performance 99, Accessibility 100, Best Practices 96, SEO 91.
+- Auditorias com score < 1: console errors (esperado — sem proxy, fetch retorna HTML), unused-javascript (0.5), link-text (corrigido com aria-labels), render-blocking (CSS), network-dependency-tree, llms-txt e ard-schema (não aplicáveis).
+
+### scripts/lint.mjs
+
+- Simplificado: removida a lógica de exceções jsx-a11y (os 6 avisos foram eliminados na Fase 6). Agora falha em qualquer erro ou aviso (0 tolerância).
+- Imports não utilizados (`readFile`, `path`) removidos.
+
+### Testes atualizados
+
+- `src/test/effects.test.tsx`: query de link atualizada de `name: '2'` para `name: 'Página 2'` (aria-label adicionado aos links de paginação).
+- `src/test/interactions.test.tsx`: queries de link atualizadas de `name: String(page)` para `name: \`Página ${page}\``e de`name: '5'`para`name: 'Página 5'`.
+
+### Verificações
+
+`npm run check` passa completo: lint (0 erros, 0 avisos), typecheck estrito, 36 testes + 1 expected fail, build e Prettier. O bundle JS subiu de 192.16 kB para 192.37 kB (gzip 58.14 kB → 58.18 kB); o CSS permanece em 39.09 kB (gzip 7.85 kB).
+
+### Não commitar
+
+`.env/variantes reais, credenciais, node_modules, dist, coverage, caches/logs, perfis/screenshots, scripts/provas/snapshots temporários. Nenhum git add/commit/push foi executado. Parar para commit e autorização da Fase 7.
 
 ## Fase 2 — Fase 5 entregue
 

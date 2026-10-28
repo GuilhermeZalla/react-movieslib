@@ -52,7 +52,12 @@ const Header = (props: HeaderProps) => {
               </Link>
             </li>
             <li className="header__item flex items-center gap-[7px]">
-              <button type="button" onClick={handleOpenedInput} ref={btClose}>
+              <button
+                type="button"
+                onClick={handleOpenedInput}
+                ref={btClose}
+                aria-label="Fechar busca"
+              >
                 <IoClose />
               </button>
               <input
@@ -60,8 +65,14 @@ const Header = (props: HeaderProps) => {
                 placeholder="Search for a movie"
                 ref={input}
                 className="w-0 opacity-0 transition-all duration-300"
+                aria-label="Buscar filme"
               />
-              <button type="button" name="search" onClick={handleClosedInput}>
+              <button
+                type="button"
+                name="search"
+                onClick={handleClosedInput}
+                aria-label="Buscar"
+              >
                 <BiSearchAlt2 />
               </button>
             </li>

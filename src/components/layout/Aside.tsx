@@ -10,6 +10,7 @@ import Genres from './Genres';
 
 const Aside = () => {
   const [genres, setGenres] = useState<GenreList | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdown = useRef<HTMLLIElement>(null);
   const menu = useRef<HTMLElement>(null);
   const arrow = useRef<HTMLSpanElement>(null);
@@ -44,6 +45,7 @@ const Aside = () => {
 
   const handleDropDown = () => {
     if (!dropdown.current || !arrow.current) return;
+    setDropdownOpen((prev) => !prev);
     if (
       dropdown.current.style.height === '0px' ||
       dropdown.current.style.height === ''
@@ -74,15 +76,19 @@ const Aside = () => {
         </li>
         <li className="aside__item">
           <button type="button" onClick={handleAside}>
-            <BiFilm />
+            <BiFilm aria-label="Filmes" />
           </button>
-          // prettier-ignore
-          <a role="button" className="aside__dropdown" onClick={handleDropDown}>
+          <button
+            type="button"
+            className="aside__dropdown w-full pr-[30px] cursor-pointer flex items-center gap-[7px]"
+            onClick={handleDropDown}
+            aria-expanded={dropdownOpen}
+          >
             Genres{' '}
             <span className="arrow" ref={arrow}>
               <MdOutlineKeyboardArrowDown />
             </span>
-          </a>
+          </button>
         </li>
         <li
           className="aside__item menu-dropdown h-0 overflow-x-hidden transition-all duration-350"

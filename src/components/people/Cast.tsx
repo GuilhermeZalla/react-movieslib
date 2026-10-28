@@ -22,6 +22,7 @@ const Cast = ({ character = null, ...props }: CastProps) => {
             src={props.photo}
             alt={props.name}
             className="w-[190px] brightness-70 cursor-pointer rounded-[10px]"
+            loading="lazy"
           />
           <h2 className="cast__title absolute bottom-[15px] left-[10px] z-10 text-white text-base font-normal">
             {props.name}

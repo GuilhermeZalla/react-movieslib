@@ -74,12 +74,12 @@ describe('cards e paginação', () => {
       expect(footer.getAllByRole('link')).toHaveLength(5);
       for (const page of [1, 2, 3, 4, 5]) {
         expect(
-          footer.getByRole('link', { name: String(page) }),
+          footer.getByRole('link', { name: `Página ${page}` }),
         ).toHaveAttribute('href', `/catalog/${category}/${page}`);
       }
       document.body.scrollTop = 99;
       document.documentElement.scrollTop = 88;
-      fireEvent.click(footer.getByRole('link', { name: '5' }));
+      fireEvent.click(footer.getByRole('link', { name: 'Página 5' }));
       expect(screen.getByLabelText('Rota atual')).toHaveTextContent(
         `/catalog/${category}/5`,
       );

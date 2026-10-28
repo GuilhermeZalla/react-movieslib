@@ -26,6 +26,7 @@ const FilmCard = (props: FilmCardProps) => {
           src={props.poster}
           alt={props.title}
           className="rounded-[7px] w-full h-full object-cover"
+          loading="lazy"
         />
         <div className="home__card-info absolute inset-[10%] left-[10%] right-[10%] flex justify-center items-center transition-all duration-300 scale-0 group-hover:scale-100">
           <ul className="home__list flex flex-col justify-center items-center gap-10">

@@ -124,7 +124,7 @@ Lint, tipos estritos, testes e build passaram: **37 testes em cinco arquivos: 36
 
 check executa lint → tipos → testes (uma execução) → build → format:check e será o comando do CI. npm run format aplica Prettier; npm run format:check verifica sem escrever. Configuração enxuta: aspas simples, trailing commas e finais de linha LF. O CSS/mapa gerado em src/style e o lockfile ficam fora do formatador; os fontes Sass são formatados.
 
-ESLint usa flat config, strictTypeChecked com projectService, React Hooks/Refresh, jsx-a11y e eslint-config-prettier. HTML perigoso e console.log são erros; links target="_blank" exigem explicitamente noopener e noreferrer. O lint aceita apenas seis avisos conhecidos dos dois dropdowns de gêneros; avisos novos falham. Lista e justificativas das exceções no [STATUS.md](docs/STATUS.md#fase-2--lote-3-entregue). CI, E2E completo, correções de acessibilidade e Lighthouse seguem nas fases previstas.
+ESLint usa flat config, strictTypeChecked com projectService, React Hooks/Refresh, jsx-a11y e eslint-config-prettier. HTML perigoso e console.log são erros; links target="_blank" exigem explicitamente noopener e noreferrer. O lint aceita zero avisos (os seis avisos anteriores dos dropdowns foram eliminados na Fase 6 com botões semânticos e aria-expanded). Lista e justificativas das exceções no [STATUS.md](docs/STATUS.md#fase-2--lote-3-entregue). CI, E2E completo, correções de acessibilidade e Lighthouse seguem nas fases previstas.
 
 Para gerar o relatório informativo de cobertura v8, sem percentual mínimo:
 
@@ -137,6 +137,10 @@ Abra coverage/index.html após o comando. coverage/ é ignorado pelo Git. O rela
 O it.fails compara as páginas esperadas 1–5 com as chamadas atuais 1,2,3,3,3. Se o bug for corrigido, esse teste falhará por passar inesperadamente e deverá virar it normal na Fase 3. Testes de cliques dos menus não certificam acessibilidade por teclado; essa revisão continua na Fase 6.
 
 Auditoria do novo lockfile em 28/10/2026: **2 entradas moderadas no Router, 0 críticas e 0 altas**. A fotografia anterior tinha 96 entradas afetadas. Atualização do Router e riscos restantes no lote de dependências, antes da publicação; sem audit fix --force. Detalhes em [DEPENDENCIES.md](docs/DEPENDENCIES.md).
+
+## Acessibilidade e Lighthouse
+
+Lighthouse medido no preview (Edge/Chromium): Performance 99, Accessibility 100, Best Practices 96, SEO 91. Os dropdowns de gêneros foram convertidos para botões semânticos com aria-expanded. Nomes acessíveis (aria-label) adicionados a todos os controles com ícones. Cabeçalhos de segurança (CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy) configurados no vercel.json. Lazy loading adicionado a imagens de pôster não críticas. O lint aceita zero avisos. Os erros de console no Lighthouse são esperados (sem proxy TMDB implementado).
 
 ## Conferência rápida de rotas
 

@@ -74,7 +74,7 @@ describe('regressões dos efeitos de dados', () => {
     expect(api.requests).toHaveLength(1);
     expect(fetch).toHaveBeenCalledTimes(3);
 
-    fireEvent.click(screen.getByRole('link', { name: '2' }));
+    fireEvent.click(screen.getByRole('link', { name: 'Página 2' }));
     expect(api.requests).toHaveLength(2);
     await act(async () => {
       await api.respondNext();

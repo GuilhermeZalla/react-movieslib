@@ -10,6 +10,7 @@ import Genres from './Genres';
 
 const AsideMobile = () => {
   const [genres, setGenres] = useState<GenreList | null>(null);
+  const [dropupOpen, setDropupOpen] = useState(false);
   const scrollTop = useRef<HTMLButtonElement>(null);
   const dropup = useRef<HTMLDivElement>(null);
 
@@ -33,6 +34,7 @@ const AsideMobile = () => {
 
   const handleDropUpMenu = () => {
     if (!dropup.current) return;
+    setDropupOpen((prev) => !prev);
     if (
       dropup.current.style.visibility === 'hidden' ||
       dropup.current.style.visibility === ''
@@ -52,15 +54,18 @@ const AsideMobile = () => {
     >
       <ul className="aside__list flex flex-row gap-[35px]">
         <li className="aside__item flex items-center py-[10px] select-none relative">
-          <Link to={'/'}>
+          <Link to={'/'} aria-label="Início">
             <AiOutlineHome />
           </Link>
         </li>
         <li className="aside__item">
-          // prettier-ignore
-          <a role="button" onClick={handleDropUpMenu}>
-            <BiFilm />
-          </a>
+          <button
+            type="button"
+            onClick={handleDropUpMenu}
+            aria-expanded={dropupOpen}
+          >
+            <BiFilm aria-label="Gêneros" />
+          </button>
           <div className="menu-dropup" ref={dropup}>
             <ul className="aside__sub-list h-[210px] flex flex-col items-flex-start p-0">
               {genres?.genres?.map((genre, index) =>
@@ -73,22 +78,30 @@ const AsideMobile = () => {
           </div>
         </li>
         <li className="aside__item">
-          <Link to={'/cast'}>
+          <Link to={'/cast'} aria-label="Elenco">
             <IoPeopleOutline />
           </Link>
         </li>
         <li className="aside__item">
-          <Link to={`/upcoming_&_just_released/upcoming/1`}>
+          <Link
+            to={`/upcoming_&_just_released/upcoming/1`}
+            aria-label="Em breve"
+          >
             <BiTimer />
           </Link>
         </li>
         <li className="aside__item">
-          <Link to={`/top_rated/top_rated/1`}>
+          <Link to={`/top_rated/top_rated/1`} aria-label="Mais bem avaliados">
             <BiStar />
           </Link>
         </li>
         <li className="aside__item">
-          <button type="button" ref={scrollTop} onClick={goToTop}>
+          <button
+            type="button"
+            ref={scrollTop}
+            onClick={goToTop}
+            aria-label="Voltar ao topo"
+          >
             <BsArrowUpSquare />
           </button>
         </li>

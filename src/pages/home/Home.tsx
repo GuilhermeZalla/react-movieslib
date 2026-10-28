@@ -103,7 +103,12 @@ const Home = () => {
             ))}
           </div>
           <div className="popular container__films relative border-t line/40 mt-[8%] pt-[10px] grid grid-cols-[repeat(auto-fill,minmax(150px,2fr))] gap-10">
-            <Link to={`/catalog/popular/1`}>MORE</Link>
+            <Link
+              to={`/catalog/popular/1`}
+              aria-label="Ver mais filmes populares"
+            >
+              MORE
+            </Link>
             {popularMovies[0]?.results.map((movie, index) => (
               <FilmCard
                 key={index}
@@ -115,7 +120,12 @@ const Home = () => {
             ))}
           </div>
           <div className="now-playing container__films relative border-t line/40 mt-[8%] pt-[10px] grid grid-cols-[repeat(auto-fill,minmax(150px,2fr))] gap-10">
-            <Link to={`/catalog/now_playing/1`}>MORE</Link>
+            <Link
+              to={`/catalog/now_playing/1`}
+              aria-label="Ver mais filmes em cartaz"
+            >
+              MORE
+            </Link>
             {nowPlayingMovies[0]?.results.map((movie, index) => (
               <FilmCard
                 key={index}
