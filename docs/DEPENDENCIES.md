@@ -2,6 +2,17 @@
 
 Este inventário preserva os achados originais e registra as atualizações dos lotes 1, 3 e 4. O [STATUS.md](STATUS.md) é a fonte da verdade das decisões vigentes.
 
+## Atualização vigente — retomada da Fase 2 (28/10/2026)
+
+- React/DOM **18.3.1** e Router DOM **7.18.5**, mantendo BrowserRouter e imports atuais. Router 6.30.6 foi avaliado, mas manteve dois avisos moderados e falhou com exactOptionalPropertyTypes nas declarações da biblioteca. Router 7 aceita React >=18 e Node >=20, atendidos pelo projeto. Sem enfraquecer TS, force, overrides ou legacy-peer-deps.
+- npm audit após atualizar: **0 vulnerabilidades**. Corrigidas as entradas Router, incluindo [redirecionamento aberto](https://github.com/advisories/GHSA-wrjc-x8rr-h8h6) e [desserialização SSR](https://github.com/advisories/GHSA-337j-9hxr-rhxg). A SPA não usa SSR; isso não foi usado para ignorar o audit. Contagem não certifica segurança da aplicação.
+- React 19 não migrado para evitar misturar uma migração maior do React; desvio da stack alvo no STATUS.
+- ESLint **9.39.5** permanece EOL. As versões consultadas de eslint-plugin-react **7.37.5** e jsx-a11y **6.10.2** ainda limitam os peers a ESLint 9. Não forçar 10; reavaliar quando os plugins suportarem. Demais ferramentas preservadas, sem dependências de produção adicionais para CI.
+- Tailwind/@tailwindcss/vite **4.3.3** e Playwright **1.64.1** já estavam instalados pelo outro agente. Source Serif 4/Source Sans 3 não estão instaladas: fontes locais são PT Sans/Source Sans Pro; regularização de famílias/licenças pendente.
+- test:coverage restaurado para @vitest/coverage-v8 **4.1.12**, já instalado. CI usa npm ci, check, cobertura e audit --audit-level=high; Dependabot semanal para npm/Actions. Checkout **v7.0.1** e setup-node **v7.1.0** fixados por SHA consultado nas releases oficiais. Execução remota depende de push pelo proprietário.
+
+As fotografias abaixo são históricas: versões, contagens e pendências de cada lote não substituem este inventário vigente.
+
 ## Atualização — Fase 2, lote 4
 
 Adicionado somente @vitest/coverage-v8 **4.1.12**, fixado na mesma versão do Vitest, como dependência de desenvolvimento. Runtime, Vite, React/Router e ferramentas de lint preservados. Cobertura v8 com relatórios text/json-summary/html, sem thresholds mínimos. Instalação sem force/legacy-peer-deps; auditoria repetida em 28/10/2026: **2 moderadas no Router, 0 altas e 0 críticas**. O risco de manutenção do ESLint 9 permanece documentado abaixo; não foi corrigido neste lote de testes.

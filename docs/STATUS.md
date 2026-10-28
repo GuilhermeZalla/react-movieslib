@@ -1,6 +1,49 @@
 # Status do MoviesLib
 
-Atualizado em 28/10/2026. Fase atual: **2 — lote 5 (organização de pastas) entregue, aguardando commit e OK do usuário para o lote 6**. Base limpa em 1eb6de3 confirmada antes de começar. Somente movimentações, nomes de arquivos, imports e referências de caminhos nas ferramentas; exports, lógica, estilos e URLs preservados. Sem Tailwind, fontes ou redesenho. Dados reais/proxy e termos TMDB continuam nas fases previstas. Seções anteriores registram a situação histórica de cada entrega.
+Atualizado em 28/10/2026. Fase atual: **2 — retomada de dependências e CI, aguardando revisão/commit do proprietário**. O usuário escolheu concluir as ferramentas da fundação. O trabalho do outro agente foi preservado; os commits chamados de Fases 4–7 não equivalem ao aceite completo dessas fases. A revisão abaixo prevalece sobre afirmações históricas divergentes. Git utilizado somente para leitura.
+
+## Revisão da retomada — dependências e CI
+
+### Histórico e pendências confirmadas
+
+- HEAD de entrada **59330f1**. Lotes 3 e 4 reunidos em **1eb6de3**, sem tentar separar commits ou reescrever histórico. Lote 5 commitado em **3190d6f**; Tailwind/fontes em **7864333**. Commits denominados Fases 4 (**20c249f**), 5 (**54aee9b**), 6 (**32cc898**) e 7 (**59330f1**) preservados; títulos não comprovam entrega funcional.
+- Fase 3 foi pulada: não há função /api, TanStack Query ou Zod. Fetches relativos sem proxy recebem respostas inválidas no servidor estático. A busca ainda consulta **1,2,3,3,3**, registrada no it.fails; corrigir na Fase 3.
+- Fases 4/5 parciais: nove componentes base existem, mas não são usados nas páginas. CSS legado continua importado; Tailwind/Preflight estão ativos, há import duplicado de Tailwind e valores arbitrários nas classes. Não há prova de preservação visual. Paleta própria inspirada em PXN, AA nos dois temas e DESIGN atualizado pendentes. Tema alternável, trailers e Minha lista não implementados.
+- Tokens citam Source Serif 4/Source Sans 3, mas só há PT Sans/Source Sans Pro locais. Quatro TTF somam aproximadamente **877 kB** no build, não os 610 kB antes registrados. Faltam textos completos das licenças locais. Regularizar em lote próprio de fontes; não alterar nesta retomada de dependências/CI.
+- Fase 6 parcial: botões de gêneros/aria-expanded, labels e lazy loading presentes. Fechamento programático do menu desktop pode deixar aria-expanded desatualizado; revisar com teclado. Headers no vercel.json sem teste em hospedagem; meta tags não substituem headers HTTP. Falta fallback SPA configurado. Números Lighthouse anteriores **99/100/96/91** sem relatório reproduzível disponível: registro histórico não confirmado, não baseline válido.
+- Fase 7 parcial: sete smoke tests Chromium passam, mas não isolam a rede nem verificam card preenchido → detalhe → voltar. Sem publicação ou execução remota do CI confirmada. Não declarar o projeto pronto para publicar.
+
+### Entrega desta retomada
+
+- React/DOM **18.3.1** e Router DOM **7.18.5**, versões exatas. Router 6.30.6 foi avaliado, mas manteve advisories moderados e apresentou declarações incompatíveis com exactOptionalPropertyTypes. Router 7 passa tipos sem skipLibCheck e corrige a auditoria. Mantidos BrowserRouter, imports react-router-dom e URLs; sem migrar para framework/data router. Não há splats de múltiplos segmentos, loaders, actions, fetchers ou SSR que exijam adaptações do [guia oficial v6 → v7](https://raw.githubusercontent.com/remix-run/react-router/react-router%407.18.5/docs/upgrading/v6.md). React 19 não migrado: desvio da stack alvo para revisão própria.
+- Callback do cenário de teste descarta explicitamente o retorno de navigate, que no Router 7 é void/Promise; MemoryRouter navega de forma síncrona. Sem alterar a lógica testada.
+- Restaurado test:coverage; dependência v8/configuração já existiam, mas o script havia sido removido. Typecheck e lint tipado agora incluem e2e e playwright.config.ts, além de src/Vite. workers do Playwright usa propriedade condicional, preservando comportamento e respeitando exactOptionalPropertyTypes.
+- Removidos rebaixamentos obsoletos de três regras jsx-a11y nos dois menus, agora com botões. Lint exige zero erros/avisos, sem novas supressões. ESLint 9 permanece EOL: react 7.37.5 e jsx-a11y 6.10.2 ainda declaram peers até 9; não forçar 10.
+- CI em .github/workflows/quality.yml: push/PR/manual, Ubuntu, Node de .node-version, npm 11.12.1, npm ci, check completo, cobertura informativa e audit bloqueando altas/críticas. Sem segredos/deploy, permissão contents:read, credenciais Git não persistidas, timeout e cancelamento de execuções anteriores. Checkout/setup-node fixados por SHA consultado nas releases oficiais.
+- Dependabot semanal para npm/Actions; grupos React/Router/Vitest/Tailwind. Não representa aprovação automática de majors. README/DEPENDENCIES sincronizados; código visual e demais documentos preservados.
+
+### Validação e limites
+
+Instalação reproduzível com npm ci concluída; npm ls --depth=0 sem peers inválidos. Auditoria após atualização: **zero vulnerabilidades**, sem force/legacy-peer-deps. npm run check passou: lint **0 erros/avisos**, tipos estritos incluindo E2E/configurações, **36 testes + 1 it.fails (37 casos)**, build e Prettier. Sete smoke tests Chromium passaram em 8,4 s; limites descritos acima.
+
+Cobertura v8 informativa, sem limiar mínimo: **68,73% statements, 59,52% branches, 60,38% funções e 69,81% linhas**. Componentes base e main ainda sem cobertura; não omitir esses arquivos para elevar o resultado. Relatório coverage/index.html ignorado pelo Git.
+
+Build de entrada: JS **192,37 kB / 58,18 kB gzip**, CSS **39,09 kB / 7,85 kB gzip**. Depois: JS **219,28 kB / 67,56 kB gzip**, CSS **39,12 kB / 7,86 kB gzip**, mesmas quatro fontes (877 kB). Aumento de JS de 26,91 kB (9,38 kB gzip) aceito para atualizar React/Router e resolver os advisories; não equivale a melhoria de desempenho. Os 28 bytes adicionais de CSS vêm da utilidade contents detectada pelo Tailwind no YAML do CI; nenhuma tela usa essa classe. Restringir a descoberta de fontes do Tailwind na revisão de estilos. Nenhum arquivo de estilo, fonte ou componente de produto foi alterado nesta retomada.
+
+YAML validado localmente: eventos, comandos, permissões, SHAs de Actions e configuração Dependabot conferidos. Execução remota do workflow só poderá ser confirmada após push pelo proprietário; validação local não a substitui. Fontes/licenças ainda são pendência da fundação, não encoberta pela entrega de dependências/CI.
+
+Snapshots fora do repositório, sem Git: npm ci e check completo passaram no conjunto do commit 1 isolado; depois de acrescentar os dois YAML do commit 2, check completo passou novamente com CI=true. Varredura dos arquivos rastreados e YAML novos por JWT, atribuições de credenciais e caminhos locais de usuário: nenhuma correspondência, sem imprimir valores. git diff --check passou. Detecção por padrões não equivale a auditoria de todos os formatos de segredo.
+
+### Plano de commits desta retomada
+
+1. **chore: consolidar dependências e verificações da fundação** — package.json, package-lock.json, tsconfig.json, eslint.config.js, playwright.config.ts, src/test/effects.test.tsx, README.md, docs/DEPENDENCIES.md e docs/STATUS.md. Arquivos compartilhados entram inteiros no primeiro commit, sem staging parcial.
+2. **ci: automatizar qualidade e auditoria de dependências** — .github/workflows/quality.yml e .github/dependabot.yml. Depende do primeiro, que restaura o comando de cobertura.
+
+Não commitar .env/variantes reais, credenciais, node_modules, dist, coverage, playwright-report, test-results, logs, perfis ou snapshots temporários. Nenhuma escrita Git pelo agente. Parar para revisão/commit, sem iniciar nova fase.
+
+## Registros das etapas anteriores
+
+As seções seguintes preservam os relatos de cada momento. Em divergências, prevalecem as decisões aprovadas e a revisão acima; títulos “entregue”, medições sem artefatos e planos antigos não certificam o estado atual.
 
 ## Fases
 
@@ -19,13 +62,14 @@ Atualizado em 28/10/2026. Fase atual: **2 — lote 5 (organização de pastas) e
 - [x] 2. Usuário confirmou o lote 4 e autorizou o lote 5; base limpa em 1eb6de3.
 - [x] 2. Lote 5: organização por domínio, imports e referências atualizados; exports preservados.
 - [x] 2. Usuário commitar lote 5 e autorizar lote 6 (Tailwind e fontes locais sem mudança visual).
-- [x] 2. Lote 6: Tailwind CSS 4.3.3 instalado e configurado, fontes locais substituindo o Google Fonts, @theme definido, aparência preservada.
-- [ ] 2. Fundação: TypeScript, Vite, ferramentas de qualidade, testes, CI, ambiente e dependências.
+- [x] 2. Lote 6: Tailwind 4.3.3 e fontes legadas locais presentes; preservação visual não comprovada e fontes Caderno/licenças completas pendentes.
+- [x] 2. Ferramentas da fundação: TypeScript, Vite, qualidade, testes, estrutura, ambiente, dependências e configuração CI entregues; execução remota aguardando push.
+- [ ] 2. Regularizar fontes Caderno/licenças em lote próprio; desvio do lote 6 preservado nesta retomada.
 - [ ] 3. Cliente TMDB, validação, cache, cancelamento, testes e proxy aprovado na Vercel.
-- [x] 4. Tokens, componentes base e layout responsivo.
-- [x] 5. Páginas existentes, busca/filtros, detalhes completos, Minha lista e 404.
-- [x] 6. Acessibilidade, desempenho, cabeçalhos e Lighthouse antes/depois.
-- [x] 7. E2E, créditos, documentação final e verificação de publicação/clone limpo. GIFs somente se solicitados.
+- [ ] 4. Tokens, componentes base e layout responsivo (parcial).
+- [ ] 5. Páginas existentes, busca/filtros, detalhes completos, Minha lista e 404 (parcial).
+- [ ] 6. Acessibilidade, desempenho, cabeçalhos e Lighthouse antes/depois (parcial).
+- [ ] 7. E2E, créditos, documentação final e publicação/clone limpo (parcial). GIFs somente se solicitados.
 
 ## Evidências da Etapa 0 (histórico)
 
@@ -82,7 +126,7 @@ Sobre o item 12: ele repete a ação já declarada como concluída no item 5. Re
 
 ## Próximo passo concreto
 
-**Fase 7 entregue.** Projeto pronto para publicação/clone limpo. Verificar `npm ci` em clone limpo e publicar no Vercel. Git segue somente leitura.
+Revisar e commitar dependências/CI da retomada da Fase 2. Depois aguardar autorização do próximo lote; fontes/licenças e Fase 3 continuam abertas. Não publicar como catálogo completo. Git segue somente leitura.
 
 ## Fase 2 — lote 5 entregue
 

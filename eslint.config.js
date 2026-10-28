@@ -17,7 +17,12 @@ export default tseslint.config(
     },
   },
   {
-    files: ['src/**/*.{ts,tsx}', 'vite.config.ts'],
+    files: [
+      'src/**/*.{ts,tsx}',
+      'e2e/**/*.ts',
+      'vite.config.ts',
+      'playwright.config.ts',
+    ],
     extends: [...tseslint.configs.strictTypeChecked],
     languageOptions: {
       parserOptions: {
@@ -100,23 +105,7 @@ export default tseslint.config(
     },
   },
   {
-    files: [
-      'src/components/layout/Aside.tsx',
-      'src/components/layout/AsideMobile.tsx',
-    ],
-    rules: {
-      // Only the two legacy Genres dropdown anchors are deferred to Phase 6 (STATUS.md).
-      // scripts/lint.mjs rejects every warning outside those exact source locations.
-      'jsx-a11y/anchor-is-valid': [
-        'warn',
-        { components: ['Link'], specialLink: ['to'] },
-      ],
-      'jsx-a11y/click-events-have-key-events': 'warn',
-      'jsx-a11y/interactive-supports-focus': 'warn',
-    },
-  },
-  {
-    files: ['*.{js,ts}', 'scripts/**/*.mjs'],
+    files: ['*.{js,ts}', 'scripts/**/*.mjs', 'e2e/**/*.ts'],
     languageOptions: { globals: globals.node },
   },
   // Prettier owns formatting; this preset disables only conflicting stylistic rules.

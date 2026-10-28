@@ -9,10 +9,10 @@
     "npm": ">=11.12.1 <12"
   },
   "dependencies": {
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
     "react-icons": "4.4.0",
-    "react-router-dom": "6.3.0"
+    "react-router-dom": "7.18.5"
   },
   "scripts": {
     "dev": "vite",
@@ -26,7 +26,8 @@
     "format": "prettier --write .",
     "check": "npm run lint && npm run typecheck && npm run test -- --run && npm run build && npm run format:check",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
     "@eslint/js": "9.39.5",

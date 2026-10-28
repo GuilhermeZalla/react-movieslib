@@ -17,9 +17,12 @@ function Scenario({ kind }: { kind: 'catalog' | 'person' }) {
       <output aria-label="Revisão">{revision}</output>
       <button
         type="button"
-        onClick={() =>
-          navigate(kind === 'catalog' ? '/catalog/top_rated/2' : '/cast/3')
-        }
+        onClick={() => {
+          // MemoryRouter navigates synchronously; v7 also types data-router promises.
+          void navigate(
+            kind === 'catalog' ? '/catalog/top_rated/2' : '/cast/3',
+          );
+        }}
       >
         Trocar contexto da rota
       </button>

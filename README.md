@@ -4,7 +4,7 @@ Catálogo de filmes e pessoas com dados do The Movie Database (TMDB). Projeto de
 
 MoviesLib is a React single-page application for browsing movies and people.
 It builds with Vite and uses strict TypeScript throughout the application.
-Existing screens keep their styles, URLs and navigation.
+Existing screens retain their URLs; the visual migration is still incomplete.
 Live data awaits the server-only TMDB proxy planned for Phase 3.
 
 Deploy: [LINK DO DEPLOY]
@@ -24,13 +24,13 @@ Dois loops de requisição foram corrigidos para validar a migração; outras li
 
 ## Stack e decisões
 
-React/DOM 18.2.0, Router DOM 6.3.0 e React Icons 4.4.0 foram mantidos para separar a troca do build da atualização do runtime. Fundação: Vite 8.3.5, TypeScript 6.0.3, ESLint 9.39.5, Prettier 3.9.10 e Vitest 4.1.12. Removidos CRA/react-scripts, Web Vitals, ferramentas Jest do template e seus transitivos exclusivos. Somente package-lock.json permanece. ESLint 9 é necessário para os peers dos plugins React/a11y instalados, mas está fora de suporte; risco e atualização pendente em [DEPENDENCIES.md](docs/DEPENDENCIES.md).
+React/DOM 18.3.1, Router DOM 7.18.5 e React Icons 4.4.0. Fundação: Vite 8.3.5, TypeScript 6.0.3, ESLint 9.39.5, Prettier 3.9.10 e Vitest 4.1.12. Router atualizado para corrigir os advisories da linha 6, mantendo BrowserRouter, imports e URLs. Removidos CRA/react-scripts e seus transitivos exclusivos; somente package-lock.json permanece. React 19 requer migração própria, não realizada nesta atualização. ESLint 9 atende aos peers dos plugins React/a11y, mas está fora de suporte; risco em [DEPENDENCIES.md](docs/DEPENDENCIES.md).
 
-Todo o src, incluindo telas, componentes e testes, usa TypeScript com strict:true, allowJs:false, noUncheckedIndexedAccess e exactOptionalPropertyTypes, sem exclusões de fontes ou skipLibCheck. Os contratos de filmes, pessoas, gêneros, elenco e equipe ficam em [src/types/tmdb.ts](src/types/tmdb.ts). São tipos estáticos: as respostas JSON ainda são convertidas explicitamente nos limites dos fetches legados, sem validação em execução; Zod e o cliente de dados entram na Fase 3. Tailwind CSS 4.3.3 está instalado e configurado (plugin Vite + @import "tailwindcss" no index.css), o @theme está definido em src/styles/theme.css com tokens dos dois temas (escuro padrão e claro), fontes locais em src/fonts/ e componentes base reutilizáveis em src/components/base/. Tailwind foi aplicado nos componentes de tela e páginas usando classes semânticas com os tokens do @theme, sem mudar a aparência — o CSS legado de src/style/style.css continua sendo importado e preserva o visual exato.
+TypeScript estrito cobre src, e2e e as configurações Vite/Playwright, com allowJs:false, noUncheckedIndexedAccess e exactOptionalPropertyTypes, sem exclusões de fontes ou skipLibCheck. Os contratos de filmes, pessoas, gêneros, elenco e equipe ficam em [src/types/tmdb.ts](src/types/tmdb.ts). São tipos estáticos; Zod e o cliente de dados entram na Fase 3. Tailwind CSS 4.3.3 usa o plugin Vite; tokens @theme ficam em src/styles/theme.css. As telas combinam classes Tailwind e CSS legado, inclusive valores arbitrários que precisam ser substituídos por tokens. Os componentes base existem, mas ainda não foram integrados às páginas. A preservação visual após essas mudanças não foi comprovada.
 
 O [STATUS.md](docs/STATUS.md) é a fonte da verdade. Direção **Caderno**, escuro padrão; PXN Games é referência apenas de clima. A paleta terá hexadecimais próprios, descritos como “paleta inspirada em” no DESIGN.md, com contraste AA recalculado nos dois temas antes da Fase 4. Não copiar cores exatas, logo, textos ou layout; os previews não precisam ser refeitos.
 
-Tailwind CSS 4.3.3 e fontes locais estão instalados e configurados em lote próprio da Fase 2, sem mudar a aparência; o novo visual entra nas Fases 4 e 5. Estilo aprovado: Tailwind CSS 4.3.3, tokens em @theme, sem DaisyUI ou biblioteca de componentes visuais. TanStack Query e proxy entram na Fase 3. [Inventário de dependências](docs/DEPENDENCIES.md).
+Estilo aprovado: Tailwind CSS 4.3.3, tokens em @theme, sem DaisyUI ou biblioteca de componentes visuais. Há fontes legadas locais (PT Sans/Source Sans Pro); as famílias Caderno Source Serif 4/Source Sans 3 e os arquivos completos de licença ainda precisam ser incorporados. TanStack Query e proxy entram na Fase 3. [Inventário de dependências](docs/DEPENDENCIES.md).
 
 Tema claro/escuro e trailer youtube-nocookie aprovados; preservar pessoa/filmografia e em cartaz/em breve. pt-BR/en, atalhos e comparação ficam como **futuro**. Sem login/cadastro, analytics, rastreamento ou coleta de dados pessoais pelo aplicativo; documentar comunicação com provedores terceiros.
 
@@ -77,7 +77,7 @@ src/
 
 app contém App e LayoutRoutes; pages preserva as telas e seus wrappers existentes. components agrupa layout, filmes, pessoas e componentes base (Button, Link, Input, Card, Container, PosterPlaceholder, EmptyState, ErrorState, Skeleton); test guarda os testes e dados fictícios. Componentes usam PascalCase; utilitários/testes, camelCase; pastas, minúsculas/kebab-case. Imports relativos simples, sem alias. Os exports e as URLs existentes permanecem iguais.
 
-src/sass e src/style continuam no lugar durante a transição. O app ainda consome o CSS legado compilado e seu mapa; o Tailwind está importado no index.css com @theme definido em src/styles/theme.css e as fontes são locais em src/fonts/, mas nenhuma classe Tailwind foi aplicada aos componentes de tela, então a aparência não mudou.
+src/sass e src/style continuam no lugar durante a transição. O app consome o CSS legado compilado e seu mapa junto com Tailwind. A retirada do legado, a paleta própria e a validação visual permanecem pendentes.
 
 ## Como rodar
 
@@ -104,7 +104,7 @@ src/sass e src/style continuam no lugar durante a transição. O app ainda conso
 
 6. Abra `http://127.0.0.1:4173`. As portas são fixas; encerre servidores anteriores se estiverem ocupadas.
 
-No macOS/Linux, use npm no lugar de npm.cmd. /api/tmdb é o contrato relativo preparado para o proxy futuro, ainda sem implementação neste lote. Imagens, reset e fontes externos do legado continuam dependentes de rede até os lotes correspondentes.
+No macOS/Linux, use npm no lugar de npm.cmd. /api/tmdb é o contrato relativo preparado para o proxy futuro, ainda sem implementação. As fontes atuais são locais; imagens TMDB e reset CDN ainda dependem de rede.
 
 ## Credenciais
 
@@ -122,9 +122,9 @@ npm.cmd run check
 
 Lint, tipos estritos, testes e build passaram: **37 testes em cinco arquivos: 36 passam e um it.fails registra o bug conhecido das páginas de busca**, cobrindo rotas diretas, card → filme → voltar, mudança de ID, 404, ausência de loop em pessoa, busca/limpeza e campos nulos de filmes/pessoas. Testes bloqueiam requisições sem fixture. Dev e build servido também foram verificados no Chromium com interceptação de dados fictícios, sem API real. Vitest 4.1.12 foi escolhido por compatibilidade de tipos com Testing Library; não foi usado skipLibCheck para ocultar a incompatibilidade com Vitest 5.
 
-check executa lint → tipos → testes (uma execução) → build → format:check e será o comando do CI. npm run format aplica Prettier; npm run format:check verifica sem escrever. Configuração enxuta: aspas simples, trailing commas e finais de linha LF. O CSS/mapa gerado em src/style e o lockfile ficam fora do formatador; os fontes Sass são formatados.
+check executa lint → tipos → testes (uma execução) → build → format:check. O workflow .github/workflows/quality.yml executa esse comando, cobertura informativa e npm audit --audit-level=high em push/PR, com Node de .node-version e npm 11.12.1. Não usa segredos ou deploy; a execução remota só poderá ser confirmada após o push pelo proprietário. Dependabot verifica npm e Actions semanalmente. npm run format aplica Prettier; format:check verifica sem escrever. CSS/mapa gerado em src/style e lockfile ficam fora do formatador; fontes Sass são formatados.
 
-ESLint usa flat config, strictTypeChecked com projectService, React Hooks/Refresh, jsx-a11y e eslint-config-prettier. HTML perigoso e console.log são erros; links target="_blank" exigem explicitamente noopener e noreferrer. O lint aceita zero avisos (os seis avisos anteriores dos dropdowns foram eliminados na Fase 6 com botões semânticos e aria-expanded). Lista e justificativas das exceções no [STATUS.md](docs/STATUS.md#fase-2--lote-3-entregue). CI, E2E completo, correções de acessibilidade e Lighthouse seguem nas fases previstas.
+ESLint usa flat config, strictTypeChecked com projectService, React Hooks/Refresh, jsx-a11y e eslint-config-prettier. HTML perigoso e console.log são erros; links target="_blank" exigem explicitamente noopener e noreferrer. O lint aceita zero avisos; os controles de gêneros agora são botões e não precisam mais de rebaixamento das regras. As exceções restantes têm justificativas na configuração. Isso não substitui auditoria de acessibilidade.
 
 Para gerar o relatório informativo de cobertura v8, sem percentual mínimo:
 
@@ -136,7 +136,7 @@ Abra coverage/index.html após o comando. coverage/ é ignorado pelo Git. O rela
 
 ## Testes E2E
 
-Testes end-to-end com Playwright (Chromium) cobrem navegação por URLs diretas, 404 e fluxo voltar ao início.
+Há sete smoke tests com Playwright (Chromium): URLs diretas, estrutura básica, 404 e retorno ao início. Ainda não verificam o fluxo preenchido card → detalhe → voltar, nem isolam a rede com fixtures; não entram neste CI de fundação. Instale o navegador uma vez com npm.cmd exec playwright install chromium antes de executá-los.
 
 ```powershell
 npm.cmd run test:e2e
@@ -150,11 +150,11 @@ npm.cmd run test:e2e:ui
 
 O it.fails compara as páginas esperadas 1–5 com as chamadas atuais 1,2,3,3,3. Se o bug for corrigido, esse teste falhará por passar inesperadamente e deverá virar it normal na Fase 3. Testes de cliques dos menus não certificam acessibilidade por teclado; essa revisão continua na Fase 6.
 
-Auditoria do novo lockfile em 28/10/2026: **2 entradas moderadas no Router, 0 críticas e 0 altas**. A fotografia anterior tinha 96 entradas afetadas. Atualização do Router e riscos restantes no lote de dependências, antes da publicação; sem audit fix --force. Detalhes em [DEPENDENCIES.md](docs/DEPENDENCIES.md).
+Auditoria do lockfile em 28/10/2026 após atualizar React/Router: **zero vulnerabilidades reportadas**. Isso não cobre fim de suporte (ESLint 9) ou problemas da aplicação. Sem audit fix --force ou legacy-peer-deps. Detalhes em [DEPENDENCIES.md](docs/DEPENDENCIES.md).
 
 ## Acessibilidade e Lighthouse
 
-Lighthouse medido no preview (Edge/Chromium): Performance 99, Accessibility 100, Best Practices 96, SEO 91. Os dropdowns de gêneros foram convertidos para botões semânticos com aria-expanded. Nomes acessíveis (aria-label) adicionados a todos os controles com ícones. Cabeçalhos de segurança (CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy) configurados no vercel.json. Lazy loading adicionado a imagens de pôster não críticas. O lint aceita zero avisos. Os erros de console no Lighthouse são esperados (sem proxy TMDB implementado).
+Há botões semânticos nos menus de gêneros, labels em controles e lazy loading em imagens. vercel.json declara cabeçalhos, mas seu comportamento em deploy, CSP com dados/embeds e fallback SPA ainda não foram verificados. Meta tags não substituem cabeçalhos HTTP. Os resultados Lighthouse registrados anteriormente não têm relatório reproduzível disponível e não são apresentados como medição confirmada. Auditoria de teclado, contraste, responsividade e baseline antes/depois continuam pendentes.
 
 ## Conferência rápida de rotas
 
@@ -199,4 +199,4 @@ Dados e imagens futuros: [TMDB](https://www.themoviedb.org). A interface ainda p
 
 Ícones: React Icons. Fontes: PT Sans e Source Sans Pro, locais em src/fonts/. Reset: Meyer Reset via cdnjs. Licenças detalhadas em [CREDITS.md](CREDITS.md). Licenças específicas serão registradas em CREDITS.md ao incorporar/substituir recursos; créditos dos estudos estão em [LICENSES.md](docs/design-previews/LICENSES.md).
 
-Código sob [MIT](LICENSE), sem transferir direitos sobre dados, imagens e marcas de terceiros. Não há autenticação, lista persistente ou tratamento completo de erros. Interface legada em inglês; nova 404 em pt-BR. Sem configuração de deploy/headers ou Lighthouse medido; não publicar esta etapa como catálogo completo.
+Código sob [MIT](LICENSE), sem transferir direitos sobre dados, imagens e marcas de terceiros. Não há autenticação, lista persistente ou tratamento completo de erros. Interface legada em inglês; 404 em pt-BR. Há configuração parcial de headers, sem publicação validada ou Lighthouse reproduzível. Não publicar esta etapa como catálogo completo.
