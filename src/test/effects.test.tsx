@@ -5,6 +5,8 @@ import { describe, expect, it, vi } from 'vitest';
 import MoviesCatalog from '../pages/movies/MoviesCatalog';
 import CastDetails from '../pages/person-details/CastDetails';
 import { controlledFetch } from './fixtures/controlledFetch';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { createQueryClient } from '../app/queryClient';
 
 function Scenario({ kind }: { kind: 'catalog' | 'person' }) {
   const [revision, setRevision] = useState(0);
@@ -32,25 +34,31 @@ function Scenario({ kind }: { kind: 'catalog' | 'person' }) {
 }
 
 function catalogTree() {
+  const client = createQueryClient();
   return (
-    <MemoryRouter initialEntries={['/catalog/popular/1']}>
-      <Routes>
-        <Route
-          path="/catalog/:category/:page"
-          element={<Scenario kind="catalog" />}
-        />
-      </Routes>
-    </MemoryRouter>
+    <QueryClientProvider client={client}>
+      <MemoryRouter initialEntries={['/catalog/popular/1']}>
+        <Routes>
+          <Route
+            path="/catalog/:category/:page"
+            element={<Scenario kind="catalog" />}
+          />
+        </Routes>
+      </MemoryRouter>
+    </QueryClientProvider>
   );
 }
 
 function personTree() {
+  const client = createQueryClient();
   return (
-    <MemoryRouter initialEntries={['/cast/2']}>
-      <Routes>
-        <Route path="/cast/:id" element={<Scenario kind="person" />} />
-      </Routes>
-    </MemoryRouter>
+    <QueryClientProvider client={client}>
+      <MemoryRouter initialEntries={['/cast/2']}>
+        <Routes>
+          <Route path="/cast/:id" element={<Scenario kind="person" />} />
+        </Routes>
+      </MemoryRouter>
+    </QueryClientProvider>
   );
 }
 
@@ -68,14 +76,14 @@ describe('regressões dos efeitos de dados', () => {
     });
     await screen.findByRole('link', { name: 'View' });
     expect(api.requests).toHaveLength(1);
-    expect(fetch).toHaveBeenCalledTimes(3); // catálogo + dois menus de gêneros
+    expect(fetch).toHaveBeenCalledTimes(2); // catálogo + dois menus de gêneros
 
     view.rerender(catalogTree());
     fireEvent.click(screen.getByRole('button', { name: 'Atualizar contexto' }));
     fireEvent.click(screen.getByRole('button', { name: 'Atualizar contexto' }));
     expect(screen.getByLabelText('Revisão')).toHaveTextContent('2');
     expect(api.requests).toHaveLength(1);
-    expect(fetch).toHaveBeenCalledTimes(3);
+    expect(fetch).toHaveBeenCalledTimes(2);
 
     fireEvent.click(screen.getByRole('link', { name: 'Página 2' }));
     expect(api.requests).toHaveLength(2);
@@ -99,7 +107,7 @@ describe('regressões dos efeitos de dados', () => {
       '/api/tmdb/movie/popular',
       '/api/tmdb/movie/top_rated',
     ]);
-    expect(fetch).toHaveBeenCalledTimes(5);
+    expect(fetch).toHaveBeenCalledTimes(4);
   });
 
   it('pessoa: duas consultas por id, sem repetir por resposta, rerender ou estado do pai', async () => {
@@ -119,13 +127,13 @@ describe('regressões dos efeitos de dados', () => {
     await screen.findByRole('heading', { level: 1, name: 'Pessoa de exemplo' });
     await screen.findByRole('link', { name: 'View' });
     expect(api.requests).toHaveLength(2);
-    expect(fetch).toHaveBeenCalledTimes(4); // detalhe/créditos + dois menus
+    expect(fetch).toHaveBeenCalledTimes(3); // detalhe/créditos + dois menus
 
     view.rerender(personTree());
     fireEvent.click(screen.getByRole('button', { name: 'Atualizar contexto' }));
     expect(screen.getByLabelText('Revisão')).toHaveTextContent('1');
     expect(api.requests).toHaveLength(2);
-    expect(fetch).toHaveBeenCalledTimes(4);
+    expect(fetch).toHaveBeenCalledTimes(3);
 
     fireEvent.click(
       screen.getByRole('button', { name: 'Trocar contexto da rota' }),
@@ -143,6 +151,6 @@ describe('regressões dos efeitos de dados', () => {
       '/api/tmdb/person/3',
       '/api/tmdb/person/3/movie_credits',
     ]);
-    expect(fetch).toHaveBeenCalledTimes(6);
+    expect(fetch).toHaveBeenCalledTimes(5);
   });
 });

@@ -1,6 +1,6 @@
-import type { GenreList } from '../../types/tmdb';
-// Legacy JSON is trusted only at these explicit boundaries; schema validation is Phase 3.
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { genresQuery } from '../../api/tmdb/queries';
 import { AiOutlineHome } from 'react-icons/ai';
 import { BiCameraMovie, BiFilm, BiTimer, BiStar } from 'react-icons/bi';
 import { IoPeopleOutline } from 'react-icons/io5';
@@ -9,24 +9,13 @@ import { Link } from 'react-router-dom';
 import Genres from './Genres';
 
 const Aside = () => {
-  const [genres, setGenres] = useState<GenreList | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdown = useRef<HTMLLIElement>(null);
   const menu = useRef<HTMLElement>(null);
   const arrow = useRef<HTMLSpanElement>(null);
 
-  useEffect(() => {
-    async function getGenres(): Promise<GenreList> {
-      const response = await fetch(`/api/tmdb/genre/movie/list`, {
-        method: 'GET',
-      });
-      const result: unknown = await response.json();
-      return result as GenreList;
-    }
-    getGenres()
-      .then((genres) => setGenres(genres))
-      .catch((error: unknown) => console.error(error));
-  }, []);
+  const genresQueryResult = useQuery(genresQuery());
+  const genres = genresQueryResult.data ?? null;
 
   const handleAside = () => {
     if (!menu.current || !dropdown.current) return;

@@ -85,7 +85,11 @@ describe('ausências tratadas durante a conversão estrita', () => {
         String(input instanceof Request ? input.url : input).startsWith(
           '/api/tmdb/movie/1?',
         )
-          ? Promise.resolve(new Response(JSON.stringify(movie)))
+          ? Promise.resolve(
+              new Response(JSON.stringify(movie), {
+                headers: { 'Content-Type': 'application/json' },
+              }),
+            )
           : fixtureFetch(input),
       ),
     );
@@ -129,7 +133,11 @@ describe('ausências tratadas durante a conversão estrita', () => {
         vi.fn((input: RequestInfo | URL) =>
           String(input instanceof Request ? input.url : input) ===
           '/api/tmdb/person/2'
-            ? Promise.resolve(new Response(JSON.stringify(person)))
+            ? Promise.resolve(
+                new Response(JSON.stringify(person), {
+                  headers: { 'Content-Type': 'application/json' },
+                }),
+              )
             : fixtureFetch(input),
         ),
       );
@@ -160,7 +168,11 @@ describe('ausências tratadas durante a conversão estrita', () => {
         String(input instanceof Request ? input.url : input).startsWith(
           '/api/tmdb/movie/popular?',
         )
-          ? Promise.resolve(new Response(JSON.stringify(page)))
+          ? Promise.resolve(
+              new Response(JSON.stringify(page), {
+                headers: { 'Content-Type': 'application/json' },
+              }),
+            )
           : fixtureFetch(input),
       ),
     );

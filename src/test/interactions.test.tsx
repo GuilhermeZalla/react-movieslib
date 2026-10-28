@@ -8,6 +8,8 @@ import Footer from '../components/layout/Footer';
 import FilmCard from '../components/movies/FilmCard';
 import NotFoundScreen from '../pages/not-found/NotFoundScreen';
 import { fixtureFetch } from './fixtures/fetch';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { createQueryClient } from '../app/queryClient';
 import { genreFixture } from './fixtures/genres';
 import { searchControls } from './helpers/controls';
 
@@ -132,16 +134,25 @@ describe('menus de gêneros', () => {
   beforeEach(() => {
     vi.stubGlobal(
       'fetch',
-      vi.fn(() => Promise.resolve(new Response(JSON.stringify(genreFixture)))),
+      vi.fn(() =>
+        Promise.resolve(
+          new Response(JSON.stringify(genreFixture), {
+            headers: { 'Content-Type': 'application/json' },
+          }),
+        ),
+      ),
     );
   });
 
   it('abre/fecha o menu desktop, filtra os gêneros legados e navega', async () => {
+    const client = createQueryClient();
     render(
-      <MemoryRouter>
-        <Aside />
-        <LocationDisplay />
-      </MemoryRouter>,
+      <QueryClientProvider client={client}>
+        <MemoryRouter>
+          <Aside />
+          <LocationDisplay />
+        </MemoryRouter>
+      </QueryClientProvider>,
     );
     const aside = within(screen.getByRole('complementary'));
     const drama = await aside.findByRole('link', { name: 'Drama' });
@@ -168,11 +179,14 @@ describe('menus de gêneros', () => {
   });
 
   it('abre/fecha o menu móvel e segue o link do gênero', async () => {
+    const client = createQueryClient();
     render(
-      <MemoryRouter>
-        <AsideMobile />
-        <LocationDisplay />
-      </MemoryRouter>,
+      <QueryClientProvider client={client}>
+        <MemoryRouter>
+          <AsideMobile />
+          <LocationDisplay />
+        </MemoryRouter>
+      </QueryClientProvider>,
     );
     const aside = within(screen.getByRole('complementary'));
     const drama = await aside.findByRole('link', { name: 'Drama' });

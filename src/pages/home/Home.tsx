@@ -1,59 +1,22 @@
-import type { MoviePage } from '../../types/tmdb';
-// Legacy JSON is trusted only at these explicit boundaries; schema validation is Phase 3.
-import Header from '../../components/layout/Header';
+﻿import Header from '../../components/layout/Header';
 import FilmCard from '../../components/movies/FilmCard';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import Aside from '../../components/layout/Aside';
 import AsideMobile from '../../components/layout/AsideMobile';
 import BannerImg from '../../components/movies/BannerImg';
 import { HiArrowSmRight } from 'react-icons/hi';
-
-const popular = '/api/tmdb/movie/popular?page=1';
-const playing = '/api/tmdb/movie/now_playing?page=1';
-const trending = '/api/tmdb/trending/movie/day?page=1';
-
-async function getTrendingMovies(): Promise<MoviePage> {
-  const response = await fetch(trending, {
-    method: 'GET',
-  });
-  const result: unknown = await response.json();
-  return result as MoviePage;
-}
-
-async function getPopularMovies(): Promise<MoviePage> {
-  const response = await fetch(popular, {
-    method: 'GET',
-  });
-  const result: unknown = await response.json();
-  return result as MoviePage;
-}
-
-async function getNowPlayingMovies(): Promise<MoviePage> {
-  const response = await fetch(playing, {
-    method: 'GET',
-  });
-  const result: unknown = await response.json();
-  return result as MoviePage;
-}
+import { useQuery } from '@tanstack/react-query';
+import { movieListQuery, trendingQuery } from '../../api/tmdb/queries';
 
 const Home = () => {
-  const [popularMovies, setPopularMovies] = useState<MoviePage[]>([]);
-  const [nowPlayingMovies, setNowPlayingMovies] = useState<MoviePage[]>([]);
-  const [trendingMovies, setTrendingMovies] = useState<MoviePage[]>([]);
-  const next = useRef<HTMLSpanElement>(null);
+  const trending = useQuery(trendingQuery(1));
+  const popular = useQuery(movieListQuery('popular', 1));
+  const nowPlaying = useQuery(movieListQuery('now_playing', 1));
 
-  useEffect(() => {
-    getTrendingMovies()
-      .then((movies) => setTrendingMovies([movies]))
-      .catch((error: unknown) => console.error(error));
-    getPopularMovies()
-      .then((movies) => setPopularMovies([movies]))
-      .catch((error: unknown) => console.error(error));
-    getNowPlayingMovies()
-      .then((movies) => setNowPlayingMovies([movies]))
-      .catch((error: unknown) => console.error(error));
-  }, []);
+  const trendingResults = trending.data?.results ?? [];
+  const popularResults = popular.data?.results ?? [];
+  const nowPlayingResults = nowPlaying.data?.results ?? [];
 
   return (
     <Fragment>
@@ -70,17 +33,12 @@ const Home = () => {
         <div className="home__container-slider mb-[8%] mt-[5%]">
           <h2 className="home__container-title font-bold font-display text-[1.3rem] text-accent mb-[10px] flex items-center relative">
             Just arrived!{' '}
-            <span ref={next}>
+            <span>
               <HiArrowSmRight />
             </span>
           </h2>
-          <div
-            className="home__slider overflow-x-scroll smooth-scroll flex flex-row gap-15"
-            onScroll={() => {
-              if (next.current) next.current.style.opacity = '0';
-            }}
-          >
-            {trendingMovies[0]?.results.map((img, index) => (
+          <div className="home__slider overflow-x-scroll smooth-scroll flex flex-row gap-15">
+            {trendingResults.map((img, index) => (
               <BannerImg
                 key={index}
                 movieId={img.id}
@@ -92,7 +50,7 @@ const Home = () => {
         </div>
         <div className="home__container mb-[5%] mt-[5%]">
           <div className="trending container__films relative border-t line/40 mt-[8%] pt-[10px] grid grid-cols-[repeat(auto-fill,minmax(150px,2fr))] gap-10">
-            {trendingMovies[0]?.results.map((movie, index) => (
+            {trendingResults.map((movie, index) => (
               <FilmCard
                 key={index}
                 poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
@@ -109,7 +67,7 @@ const Home = () => {
             >
               MORE
             </Link>
-            {popularMovies[0]?.results.map((movie, index) => (
+            {popularResults.map((movie, index) => (
               <FilmCard
                 key={index}
                 poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
@@ -126,7 +84,7 @@ const Home = () => {
             >
               MORE
             </Link>
-            {nowPlayingMovies[0]?.results.map((movie, index) => (
+            {nowPlayingResults.map((movie, index) => (
               <FilmCard
                 key={index}
                 poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}

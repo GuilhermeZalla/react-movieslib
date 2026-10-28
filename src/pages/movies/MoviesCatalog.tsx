@@ -2,36 +2,29 @@ import type { MoviePage } from '../../types/tmdb';
 // Legacy JSON is trusted only at these explicit boundaries; schema validation is Phase 3.
 import Header from '../../components/layout/Header';
 import FilmCard from '../../components/movies/FilmCard';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { movieListQuery } from '../../api/tmdb/queries';
 import { useParams } from 'react-router-dom';
 import Aside from '../../components/layout/Aside';
 import AsideMobile from '../../components/layout/AsideMobile';
 import Footer from '../../components/layout/Footer';
 
 const MoviesCatalog = () => {
-  const [movies, setMovies] = useState<MoviePage[]>([]);
   const [search, setSearch] = useState<MoviePage | null>(null);
+  const { category = 'popular' } = useParams<'category'>();
+  const { page = '1' } = useParams<'page'>();
   const [search2, setSearch2] = useState<MoviePage | null>(null);
   const [search3, setSearch3] = useState<MoviePage | null>(null);
   const [search4, setSearch4] = useState<MoviePage | null>(null);
   const [search5, setSearch5] = useState<MoviePage | null>(null);
   const [searchContent, setSearchContent] = useState('');
-  const { category = 'popular' } = useParams<'category'>();
-  const { page = '1' } = useParams<'page'>();
-
-  useEffect(() => {
-    async function getMovies(): Promise<MoviePage> {
-      const response = await fetch(`/api/tmdb/movie/${category}?page=${page}`, {
-        method: 'GET',
-      });
-      const result: unknown = await response.json();
-      return result as MoviePage;
-    }
-    getMovies()
-      .then((data) => setMovies([data]))
-      .catch((error: unknown) => console.error(error));
-  }, [category, page]);
-
+  const catalog = useQuery(
+    movieListQuery(
+      category as 'popular' | 'top_rated' | 'now_playing' | 'upcoming',
+      page,
+    ),
+  );
   const handleSearchMovies = (result: string) => {
     let movie = result;
     if (movie === '') {
@@ -126,7 +119,7 @@ const MoviesCatalog = () => {
               </span>{' '}
               movies
             </h1>
-            {movies[0]?.results.map((movie, index) => (
+            {catalog.data?.results.map((movie, index) => (
               <FilmCard
                 key={index}
                 poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}

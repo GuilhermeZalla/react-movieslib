@@ -1,8 +1,10 @@
-import type { MovieDetails as MovieDetailsData } from '../../types/tmdb';
 // Legacy JSON is trusted only at these explicit boundaries; schema validation is Phase 3.
 import Header from '../../components/layout/Header';
 import { useParams } from 'react-router-dom';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { movieQuery, movieCreditsQuery } from '../../api/tmdb/queries';
+import { idParameterSchema } from '../../../shared/tmdbRequest';
 import { BsWallet2 } from 'react-icons/bs';
 import { BiTimer } from 'react-icons/bi';
 import { FaChartLine } from 'react-icons/fa';
@@ -10,29 +12,73 @@ import Genres from '../../components/movies/Genres';
 import Cast from '../../components/people/Cast';
 import Aside from '../../components/layout/Aside';
 import AsideMobile from '../../components/layout/AsideMobile';
+import EmptyState from '../../components/base/EmptyState';
+import ErrorState from '../../components/base/ErrorState';
 
 const dollarUSLocale = Intl.NumberFormat('en-US');
 
 const MovieDetails = () => {
-  const [details, setDetails] = useState<MovieDetailsData | null>(null);
   const { id } = useParams<'id'>();
+  const validId = (() => {
+    const parsed = idParameterSchema.safeParse(id ?? '');
+    return parsed.success ? String(parsed.data) : null;
+  })();
 
-  useEffect(() => {
-    if (!id) return;
-    async function getDetails(): Promise<MovieDetailsData> {
-      const response = await fetch(
-        `/api/tmdb/movie/${id}?append_to_response=credits`,
-        {
-          method: 'GET',
-        },
+  const detailsQuery = useQuery({
+    ...movieQuery(validId ?? '0'),
+    enabled: validId !== null,
+  });
+  const creditsQuery = useQuery({
+    ...movieCreditsQuery(validId ?? '0'),
+    enabled: validId !== null,
+  });
+
+  const details = detailsQuery.data ?? null;
+  const credits = creditsQuery.data ?? null;
+
+  if (detailsQuery.isError) {
+    const err = detailsQuery.error;
+    const kind =
+      err instanceof Error && 'kind' in err
+        ? (err as { kind: string }).kind
+        : '';
+    if (kind === 'empty') {
+      return (
+        <Fragment>
+          <Header search={true} />
+          <Aside />
+          <AsideMobile />
+          <EmptyState title="Nenhum filme encontrado" />
+        </Fragment>
       );
-      const result: unknown = await response.json();
-      return result as MovieDetailsData;
     }
-    getDetails()
-      .then((details) => setDetails(details))
-      .catch((error: unknown) => console.error(error));
-  }, [id]);
+    return (
+      <Fragment>
+        <Header search={true} />
+        <Aside />
+        <AsideMobile />
+        <ErrorState
+          message="Não foi possível carregar o filme."
+          onRetry={() => {
+            void detailsQuery.refetch();
+          }}
+        />
+      </Fragment>
+    );
+  }
+
+  if (validId === null) {
+    return (
+      <Fragment>
+        <Header search={true} />
+        <Aside />
+        <AsideMobile />
+        <main className="main flex flex-start items-center flex-wrap text-ink p-[10%] pr-[15%] pb-[5%] pt-[15%]">
+          <p className="text-[1.1rem]">Conteúdo não encontrado.</p>
+        </main>
+      </Fragment>
+    );
+  }
 
   return (
     <Fragment>
@@ -98,7 +144,7 @@ const MovieDetails = () => {
           </article>
         </div>
         <div className="container-cast relative border-t line/40 w-full mt-[12%] pt-[20px] grid grid-cols-[repeat(auto-fill,minmax(180px,2fr))]">
-          {details?.credits?.cast?.map((cast, index) =>
+          {credits?.cast?.map((cast, index) =>
             index < 20 ? (
               <Cast
                 key={index}

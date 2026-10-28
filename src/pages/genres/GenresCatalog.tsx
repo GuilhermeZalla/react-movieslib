@@ -4,15 +4,22 @@ import Header from '../../components/layout/Header';
 import FilmCard from '../../components/movies/FilmCard';
 import Aside from '../../components/layout/Aside';
 import AsideMobile from '../../components/layout/AsideMobile';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { movieListQuery } from '../../api/tmdb/queries';
 import { useParams } from 'react-router-dom';
 
 const GenresCatalog = () => {
-  const [movies, setMovies] = useState<MoviePage | null>(null);
-  const [movies2, setMoviesPage2] = useState<MoviePage | null>(null);
-  const [movies3, setMoviesPage3] = useState<MoviePage | null>(null);
-  const [movies4, setMoviesPage4] = useState<MoviePage | null>(null);
-  const [movies5, setMoviesPage5] = useState<MoviePage | null>(null);
+  const moviesQ = useQuery(movieListQuery('popular', 1));
+  const movies2Q = useQuery(movieListQuery('popular', 2));
+  const movies3Q = useQuery(movieListQuery('popular', 3));
+  const movies4Q = useQuery(movieListQuery('popular', 4));
+  const movies5Q = useQuery(movieListQuery('popular', 5));
+  const movies = moviesQ.data ?? null;
+  const movies2 = movies2Q.data ?? null;
+  const movies3 = movies3Q.data ?? null;
+  const movies4 = movies4Q.data ?? null;
+  const movies5 = movies5Q.data ?? null;
   const [search, setSearch] = useState<MoviePage | null>(null);
   const [search2, setSearch2] = useState<MoviePage | null>(null);
   const [search3, setSearch3] = useState<MoviePage | null>(null);
@@ -21,59 +28,6 @@ const GenresCatalog = () => {
   const [searchContent, setSearchContent] = useState('');
   const { genre = '' } = useParams<'genre'>();
   const { id } = useParams<'id'>();
-
-  useEffect(() => {
-    async function getMovies(): Promise<MoviePage> {
-      const response = await fetch(`/api/tmdb/movie/popular?page=1`, {
-        method: 'GET',
-      });
-      const result: unknown = await response.json();
-      return result as MoviePage;
-    }
-    async function getMoviesPage2(): Promise<MoviePage> {
-      const response = await fetch(`/api/tmdb/movie/popular?page=2`, {
-        method: 'GET',
-      });
-      const result: unknown = await response.json();
-      return result as MoviePage;
-    }
-    async function getMoviesPage3(): Promise<MoviePage> {
-      const response = await fetch(`/api/tmdb/movie/popular?page=3`, {
-        method: 'GET',
-      });
-      const result: unknown = await response.json();
-      return result as MoviePage;
-    }
-    async function getMoviesPage4(): Promise<MoviePage> {
-      const response = await fetch(`/api/tmdb/movie/popular?page=4`, {
-        method: 'GET',
-      });
-      const result: unknown = await response.json();
-      return result as MoviePage;
-    }
-    async function getMoviesPage5(): Promise<MoviePage> {
-      const response = await fetch(`/api/tmdb/movie/top_rated?page=5`, {
-        method: 'GET',
-      });
-      const result: unknown = await response.json();
-      return result as MoviePage;
-    }
-    getMovies()
-      .then((data) => setMovies(data))
-      .catch((error: unknown) => console.error(error));
-    getMoviesPage2()
-      .then((data) => setMoviesPage2(data))
-      .catch((error: unknown) => console.error(error));
-    getMoviesPage3()
-      .then((data) => setMoviesPage3(data))
-      .catch((error: unknown) => console.error(error));
-    getMoviesPage4()
-      .then((data) => setMoviesPage4(data))
-      .catch((error: unknown) => console.error(error));
-    getMoviesPage5()
-      .then((data) => setMoviesPage5(data))
-      .catch((error: unknown) => console.error(error));
-  }, []);
 
   const handleSearchMovies = (result: string) => {
     let movie = result;

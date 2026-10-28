@@ -1,6 +1,6 @@
 # Status do MoviesLib
 
-Atualizado em 28/10/2026. Fase atual: **3 — grupo 3, cliente, consultas e debounce implementados, sem migrar telas, entregue para revisão/commit**. Grupo 2 aprovado e commitado pelo usuário; HEAD local **2ace33f**. Executar um grupo por vez e aguardar OK antes do seguinte. O trabalho anterior foi preservado; títulos dos commits chamados Fases 4–7 não equivalem ao aceite completo dessas fases. Git somente leitura. **Mensagens de commit sempre em português**, conforme orientação mais recente; referências anteriores em inglês são históricas.
+Atualizado em 28/10/2026. Fase atual: **4 — grupo 4 (b), detalhe do filme e pessoa migrados para consultas, entregue para revisão/commit**. Grupo 4a aprovado e commitado pelo usuário. Executar um grupo por vez e aguardar OK antes do seguinte. Git somente leitura. **Mensagens de commit sempre em português**.
 
 ## Pendências de pré-publicação — vigentes
 
