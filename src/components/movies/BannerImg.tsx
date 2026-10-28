@@ -13,6 +13,7 @@ const BannerImg = (props: BannerImgProps) => {
       <img
         src={`https://image.tmdb.org/t/p/w500/${props.url}`}
         alt={props.title}
+        className="w-full h-full object-cover"
       />
     </Link>
   );

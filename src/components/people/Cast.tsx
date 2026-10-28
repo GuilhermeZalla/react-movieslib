@@ -17,9 +17,15 @@ const Cast = ({ character = null, ...props }: CastProps) => {
   } else {
     return (
       <Link to={`/cast/${props.id}`} onClick={goToTop}>
-        <div className="cast">
-          <img src={props.photo} alt={props.name} />
-          <h2 className="cast__title">{props.name}</h2>
+        <div className="cast relative flex flex-start">
+          <img
+            src={props.photo}
+            alt={props.name}
+            className="w-[190px] brightness-70 cursor-pointer rounded-[10px]"
+          />
+          <h2 className="cast__title absolute bottom-[15px] left-[10px] z-10 text-white text-base font-normal">
+            {props.name}
+          </h2>
           <h3>{character}</h3>
         </div>
       </Link>

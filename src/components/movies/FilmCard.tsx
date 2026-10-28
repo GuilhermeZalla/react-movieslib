@@ -21,21 +21,25 @@ const FilmCard = (props: FilmCardProps) => {
     return null;
   } else {
     return (
-      <div className="home__card">
-        <img src={props.poster} alt={props.title} />
-        <div className="home__card-info">
-          <ul className="home__list">
-            <li className="home__item">
+      <div className="home__card relative rounded-[7px] cursor-pointer transition-all duration-250 group">
+        <img
+          src={props.poster}
+          alt={props.title}
+          className="rounded-[7px] w-full h-full object-cover"
+        />
+        <div className="home__card-info absolute inset-[10%] left-[10%] right-[10%] flex justify-center items-center transition-all duration-300 scale-0 group-hover:scale-100">
+          <ul className="home__list flex flex-col justify-center items-center gap-10">
+            <li className="home__item flex items-center gap-5 text-body">
               <Link
                 to={`/movie-details/${props.movieId}`}
                 onClick={goToTop}
-                className="home__link"
+                className="home__link flex items-center gap-5"
               >
-                <IoEyeSharp /> View
+                <IoEyeSharp className="text-accent" /> View
               </Link>
             </li>
-            <li className="home__item">
-              <HiStar /> {props.vote}
+            <li className="home__item flex items-center gap-5 text-body">
+              <HiStar className="text-accent" /> {props.vote}
             </li>
           </ul>
         </div>

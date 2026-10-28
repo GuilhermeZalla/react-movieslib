@@ -46,19 +46,23 @@ const AsideMobile = () => {
   };
 
   return (
-    <aside className="aside-mobile">
-      <ul className="aside__list">
-        <li className="aside__item">
+    <aside
+      className="aside-mobile bg-surface text-ink shadow-sm rounded-t-[20px] fixed bottom-0 left-[20%] right-[20%] z-12 flex justify-center items-center"
+      ref={scrollTop}
+    >
+      <ul className="aside__list flex flex-row gap-[35px]">
+        <li className="aside__item flex items-center py-[10px] select-none relative">
           <Link to={'/'}>
             <AiOutlineHome />
           </Link>
         </li>
         <li className="aside__item">
+          // prettier-ignore
           <a role="button" onClick={handleDropUpMenu}>
             <BiFilm />
           </a>
           <div className="menu-dropup" ref={dropup}>
-            <ul className="aside__sub-list">
+            <ul className="aside__sub-list h-[210px] flex flex-col items-flex-start p-0">
               {genres?.genres?.map((genre, index) =>
                 genre.name === 'TV Movie' ||
                 genre.name === 'Documentary' ? null : (

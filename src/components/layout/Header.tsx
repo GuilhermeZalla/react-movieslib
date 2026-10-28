@@ -29,10 +29,10 @@ const Header = (props: HeaderProps) => {
 
   if (props.search) {
     return (
-      <header className="header">
-        <nav className="header__navbar">
-          <ul className="header__list">
-            <li className="header__item">
+      <header className="header bg-canvas text-ink fixed top-0 left-0 right-0 z-11">
+        <nav className="header__navbar px-3 py-0">
+          <ul className="header__list flex justify-between items-center">
+            <li className="header__item flex items-center gap-[7px]">
               <Link to={'/'}>
                 <BiCameraMovie /> MoviesLib
               </Link>
@@ -43,19 +43,24 @@ const Header = (props: HeaderProps) => {
     );
   } else {
     return (
-      <header className="header">
-        <nav className="header__navbar">
-          <ul className="header__list">
-            <li className="header__item">
+      <header className="header bg-canvas text-ink fixed top-0 left-0 right-0 z-11">
+        <nav className="header__navbar px-3 py-0">
+          <ul className="header__list flex justify-between items-center">
+            <li className="header__item flex items-center gap-[7px]">
               <Link to={'/'}>
                 <BiCameraMovie /> MoviesLib
               </Link>
             </li>
-            <li className="header__item">
+            <li className="header__item flex items-center gap-[7px]">
               <button type="button" onClick={handleOpenedInput} ref={btClose}>
                 <IoClose />
               </button>
-              <input type="text" placeholder="Search for a movie" ref={input} />
+              <input
+                type="text"
+                placeholder="Search for a movie"
+                ref={input}
+                className="w-0 opacity-0 transition-all duration-300"
+              />
               <button type="button" name="search" onClick={handleClosedInput}>
                 <BiSearchAlt2 />
               </button>

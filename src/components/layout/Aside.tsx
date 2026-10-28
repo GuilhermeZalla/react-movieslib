@@ -57,11 +57,11 @@ const Aside = () => {
   };
 
   return (
-    <aside className="aside" ref={menu}>
-      <ul className="aside__list">
-        <li className="aside__item">
+    <aside className="aside bg-surface text-ink shadow-sm" ref={menu}>
+      <ul className="aside__list flex flex-col">
+        <li className="aside__item flex items-center gap-[20px] py-[15px] border-b line/20 select-none font-bold">
           <Link to={'/'} onClick={handleAside}>
-            <BiCameraMovie /> MoviesLib
+            <BiCameraMovie className="font-display" /> MoviesLib
           </Link>
         </li>
         <li className="aside__item">
@@ -76,6 +76,7 @@ const Aside = () => {
           <button type="button" onClick={handleAside}>
             <BiFilm />
           </button>
+          // prettier-ignore
           <a role="button" className="aside__dropdown" onClick={handleDropDown}>
             Genres{' '}
             <span className="arrow" ref={arrow}>
@@ -83,8 +84,11 @@ const Aside = () => {
             </span>
           </a>
         </li>
-        <li className="aside__item menu-dropdown" ref={dropdown}>
-          <ul className="aside__sub-list">
+        <li
+          className="aside__item menu-dropdown h-0 overflow-x-hidden transition-all duration-350"
+          ref={dropdown}
+        >
+          <ul className="aside__sub-list h-[230px] flex flex-col items-flex-start">
             {genres?.genres?.map((genre, index) =>
               genre.name === 'TV Movie' ||
               genre.name === 'Documentary' ? null : (

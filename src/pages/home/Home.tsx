@@ -60,20 +60,22 @@ const Home = () => {
       <Header search={true} />
       <Aside />
       <AsideMobile />
-      <main className="home__main">
-        <h1 className="home__title">Welcome to the Movie Library</h1>
-        <p className="home__paragraph">
+      <main className="home__main relative mb-[5%] mt-[7%] pl-[100px] pr-[30px] pt-[20px] pb-[20px] text-ink">
+        <h1 className="home__title text-center text-[2.8rem] mb-[15px]">
+          Welcome to the Movie Library
+        </h1>
+        <p className="home__paragraph text-center text-[1.4rem] leading-[.7cm]">
           find the best latest movies you are looking for!
         </p>
-        <div className="home__container-slider">
-          <h2 className="home__container-title">
+        <div className="home__container-slider mb-[8%] mt-[5%]">
+          <h2 className="home__container-title font-bold font-display text-[1.3rem] text-accent mb-[10px] flex items-center relative">
             Just arrived!{' '}
             <span ref={next}>
               <HiArrowSmRight />
             </span>
           </h2>
           <div
-            className="home__slider"
+            className="home__slider overflow-x-scroll smooth-scroll flex flex-row gap-15"
             onScroll={() => {
               if (next.current) next.current.style.opacity = '0';
             }}
@@ -88,8 +90,8 @@ const Home = () => {
             ))}
           </div>
         </div>
-        <div className="home__container">
-          <div className="trending container__films">
+        <div className="home__container mb-[5%] mt-[5%]">
+          <div className="trending container__films relative border-t line/40 mt-[8%] pt-[10px] grid grid-cols-[repeat(auto-fill,minmax(150px,2fr))] gap-10">
             {trendingMovies[0]?.results.map((movie, index) => (
               <FilmCard
                 key={index}
@@ -100,7 +102,7 @@ const Home = () => {
               />
             ))}
           </div>
-          <div className="popular container__films">
+          <div className="popular container__films relative border-t line/40 mt-[8%] pt-[10px] grid grid-cols-[repeat(auto-fill,minmax(150px,2fr))] gap-10">
             <Link to={`/catalog/popular/1`}>MORE</Link>
             {popularMovies[0]?.results.map((movie, index) => (
               <FilmCard
@@ -112,7 +114,7 @@ const Home = () => {
               />
             ))}
           </div>
-          <div className="now-playing container__films">
+          <div className="now-playing container__films relative border-t line/40 mt-[8%] pt-[10px] grid grid-cols-[repeat(auto-fill,minmax(150px,2fr))] gap-10">
             <Link to={`/catalog/now_playing/1`}>MORE</Link>
             {nowPlayingMovies[0]?.results.map((movie, index) => (
               <FilmCard

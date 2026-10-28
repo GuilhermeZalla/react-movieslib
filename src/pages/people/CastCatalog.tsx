@@ -179,14 +179,14 @@ const CastCatalog = () => {
         <Header search={true} />
         <Aside />
         <AsideMobile />
-        <main className="main main-casts">
-          <nav className="main__navbar">
+        <main className="main main-casts pl-[100px] pr-[30px] pb-[8%] pt-0">
+          <nav className="main__navbar flex items-center relative w-full mt-[10%] mb-[8%] ml-[30%] mr-[30%]">
             <input type="text" placeholder="Search for a person" ref={input} />
             <button type="button" onClick={handleSearch}>
               <BiSearchAlt2 />
             </button>
           </nav>
-          <div className="casts">
+          <div className="casts relative border-t line/40 pt-[15px] grid grid-cols-[repeat(auto-fill,minmax(190px,2fr))] gap-10">
             {people[0]?.results?.map((cast, index) => (
               <Cast
                 key={index}
@@ -245,14 +245,14 @@ const CastCatalog = () => {
         <Header search={true} />
         <Aside />
         <AsideMobile />
-        <main className="main main-casts">
-          <nav className="main__navbar">
+        <main className="main main-casts pl-[100px] pr-[30px] pb-[8%] pt-0">
+          <nav className="main__navbar flex items-center relative w-full mt-[10%] mb-[8%] ml-[30%] mr-[30%]">
             <input type="text" placeholder="Search for a person" ref={input} />
             <button type="button" onClick={handleSearch}>
               <BiSearchAlt2 />
             </button>
           </nav>
-          <div className="casts">
+          <div className="casts relative border-t line/40 pt-[15px] grid grid-cols-[repeat(auto-fill,minmax(190px,2fr))] gap-10">
             {person?.results?.map((cast, index) => (
               <Cast
                 key={index}

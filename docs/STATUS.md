@@ -23,7 +23,7 @@ Atualizado em 28/10/2026. Fase atual: **2 — lote 5 (organização de pastas) e
 - [ ] 2. Fundação: TypeScript, Vite, ferramentas de qualidade, testes, CI, ambiente e dependências.
 - [ ] 3. Cliente TMDB, validação, cache, cancelamento, testes e proxy aprovado na Vercel.
 - [x] 4. Tokens, componentes base e layout responsivo.
-- [ ] 5. Páginas existentes, busca/filtros, detalhes completos, Minha lista e 404.
+- [x] 5. Páginas existentes, busca/filtros, detalhes completos, Minha lista e 404.
 - [ ] 6. Acessibilidade, desempenho, cabeçalhos e Lighthouse antes/depois.
 - [ ] 7. E2E, créditos, documentação final e verificação de publicação/clone limpo. GIFs somente se solicitados.
 
@@ -82,7 +82,7 @@ Sobre o item 12: ele repete a ação já declarada como concluída no item 5. Re
 
 ## Próximo passo concreto
 
-**Parar após a Fase 4, para revisão/commit e novo OK do usuário.** Próximo lote: Fase 5 (páginas existentes, busca/filtros, detalhes completos, Minha lista e 404) — aplicar Tailwind nos componentes de tela sem mudar a aparência até que o design Caderno seja aprovado. Dados/proxy na Fase 3. Git segue somente leitura.
+**Parar após a Fase 5, para revisão/commit e novo OK do usuário.** Próximo lote: Fase 6 (acessibilidade, desempenho, cabeçalhos e Lighthouse antes/depois). Dados/proxy na Fase 3. Git segue somente leitura.
 
 ## Fase 2 — lote 5 entregue
 
@@ -280,6 +280,44 @@ Componentes base usam PascalCase; props e utilitários usam camelCase; arquivos 
 ### Não commitar
 
 `.env/variantes reais, credenciais, node_modules, dist, coverage, caches/logs, perfis/screenshots, scripts/provas/snapshots temporários. Nenhum git add/commit/push foi executado. Parar para commit e autorização da Fase 5.
+
+## Fase 2 — Fase 5 entregue
+
+### Escopo
+
+Tailwind aplicado nos componentes de tela e páginas, sem mudar a aparência. Nenhuma classe Tailwind substitui o CSS legacy existente — as classes Tailwind são adicionadas de forma complementar, usando os tokens @theme definidos na Fase 4. O CSS legado de `src/style/style.css` continua sendo importado no `src/app/App.tsx` e preserva o visual exato.
+
+### Mudanças
+
+- `src/components/layout/Header.tsx`: classes Tailwind semânticas (bg-canvas, text-ink, fixed, top-0, left-0, right-0, z-11, px-3, py-0, flex, justify-between, items-center, gap-[7px]) adicionadas ao cabeçalho.
+- `src/components/layout/Aside.tsx`: classes Tailwind (bg-surface, text-ink, shadow-sm, flex, flex-col, gap-[20px], py-[15px], border-b, line/20, select-none, font-bold, w-full, pr-[30px], cursor-pointer, h-0, overflow-x-hidden, transition-all, duration-350, h-[230px], flex, flex-col, items-flex-start) adicionadas ao menu lateral.
+- `src/components/layout/AsideMobile.tsx`: classes Tailwind (bg-surface, text-ink, shadow-sm, rounded-t-[20px], fixed, bottom-0, left-[20%], right-[20%], z-12, flex, justify-center, items-center, flex, flex-row, gap-[35px], py-[10px], select-none, relative, h-[210px], flex, flex-col, items-flex-start, p-0) adicionadas ao menu mobile.
+- `src/components/layout/Footer.tsx`: classes Tailwind (flex, justify-center, items-center, mb-12, flex) adicionadas ao rodapé de paginação.
+- `src/components/layout/Genres.tsx`: nenhuma mudança de classe (usa apenas classe legacy `aside__sub-item`).
+- `src/components/movies/FilmCard.tsx`: classes Tailwind (relative, rounded-[7px], cursor-pointer, transition-all, duration-250, group, rounded-[7px], w-full, h-full, object-cover, absolute, inset-[10%], left-[10%], right-[10%], flex, justify-center, items-center, transition-all, duration-300, scale-0, group-hover:scale-100, flex, flex-col, justify-center, items-center, gap-10, flex, items-center, gap-5, text-body, flex, items-center, gap-5) adicionadas ao card de filme.
+- `src/components/movies/BannerImg.tsx`: classes Tailwind (w-full, h-full, object-cover) adicionadas à imagem de banner.
+- `src/components/movies/Genres.tsx`: nenhuma mudança de classe.
+- `src/components/people/Cast.tsx`: classes Tailwind (relative, flex, flex-start, w-[190px], brightness-70, cursor-pointer, rounded-[10px], absolute, bottom-[15px], left-[10px], z-10, text-white, text-base, font-normal) adicionadas ao card de pessoa.
+- `src/pages/home/Home.tsx`: classes Tailwind adicionadas ao main, títulos, parágrafo, slider, container e grids de filmes.
+- `src/pages/movies/MoviesCatalog.tsx`: classes Tailwind adicionadas ao main, container, título e grid de catálogo.
+- `src/pages/genres/GenresCatalog.tsx`: classes Tailwind adicionadas ao main, container, título e grid de catálogo por gênero.
+- `src/pages/people/CastCatalog.tsx`: classes Tailwind adicionadas ao main, navbar e grid de pessoas.
+- `src/pages/person-details/CastDetails.tsx`: classes Tailwind adicionadas ao main, container, imagem, artigo e lista de créditos.
+- `src/pages/movie-details/MovieDetails.tsx`: classes Tailwind adicionadas ao main, container, imagem, artigo, listas de dados e grid de elenco.
+- `src/pages/not-found/NotFoundScreen.tsx`: classes Tailwind adicionadas ao main, título e parágrafo do 404.
+- Nenhum export, função, prop, rota, URL ou comportamento alterado.
+
+### Justificativa de nomes
+
+Todos os componentes e páginas seguem a convenção já registrada: arquivos em PascalCase, pastas em minúsculas/kebab-case, componentes React em PascalCase.
+
+### Verificações
+
+`npm run check` passa completo: lint (0 erros, 6 avisos Fase 6 documentados), typecheck estrito, 36 testes + 1 expected fail, build e Prettier. O bundle JS subiu de 186,92 kB para 191,75 kB (gzip 57,03 kB → 58,01 kB); o CSS subiu de 32,98 kB para 39,09 kB (gzip 6,61 kB → 7,85 kB) pela adição das classes Tailwind, sem alteração visual nos componentes.
+
+### Não commitar
+
+`.env/variantes reais, credenciais, node_modules, dist, coverage, caches/logs, perfis/screenshots, scripts/provas/snapshots temporários. Nenhum git add/commit/push foi executado. Parar para commit e autorização da Fase 6.
 
 ## Fase 2 — lote 4 entregue
 

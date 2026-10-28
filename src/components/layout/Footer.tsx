@@ -11,8 +11,8 @@ const Footer = (props: FooterProps) => {
   };
 
   return (
-    <footer className="home__footer">
-      <ul className="home__list">
+    <footer className="home__footer flex justify-center items-center mb-12">
+      <ul className="home__list flex">
         <li className="home__item">
           <Link to={`/catalog/${props.category}/1`} onClick={goToTop}>
             1

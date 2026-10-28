@@ -156,9 +156,9 @@ const GenresCatalog = () => {
         <Header handleSearchMovies={handleSearchMovies} />
         <Aside />
         <AsideMobile />
-        <main className="home__main">
-          <div className="home__container container__films catalog">
-            <h1 className="home__title movies-catalog">
+        <main className="home__main relative mb-[5%] mt-[7%] pl-[100px] pr-[30px] pt-[20px] pb-[20px] text-ink">
+          <div className="home__container container__films catalog relative border-t line/40 mt-[5%] pt-[10px] grid grid-cols-[repeat(auto-fill,minmax(150px,2fr))] gap-10">
+            <h1 className="home__title movies-catalog text-[1.4rem] font-normal absolute top-[-35px]">
               Overviewing <span>{genre}</span> movies
             </h1>
             {movies?.results?.map((movie, index) =>
@@ -236,9 +236,9 @@ const GenresCatalog = () => {
         <Header handleSearchMovies={handleSearchMovies} />
         <Aside />
         <AsideMobile />
-        <main className="home__main">
-          <div className="home__container container__films catalog">
-            <h1 className="home__title movies-catalog">
+        <main className="home__main relative mb-[5%] mt-[7%] pl-[100px] pr-[30px] pt-[20px] pb-[20px] text-ink">
+          <div className="home__container container__films catalog relative border-t line/40 mt-[5%] pt-[10px] grid grid-cols-[repeat(auto-fill,minmax(150px,2fr))] gap-10">
+            <h1 className="home__title movies-catalog text-[1.4rem] font-normal absolute top-[-35px]">
               Movies by the name <span>{searchContent.replace('+', ' ')}</span>
             </h1>
             {search?.results?.map((movie, index) => (
