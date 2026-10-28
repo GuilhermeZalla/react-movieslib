@@ -1,6 +1,6 @@
 import type { PersonGender } from '../../types/tmdb';
 // Legacy JSON is trusted only at these explicit boundaries; schema validation is Phase 3.
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { personQuery, personCreditsQuery } from '../../api/tmdb/queries';
 import { idParameterSchema } from '../../../shared/tmdbRequest';
@@ -27,11 +27,11 @@ const CastDetails = () => {
   })();
 
   const personQueryResult = useQuery({
-    ...personQuery(validId ?? '0'),
+    ...personQuery(validId ?? '1'),
     enabled: validId !== null,
   });
   const creditsQueryResult = useQuery({
-    ...personCreditsQuery(validId ?? '0'),
+    ...personCreditsQuery(validId ?? '1'),
     enabled: validId !== null,
   });
 
@@ -39,16 +39,7 @@ const CastDetails = () => {
   const credits = creditsQueryResult.data ?? null;
 
   if (validId === null) {
-    return (
-      <Fragment>
-        <Header search={true} />
-        <Aside />
-        <AsideMobile />
-        <main className="main cast-detail p-[10%] pr-[20px] pb-[20px] pt-[20px]">
-          <p className="text-[1.1rem]">Conteúdo não encontrado.</p>
-        </main>
-      </Fragment>
-    );
+    return <Navigate to="/404" replace />;
   }
 
   if (personQueryResult.isError) {
@@ -137,15 +128,26 @@ const CastDetails = () => {
           </article>
         </div>
         <div className="container-credits relative border-t line/40 w-full mt-[12%] pt-[20px] grid grid-cols-[repeat(auto-fill,minmax(180px,2fr))]">
-          {credits?.cast?.map((movie, index) => (
-            <FilmCard
-              key={index}
-              poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-              title={movie.title}
-              vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
-              movieId={movie.id}
+          {creditsQueryResult.isError ? (
+            <ErrorState
+              message="Não foi possível carregar a filmografia."
+              onRetry={() => {
+                void creditsQueryResult.refetch();
+              }}
             />
-          ))}
+          ) : credits?.cast?.length ? (
+            credits.cast.map((movie, index) => (
+              <FilmCard
+                key={index}
+                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                title={movie.title}
+                vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
+                movieId={movie.id}
+              />
+            ))
+          ) : credits ? (
+            <EmptyState title="Nenhuma filmografia encontrada" />
+          ) : null}
         </div>
       </main>
     </Fragment>

@@ -1,6 +1,6 @@
 // Legacy JSON is trusted only at these explicit boundaries; schema validation is Phase 3.
 import Header from '../../components/layout/Header';
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import { Fragment } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { movieQuery, movieCreditsQuery } from '../../api/tmdb/queries';
@@ -25,11 +25,11 @@ const MovieDetails = () => {
   })();
 
   const detailsQuery = useQuery({
-    ...movieQuery(validId ?? '0'),
+    ...movieQuery(validId ?? '1'),
     enabled: validId !== null,
   });
   const creditsQuery = useQuery({
-    ...movieCreditsQuery(validId ?? '0'),
+    ...movieCreditsQuery(validId ?? '1'),
     enabled: validId !== null,
   });
 
@@ -68,16 +68,7 @@ const MovieDetails = () => {
   }
 
   if (validId === null) {
-    return (
-      <Fragment>
-        <Header search={true} />
-        <Aside />
-        <AsideMobile />
-        <main className="main flex flex-start items-center flex-wrap text-ink p-[10%] pr-[15%] pb-[5%] pt-[15%]">
-          <p className="text-[1.1rem]">Conteúdo não encontrado.</p>
-        </main>
-      </Fragment>
-    );
+    return <Navigate to="/404" replace />;
   }
 
   return (
@@ -144,17 +135,28 @@ const MovieDetails = () => {
           </article>
         </div>
         <div className="container-cast relative border-t line/40 w-full mt-[12%] pt-[20px] grid grid-cols-[repeat(auto-fill,minmax(180px,2fr))]">
-          {credits?.cast?.map((cast, index) =>
-            index < 20 ? (
-              <Cast
-                key={index}
-                id={cast.id}
-                photo={`https://image.tmdb.org/t/p/w500${cast.profile_path}`}
-                name={cast.name}
-                character={cast.character}
-              />
-            ) : null,
-          )}
+          {creditsQuery.isError ? (
+            <ErrorState
+              message="Não foi possível carregar o elenco."
+              onRetry={() => {
+                void creditsQuery.refetch();
+              }}
+            />
+          ) : credits?.cast?.length ? (
+            credits.cast.map((cast, index) =>
+              index < 20 ? (
+                <Cast
+                  key={index}
+                  id={cast.id}
+                  photo={`https://image.tmdb.org/t/p/w500${cast.profile_path}`}
+                  name={cast.name}
+                  character={cast.character}
+                />
+              ) : null,
+            )
+          ) : credits ? (
+            <EmptyState title="Nenhum membro do elenco encontrado" />
+          ) : null}
         </div>
       </main>
     </Fragment>
