@@ -5,7 +5,7 @@ Catálogo de filmes e pessoas com dados do The Movie Database (TMDB). Projeto de
 MoviesLib is a React single-page application for browsing movies and people.
 It builds with Vite and uses strict TypeScript throughout the application.
 Existing screens retain their URLs; the visual migration is still incomplete.
-Live data awaits the server-only TMDB proxy planned for Phase 3.
+The server-only TMDB proxy requires a private environment variable.
 
 Deploy: [LINK DO DEPLOY]
 
@@ -18,7 +18,7 @@ Deploy: [LINK DO DEPLOY]
 - Menus desktop/mobile e acesso a em breve/bem avaliados.
 - 404 mínima com retorno ao início e os estilos existentes.
 
-**O catálogo real depende do proxy da Fase 3.** Estrutura e navegação foram verificadas com dados fictícios em testes e no navegador. Fixtures não são um modo de demonstração publicado. Sem o proxy, as telas podem ficar vazias/incompletas e registrar falhas de resposta no console. Não coloque uma chave no cliente para preencher esses dados.
+**O catálogo real depende da configuração do segredo no servidor.** O proxy está implementado; o cliente centralizado e TanStack Query ainda não foram integrados às telas. Estrutura e navegação foram verificadas com dados fictícios; fixtures não são um modo de demonstração publicado. Sem configuração, o proxy retorna erro genérico e as telas legadas podem ficar vazias/incompletas. Não coloque uma chave no cliente.
 
 Dois loops de requisição foram corrigidos para validar a migração; outras limitações do legado estão na [análise](docs/ANALYSIS.md). Minha lista, filtros completos, recomendações, galeria e equipe ainda não estão implementados. Os [previews de design](docs/design-previews/index.html) são estudos estáticos separados do app; não há GIF de demonstração do aplicativo.
 
@@ -30,7 +30,7 @@ TypeScript estrito cobre src, api, server, shared, e2e e configurações Vite/Pl
 
 O [STATUS.md](docs/STATUS.md) é a fonte da verdade. Direção **Caderno**, escuro padrão; PXN Games é referência apenas de clima. A paleta terá hexadecimais próprios, descritos como “paleta inspirada em” no DESIGN.md, com contraste AA recalculado nos dois temas antes da Fase 4. Não copiar cores exatas, logo, textos ou layout; os previews não precisam ser refeitos.
 
-Estilo aprovado: Tailwind CSS 4.3.3, tokens em @theme, sem DaisyUI ou biblioteca de componentes visuais. Há fontes legadas locais (PT Sans/Source Sans Pro); as famílias Caderno Source Serif 4/Source Sans 3 e os arquivos completos de licença ficam para a Fase 4. Proxy e integração das consultas ainda pendentes na Fase 3. [Inventário de dependências](docs/DEPENDENCIES.md).
+Estilo aprovado: Tailwind CSS 4.3.3, tokens em @theme, sem DaisyUI ou biblioteca de componentes visuais. Há fontes legadas locais (PT Sans/Source Sans Pro); as famílias Caderno Source Serif 4/Source Sans 3 e os arquivos completos de licença ficam para a Fase 4. Proxy implementado; cliente centralizado e integração das consultas ainda pendentes na Fase 3. [Inventário de dependências](docs/DEPENDENCIES.md).
 
 Tema claro/escuro e trailer youtube-nocookie aprovados; preservar pessoa/filmografia e em cartaz/em breve. pt-BR/en, atalhos e comparação ficam como **futuro**. Sem login/cadastro, analytics, rastreamento ou coleta de dados pessoais pelo aplicativo; documentar comunicação com provedores terceiros.
 
@@ -88,7 +88,7 @@ src/sass e src/style continuam no lugar durante a transição. O app consome o C
    npm.cmd ci
    ```
 
-3. Este lote não requer .env ou chave TMDB. Inicie:
+3. Para dados reais, configure .env.local conforme a seção de credenciais. Sem variável, as rotas abrem, mas o proxy responde 502 genérico. Inicie:
 
    ```powershell
    npm.cmd run dev
@@ -104,19 +104,56 @@ src/sass e src/style continuam no lugar durante a transição. O app consome o C
 
 6. Abra `http://127.0.0.1:4173`. As portas são fixas; encerre servidores anteriores se estiverem ocupadas.
 
-No macOS/Linux, use npm no lugar de npm.cmd. /api/tmdb é o contrato relativo preparado para o proxy futuro, ainda sem implementação. As fontes atuais são locais; imagens TMDB e reset CDN ainda dependem de rede.
+No macOS/Linux, use npm no lugar de npm.cmd. O dev Vite tem adaptador local do proxy, importado somente em serve/development. O preview serve apenas arquivos estáticos e não executa /api; para testar as funções/regras Vercel use vercel dev. Fontes locais; imagens TMDB e reset CDN dependem de rede.
 
 ## Credenciais
 
 Revogação da API key e do Bearer e geração de substitutos **informadas como concluídas pelo proprietário**, sem verificação do painel pelo agente. Os literais antigos foram retirados do código neste lote; permanecem no histórico antigo. Reescrita de histórico: **não realizada, por decisão do proprietário**.
 
-.env e variantes estão ignorados; .env.example contém apenas comentários. Não há credencial no cliente ou em VITE_. Não coloque valores reais no código, logs ou chat. Guarde substitutos em gerenciador de senhas e, na Fase 3, no ambiente do servidor Vercel.
+.env e variantes estão ignorados; .env.example contém somente o nome da variável com valor vazio. **TMDB_READ_ACCESS_TOKEN** é o token de leitura Bearer do TMDB, exclusivo do servidor. Nunca usar prefixo VITE_, copiar para src ou informar pelo chat/logs. Sem variável, o proxy retorna 502 genérico sem revelar seu nome. Authorization é enviado somente ao host TMDB fixo, nunca na query string ou ao navegador.
 
-Proxy aprovado: função mínima em /api na Vercel, validação de parâmetros, caminhos permitidos, cache curto e limite de requisições. Nomes efetivos das variáveis, configuração Vercel e execução local por vercel dev ou equivalente serão documentados com a implementação na Fase 3. Não existe comando de proxy funcional nesta etapa.
+Configuração local e execução com a CLI Vercel:
 
-O servidor imporá **language=en-US**, default usado pelo legado que não enviava idioma explícito, e **include_adult=false**. O cliente não poderá alterar esses parâmetros. O cache de borda ficará em **60 s**, sem aumento até confirmação dos termos. Essas políticas ainda não estão aplicadas por um proxy neste grupo de contratos.
+1. Copie o exemplo para arquivo ignorado:
 
-Rate limiting planejado: WAF Vercel, disponível no Hobby com uma regra por projeto, janela fixa entre 10 s e 10 min, chaves IP/JA4 e 1 milhão de requisições permitidas incluídas. Contadores são regionais; limite inicial proposto de 60/minuto por IP/região. Regra do painel não foi acessada/ativada pelo agente, e limitador ainda não implementado. Não há fallback de produção em memória neste grupo. [Limites oficiais](https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting).
+   ```powershell
+   Copy-Item .env.example .env.local
+   ```
+
+2. Preencha o valor apenas no editor local, a partir do gerenciador de senhas. Não cole o segredo em comandos de terminal. npm run dev já executa o adaptador local do proxy; é necessário reiniciar após mudar .env.local.
+3. Para o ambiente equivalente às funções Vercel, execute a CLI consultada nesta entrega:
+
+   ```powershell
+   npm.cmd exec --package=vercel@65.5.0 -- vercel dev
+   ```
+
+   Na primeira execução, faça login/vincule ao seu projeto conforme os prompts da CLI. Configure antes a variável no ambiente Development do painel (passo 4): vercel dev baixa essas variáveis em memória, sem precisar de env pull. Isso cria .vercel ignorado; não versione. Use preset Vite, build npm run build e saída dist. Abra o endereço informado pela CLI (normalmente porta 3000). A integração com a conta e o deploy não foram executados pelo agente. [Ambiente local oficial](https://vercel.com/docs/environment-variables).
+
+4. No painel do projeto Vercel, abra Settings → Environment Variables e crie TMDB_READ_ACCESS_TOKEN para os ambientes desejados (Development, Preview, Production), com o valor privado. Reimplante versões já publicadas para aplicar alterações; o agente não publicou nada. Não configurar essa variável como pública ou VITE_.
+
+### Política do proxy
+
+Somente GET em /api/tmdb/...; outros métodos retornam 405/Allow: GET. Endpoints permitidos: movie/popular, movie/top_rated, movie/now_playing, movie/upcoming, trending/movie/day, person/popular, search/movie, search/person, genre/movie/list, movie/:id, movie/:id/credits, person/:id e person/:id/movie_credits. page (1–500) somente em listas/buscas; query (até 200 caracteres normalizados) somente nas buscas; append_to_response=credits somente em movie/:id. IDs positivos seguros. path é apenas o transporte do rewrite, sujeito à mesma lista; URLs externas, traversal, barras ambíguas, codificação dupla, parâmetros desconhecidos/duplicados são rejeitados.
+
+O servidor impõe **language=en-US** (default do legado) e **include_adult=false**, ignorando esses dois parâmetros do cliente, inclusive duplicados. Entradas explicitamente adult=true são removidas das listas/créditos; detalhes com esse sinalizador retornam 404. Isso depende da classificação fornecida pelo TMDB e não é moderação de conteúdo.
+
+Timeout de 8 s inclui o corpo; resposta máxima de 2 MB, JSON validado pelos schemas. Erros públicos padronizados, sem corpo/mensagem/stack upstream e sem logs do proxy. Redirects upstream são bloqueados. Content-Type JSON e nosniff em todas as respostas; nenhum CORS aberto. Ausência de CORS não autentica o endpoint público nem impede clientes fora do navegador.
+
+Somente 200 recebe Vercel-CDN-Cache-Control: public, s-maxage=60, stale-while-revalidate=15. Cache-Control: no-store para o navegador em todas as respostas; erros não recebem cache de borda. Não aumentar os 60 s antes de confirmar os termos. Headers globais anteriores em vercel.json foram preservados; rewrites excluem /api do fallback da SPA. Comportamento efetivo de CDN/roteamento em hospedagem ainda requer conferência após deploy.
+
+### Limite de requisições
+
+**Plano B no código: melhor esforço, por instância.** Contador global anônimo de 60 requisições válidas/minuto por processo, compartilhado entre visitantes; sem armazenar ou registrar IP, sem mapa crescente de clientes. Excesso retorna 429/Retry-After e no-store. Reinícios/cold starts e instâncias diferentes renovam a quota; não garante limite distribuído. Só conta chamadas que chegam à função, não hits já servidos pela CDN.
+
+**Plano A no painel: WAF Vercel, ativação não confirmada.** Está disponível no Hobby: uma regra por projeto, dentro de três regras customizadas; janela fixa de 10 s a 10 min, chaves IP/JA4, 1 milhão de requisições permitidas incluídas. Contadores regionais. Confira disponibilidade/uso atual da conta antes de ativar. [Limites oficiais](https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting).
+
+1. Abra projeto → Firewall → Configure → New Rule.
+2. Nomeie a regra e defina a condição de caminho: começa com /api/tmdb.
+3. Ação Rate Limit, algoritmo Fixed Window, chave IP, janela 60 s e limite 60 solicitações.
+4. Use bloqueio 429, não somente Log/Challenge. Confira a revisão de uso/custos mostrada pela conta.
+5. Salve, revise e publique a regra no painel; confira depois em Firewall Observability e registre a ativação no STATUS. O agente não acessou nem alterou o painel. O aplicativo não grava IPs; o tratamento pelo provedor segue suas políticas.
+
+Regras WAF não são exercitadas por testes locais ou pelo adaptador de desenvolvimento. O contador no código permanece como proteção complementar.
 
 ## Verificações
 
@@ -124,7 +161,7 @@ Rate limiting planejado: WAF Vercel, disponível no Hobby com uma regra por proj
 npm.cmd run check
 ```
 
-Lint, tipos estritos, testes e build passaram: **67 casos em sete arquivos: 66 passam e um it.fails registra o bug conhecido das páginas de busca**. Incluem contratos de resposta, entradas inválidas, nulidade, rotas, card → filme → voltar, efeitos e interações. Vitest separa client/jsdom e server/node; os dois projetos entram no check. Fetch é bloqueado por padrão nos dois ambientes, com fixtures explícitas, sem API real. As verificações anteriores no navegador usaram dados fictícios; não equivalem ao proxy funcional. Vitest 4.1.12 mantém compatibilidade de tipos sem skipLibCheck.
+Lint, tipos estritos, testes e build passaram: **140 casos em dez arquivos: 139 passam e um it.fails registra o bug conhecido das páginas de busca**. Incluem o proxy protegido, sua entrada Node, contador por instância, roteamento, contratos, nulidade, navegação e interações. Vitest separa client/jsdom e server/node; ambos entram no check. Fetch bloqueado por padrão nos dois ambientes, com fixtures explícitas, sem API real. Falhas upstream, timeout, traversal, cache e token ausente estão cobertos; a ativação do WAF e comportamento da CDN dependem de verificação na Vercel. Vitest 4.1.12 mantém compatibilidade de tipos sem skipLibCheck.
 
 check executa lint → tipos → testes (uma execução) → build → format:check. O workflow .github/workflows/quality.yml executa esse comando, cobertura informativa e npm audit --audit-level=high em push/PR, com Node de .node-version e npm 11.12.1. Não usa segredos ou deploy; a execução remota só poderá ser confirmada após o push pelo proprietário. Dependabot verifica npm e Actions semanalmente. npm run format aplica Prettier; format:check verifica sem escrever. CSS/mapa gerado em src/style e lockfile ficam fora do formatador; fontes Sass são formatados.
 
@@ -163,7 +200,7 @@ Há botões semânticos nos menus de gêneros, labels em controles e lazy loadin
 ## Conferência rápida de rotas
 
 1. Execute npm run dev e, em http://127.0.0.1:5173, abra diretamente /, /catalog/popular/1, /movie-details/1, /cast/2 e /endereco-inexistente. Recarregue cada URL. As demais categorias/gêneros mantêm os caminhos da tabela completa abaixo.
-2. Quando houver dados disponíveis, abra um card, confira o detalhe e use Voltar do navegador. Na 404, use Voltar ao início. Sem o proxy, dados preenchidos dependem das fixtures dos testes; não coloque credenciais no frontend.
+2. Com o segredo configurado e o proxy rodando, abra um card, confira o detalhe e use Voltar do navegador. Na 404, use Voltar ao início. Sem essa configuração, dados preenchidos ficam restritos às fixtures dos testes; não coloque credenciais no frontend.
 3. Execute npm run build e npm run preview. Repita as mesmas URLs e a navegação em http://127.0.0.1:4173.
 
 ## Roteiro manual do lote 1
@@ -184,7 +221,7 @@ Há botões semânticos nos menus de gêneros, labels em controles e lazy loadin
 
 2. Na home, use MORE, abra página 2 no catálogo, volte pelo navegador e recarregue. Confira links de categorias no menu. Gêneros/cards dependem de dados e serão conferidos manualmente após o proxy; os testes com fixtures já exercitam card → filme → voltar.
 3. Na 404, clique Voltar ao início. A rota da SPA usa fallback HTML com HTTP 200 no dev/preview; não é uma resposta HTTP 404 do servidor.
-4. Encerre o dev, execute build/preview e repita os caminhos na porta 4173. O fallback da hospedagem Vercel ainda não foi configurado.
+4. Encerre o dev, execute build/preview e repita os caminhos na porta 4173 (estrutura estática, sem função /api). O fallback Vercel está configurado para excluir /api; confirmar comportamento hospedado após deploy.
 5. Confira o visual legado e ausência de chave no código/Network. Não espere dados reais nem insira credenciais para completar essa conferência.
 
 ## Conferência manual após a conversão TypeScript
@@ -195,7 +232,7 @@ As URLs não mudaram. Com npm run dev, confira somente os pontos afetados pela c
 2. Recarregue /movie-details/1 e /cast/2: a estrutura deve abrir sem erro de importação. Com dados disponíveis, confirme card → detalhe → voltar; campos ausentes não devem produzir NaN, URLs de imagem terminadas em null ou atribuir gênero feminino a pessoas sem gênero informado.
 3. Abra /endereco-inexistente e use Voltar ao início. Não é necessário repetir todas as categorias do roteiro anterior; os caminhos foram mantidos e cobertos pelos testes.
 
-Sem o proxy, a conferência preenchida e dos campos nulos está limitada às fixtures dos testes. Não adicione credenciais ao frontend para fazê-la.
+Sem configurar e executar o proxy, a conferência preenchida e dos campos nulos fica limitada às fixtures dos testes. Não adicione credenciais ao frontend para fazê-la.
 
 ## Créditos e licença
 

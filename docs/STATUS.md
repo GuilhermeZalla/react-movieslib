@@ -1,6 +1,53 @@
 # Status do MoviesLib
 
-Atualizado em 28/10/2026. Fase atual: **3 — grupo 1, contratos validados, entregue para revisão/commit**. Fase 2 aprovada e commitada pelo usuário em **97c6e3e**. Executar um grupo por vez e aguardar OK antes do seguinte. O trabalho anterior foi preservado; títulos dos commits chamados Fases 4–7 não equivalem ao aceite completo dessas fases. Git somente leitura.
+Atualizado em 28/10/2026. Fase atual: **3 — grupo 2, proxy protegido, entregue para revisão/commit**. Grupo 1 aprovado e commitado pelo usuário em **f1fff59**. Executar um grupo por vez e aguardar OK antes do seguinte. O trabalho anterior foi preservado; títulos dos commits chamados Fases 4–7 não equivalem ao aceite completo dessas fases. Git somente leitura. Mensagens de commit em inglês, conforme orientação posterior do usuário.
+
+## Fase 3 — grupo 2: proxy TMDB protegido
+
+### Entrega e decisões vigentes
+
+- api/tmdb.ts é a entrada Node da função. server/tmdb concentra política, handler, contador e ponte Node; sem dependências novas. Origem fixa https://api.themoviedb.org/3/, somente GET; demais métodos 405/Allow: GET. Lista explícita de endpoints/parâmetros no README e em policy.ts. Alvos brutos validados antes de normalização, sem traversal, barras duplicadas, percent-encoding no caminho público ou dupla codificação. Transporte path do rewrite validado pela mesma lista; duplicados/conflitos recusados.
+- **language=en-US e include_adult=false impostos no servidor. Valores do cliente para essas duas opções são ignorados**, inclusive duplicados. Isso substitui a proposta anterior de rejeitá-los diretamente: schemas compartilhados continuam estritos, mas o proxy remove as opções controladas antes da validação. Entradas adult=true removidas de listas/créditos, detalhes adultos retornam 404; depende da classificação do provedor, não certifica moderação. Metadados de totais conservam as contagens upstream.
+- Token somente em process.env.TMDB_READ_ACCESS_TOKEN, usado apenas em Authorization. Ausência retorna 502 genérico sem nome da variável. Nenhum log no proxy, nenhum IP/cabeçalho registrado. Redirects upstream recusados; erros públicos 400/404/405/429/502/504 padronizados, sem repassar corpo/mensagem/stack/cabeçalhos do TMDB.
+- Timeout total **8 s**, inclusive leitura do corpo, AbortController e limite **2 MB** antes de JSON.parse. Dados 200 também validados pelos schemas; payload inválido vira 502. Conexão abortada ao terminar, inclusive em falhas.
+- **Somente 200**: Vercel-CDN-Cache-Control: public, s-maxage=60, stale-while-revalidate=15. Cache-Control: no-store para navegador em todas as respostas; erros sem cache de borda. Content-Type JSON e nosniff; sem Access-Control-Allow-Origin. Não aumentar 60 s até confirmação dos termos. CORS não é autenticação e não bloqueia clientes externos ao navegador.
+- **Plano B implementado:** “melhor esforço, por instância”, contador global anônimo de **60/minuto** por processo, compartilhado entre visitantes. Guarda só timestamp/contagem, não IP, com memória constante; excesso 429/Retry-After. Reinício/cold start/múltiplas instâncias não compartilham quota. Só conta solicitações válidas que chegam à função, não hits da CDN. Não equivale a limite distribuído.
+- **Plano A no painel, não versionado: não acessado ou configurado pelo agente; ativação não confirmada.** README contém passos para WAF Hobby: regra por IP, caminho começando /api/tmdb, janela fixa 60 s/60 solicitações, ação 429, revisão e publicação. Hobby oferece uma regra de limite dentro de três regras customizadas, 1 milhão de requisições permitidas incluídas, chaves IP/JA4 e janelas 10 s–10 min; contadores por região. Disponibilidade/uso da conta e regra real exigem conferência pelo proprietário. Nenhum SDK WAF instalado, pois o plano A é regra no painel.
+- Rewrites /api/tmdb/:path* → /api/tmdb?path=:path*. Fallback SPA usa exclusão explícita de /api e subcaminhos. Comparação estrutural com HEAD confirmou **headers globais de segurança anteriores preservados**; revisão CSP/headers permanece Fase 6.
+- Adaptador de desenvolvimento em server/dev/tmdbPlugin.ts, import dinâmico somente em Vite serve/development; carrega segredo local no processo Node. Não é importado por api/tmdb.ts ou pelo front. Vite build/preview não executam esse adaptador. Imports .ts explícitos no grafo servidor/configuração, com allowImportingTsExtensions e noEmit, para suportar o loader sem suprimir avisos ou afrouxar strict.
+- .env.example contém apenas nome e valor vazio. README documenta .env.local ignorado, variável privada no painel e **vercel dev (CLI 65.5.0 consultada)**. Não houve login/vínculo de conta, ativação WAF ou deploy. Desenvolvimento Vite foi conferido localmente com token explicitamente vazio; nenhuma chamada real ao TMDB.
+- Nenhuma alteração em src, componentes, telas, estilos, fontes ou URLs do front. Cliente centralizado, Query/debounce/cancelamento e bug 1,2,3,3,3 continuam nos grupos 3/4. React 18.3.1 continua desvio aceito, reavaliar após Fase 6; Playwright no CI é pendência da Fase 7.
+
+### Relatório de segurança
+
+| Ameaça                             | Mitigação                                                     | Teste Node                                                          |
+| ---------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Métodos indevidos                  | GET exclusivo, 405 e Allow                                    | somente GET, seis métodos recusados                                 |
+| SSRF/endpoint arbitrário           | Origem fixa, allowlist, redirects bloqueados                  | endpoint fora da lista, host/url desconhecidos, autenticação/header |
+| Traversal e dupla codificação      | Validar alvo bruto e caminho canônico antes de URL            | onze casos de traversal/barras/codificação                          |
+| Parâmetros inválidos/duplicados    | Schemas estritos por endpoint, limites de query/página/ID     | parâmetros inválidos e conflito path                                |
+| Cliente alterar idioma/adulto      | Descartar opções do cliente e impor valores fixos             | idioma/adulto duplicados; remoção de entradas adultas               |
+| Token em URL/erro/log/browser      | Só servidor/Authorization, erros genéricos, sem logs          | header e query, token ausente, erro sensível, teste do build        |
+| Vazamento upstream                 | Não ler nem propagar corpos de erro; JSON validado em sucesso | erros 400/401/403/404/429/500/302 e JSON inválido                   |
+| Consumo de recursos                | Deadline/AbortSignal e limite 2 MB                            | fetch pendente, corpo sem término, corpo excessivo                  |
+| Abuso de volume                    | Contador anônimo por instância, 429/Retry-After               | limite sem novo fetch e renovação de janela                         |
+| Cache de falhas/dados no navegador | 200 na borda 60 s, erros/browser no-store                     | headers 200 versus erros e limite                                   |
+| API receber HTML da SPA            | Fallback exclui /api                                          | teste da expressão e entrada Node com rewrite                       |
+| CORS aberto                        | Nenhum ACAO; resposta JSON/nosniff                            | verificação de headers                                              |
+
+Não coberto localmente: regra WAF real, contagem/CDN entre regiões, quotas/uso da conta, normalização do roteador gerenciado, deploy/headers HTTP efetivos e comportamento completo de vercel dev vinculado à conta. Testes mockam o TMDB; não verificam credenciais reais, disponibilidade ou todos os contratos do provedor. Contador em memória não impede DDoS/distribuição de abuso. Front ainda possui busca/erros legados; não corrigidos neste grupo.
+
+### Verificação e plano de commit
+
+npm run check passou localmente: lint **0 erros/avisos**, tipos estritos, **139 testes + 1 it.fails conhecido (140 casos em dez arquivos)**, build e Prettier. Antes eram 66 + 1; adicionados 73 casos de proxy/limite/entrada/rotas. Todos os 13 endpoints permitidos exercitados. Cobertura v8 passou: **76,37% statements, 74,68% branches, 63,09% funções, 76,94% linhas**, informativa, sem limiar mínimo; server/tmdb com 99,33% das linhas. Adaptador dev sem cobertura unitária, conferido por HTTP local.
+
+HTTP local com variável explicitamente vazia: GET permitido → 502 genérico; endpoint fora da lista → 404; dupla codificação → 400; POST → 405; rota de catálogo → HTML 200. APIs respondem JSON/nosniff/no-store, sem nome da variável no corpo. Sem chamadas externas, login, vínculo Vercel ou deploy. Comparação do diff confirmou src e dependências preservados; headers globais de vercel.json estruturalmente iguais ao HEAD. Varredura por padrões de segredo/caminhos locais sem correspondências; não certifica todos os formatos possíveis.
+
+Build mantém **JS 219,28 kB (67,56 kB gzip)** e **CSS 39,12 kB (7,86 kB gzip)** com os mesmos nomes/hash Vite anteriores. Snapshot isolado com npm ci e CI=true passou no check completo (139 + 1); instalação reportou zero vulnerabilidades. Build executado com marcador fictício na variável de servidor: **zero correspondências em dist** para o marcador, TMDB_READ_ACCESS_TOKEN, identificador uppercase do adaptador, nome do plugin e nome da função de desenvolvimento. Nenhum token real usado. Isso confirma a separação do bundle deste build; não é medição Lighthouse nem teste de deploy.
+
+Um único commit **feat: add a protected TMDB proxy for Vercel** com código/testes do proxy, adaptador de desenvolvimento, configurações Vite/TS/Vercel, .env.example, README e STATUS. Mensagem/corpo em inglês. Sem staging parcial, sem escrita Git. Parar para commit e OK do grupo 3.
+
+Não commitar .env/.env.local reais, segredos, .vercel, node_modules, dist, coverage, relatórios de navegador, caches/logs, scripts/snapshots temporários. package.json/lockfile, src, fontes, estilos e cabeçalhos anteriores não foram alterados neste grupo.
 
 ## Fase 3 — grupo 1: contratos e validação
 
@@ -146,19 +193,19 @@ Sobre o item 12: ele repete a ação já declarada como concluída no item 5. Re
 ## Pendências e desvios
 
 - Literais revogados retirados do código no lote 1. Permanecem no histórico por decisão do proprietário; não enviar novos segredos pelo chat nem versioná-los.
-- Implementar proxy aprovado na Vercel. Definir TTL curto de borda e mecanismo efetivo de rate limit; contador em memória não garante limite entre instâncias. Não persistir respostas TMDB para implementar esse controle.
-- Completar o README na fase de configuração do proxy com os nomes efetivos das variáveis de servidor na Vercel e o passo a passo local com vercel dev ou equivalente, incluindo arquivo ignorado e .env.example sem valores reais. O README já registra a decisão e esclarece que o proxy ainda não está implementado.
+- Proxy implementado no grupo 2, TTL 60 s e contador anônimo por instância. WAF do painel e comportamento efetivo no deploy pendentes de configuração/verificação pelo proprietário; contador em memória não garante limite entre instâncias. Sem persistência de respostas para limitar volume.
+- README e .env.example documentam variável exclusiva do servidor, ambiente Vercel e vercel dev/adaptador local. Login/vínculo da conta, segredo real e verificação hospedada não foram feitos pelo agente.
 - Usuário conferirá os termos completos sobre cache, retenção, redistribuição e demais cláusulas. Até lá, manter política provisória aprovada: memória no TanStack Query, borda curta no proxy e Minha lista somente com IDs; sem persistência de metadados TMDB em localStorage. A política não constitui confirmação contratual.
-- Lote 2 com lint, typecheck estrito de todo o src, 22 testes e build verificados. Não restam JS/JSX no src, allowJs provisório ou exclusões de fontes. JSON continua sem validação em execução; dados reais, cache e proxy ficam para a Fase 3.
+- TypeScript estrito preservado, sem JS/JSX no src, allowJs ou exclusões de fontes. Proxy valida JSON remoto com Zod; fetches legados ainda não usam cliente centralizado/Query. Concluir grupos 3/4 da Fase 3.
 - Lighthouse antes/depois: **não medido**. Capturar baseline do legado antes de substituir a UI, em ambiente controlado; não medir uma página de erro como baseline.
 - Responsividade em 360/768/1024/1440 px e contraste AA: riscos estáticos identificados, sem verificação visual.
 - 404 mínima adicionada no lote 1 com estilos existentes. Equipe, recomendações e galeria continuam pendentes; não existiam no legado, embora o pedido as descrevesse como preservação.
-- CREDITS.md, fontes locais/licenças, logo e atribuição na UI, headers e fallback SPA na Vercel pendentes das fases de implementação. Onde assistir continua fora da entrega inicial, sem aprovação específica.
+- Créditos/fontes/licenças, logo/atribuição na UI e auditoria de headers continuam pendentes das fases correspondentes. Fallback SPA Vercel configurado no grupo 2, sem prova em hospedagem. Onde assistir continua fora da entrega inicial, sem aprovação específica.
 - Varredura cobre referências locais existentes, não branches remotas ausentes, forks, reflogs ou objetos inalcançáveis. Detecção por padrões não prova ausência de qualquer segredo.
 
 ## Próximo passo concreto
 
-Revisar e commitar o grupo 1 da Fase 3. Após OK, implementar o grupo 2 (proxy e ambiente Vercel), sem visual. Fontes/paleta ficam na Fase 4; não publicar como catálogo completo. Git segue somente leitura.
+Revisar e commitar o grupo 2 da Fase 3. Após OK, implementar o grupo 3 (cliente da API), sem visual. Fontes/paleta ficam na Fase 4; não publicar como catálogo completo. Git segue somente leitura.
 
 ## Fase 2 — lote 5 entregue
 
