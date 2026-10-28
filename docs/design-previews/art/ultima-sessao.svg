@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600">
+  <title>Pôster abstrato original de A última sessão, filme fictício</title>
+  <rect width="400" height="600" fill="#191919"/>
+  <path d="M40 0H360V350L200 450 40 350Z" fill="#d7d3ca"/>
+  <circle cx="200" cy="197" r="94" fill="#191919"/>
+  <path d="M112 197H288M200 109V285" stroke="#d7d3ca" stroke-width="2"/>
+  <circle cx="200" cy="197" r="32" fill="#d7d3ca"/>
+  <path d="M55 367V401M90 389V423M125 411V445M310 389V423M345 367V401" stroke="#a7a399" stroke-width="12"/>
+  <text x="32" y="498" fill="#f5f2e9" font-family="Georgia,serif" font-size="43">A última</text>
+  <text x="32" y="549" fill="#f5f2e9" font-family="Georgia,serif" font-size="56">sessão</text>
+  <text x="34" y="578" fill="#d7d3ca" font-family="Arial,sans-serif" font-size="12" letter-spacing="3">ESTUDO GRÁFICO · 01</text>
+</svg>

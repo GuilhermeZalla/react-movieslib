@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark light">
+  <title>02 · Sala 02 — direção visual MoviesLib</title><link rel="stylesheet" href="base.css"><link rel="stylesheet" href="sala.css">
+</head>
+<body>
+  <a class="skip" href="#home">Pular para a amostra</a>
+  <div class="review-bar"><a href="index.html">← Todas as direções</a><span>02 / Sala 02 · amostra estática</span><fieldset class="theme-switch"><legend>Visualizar tema</legend><label><input id="theme-dark" name="theme" type="radio" checked>Escuro</label><label><input id="theme-light" name="theme" type="radio">Claro</label></fieldset></div>
+  <div class="page">
+    <header class="masthead"><a class="brand" href="#home">MoviesLib<span> /</span></a><nav class="navigation" aria-label="Amostras"><a href="#home">Programação</a><a href="#shelf">Filmes</a><a href="#detail">Detalhe do filme</a></nav></header>
+    <main id="home">
+      <section class="ticket" aria-labelledby="home-title"><div><p class="label">Sala 02 / nenhuma sessão perdida</p><h1 class="display" id="home-title">A noite<br>pede cinema.</h1></div><div class="ticket-note"><p class="ticket-number" aria-hidden="true">04</p><p class="muted">Quatro filmes na bancada.<br>Escolha pelo que fica.</p></div></section>
+      <section id="shelf" aria-labelledby="shelf-title"><div class="program-strip"><h2 id="shelf-title">Na tela, agora</h2><span>Drama / aventura / ficção</span><span class="muted">Catálogo de amostra</span></div><div class="film-grid">
+        <article class="film"><a href="#detail"><span class="film-number">01 / DRAMA</span><img class="poster" src="art/ultima-sessao.svg" alt="" width="400" height="600"><h3>A última sessão</h3><p class="metadata"><span>2026 · 108 min</span><span class="score">8,2 / 10</span></p></a></article>
+        <article class="film"><a href="#sample-note"><span class="film-number">02 / AVENTURA</span><img class="poster" src="art/margem-norte.svg" alt="" width="400" height="600"><h3>Margem norte</h3><p class="metadata"><span>2025 · 116 min</span><span class="score">7,6 / 10</span></p></a></article>
+        <article class="film"><a href="#sample-note"><span class="film-number">03 / FICÇÃO</span><img class="poster" src="art/frequencia-zero.svg" alt="" width="400" height="600"><h3>Frequência zero</h3><p class="metadata"><span>2026 · 99 min</span><span class="score">7,9 / 10</span></p></a></article>
+        <article class="film"><a href="#sample-note"><span class="film-number">04 / DRAMA</span><img class="poster" src="art/depois-da-chuva.svg" alt="" width="400" height="600"><h3>Depois da chuva</h3><p class="metadata"><span>2024 · 104 min</span><span class="score">8,0 / 10</span></p></a></article>
+      </div></section>
+      <section class="detail" id="detail" aria-labelledby="detail-title"><p class="label">Amostra / ficha 01</p><div class="detail-grid"><figure class="detail-poster"><img class="poster" src="art/ultima-sessao.svg" alt="Pôster ilustrativo de A última sessão" width="400" height="600" loading="lazy"><figcaption>Uma despedida em tela grande.</figcaption></figure><div class="detail-copy"><p class="label">Drama / longa-metragem</p><h2 class="detail-title" id="detail-title">A última<br>sessão</h2><dl class="facts"><div><dt>Ano</dt><dd>2026</dd></div><div><dt>Duração</dt><dd>108 min</dd></div><div><dt>Comunidade</dt><dd>8,2 / 10</dd></div></dl><p>O cinema vai fechar. As histórias, ainda não. Uma caixa de cartas leva Lia de volta às pessoas que fizeram daquela sala um lugar para ficar.</p><div class="actions"><a class="button" href="#trailer-note">Assistir ao trailer ↗</a><a class="button secondary" href="#list-note">+ Quero ver</a></div><div class="empty-sample" id="trailer-note"><strong>Sem dar play por você.</strong><p>O trailer youtube-nocookie só será carregado ao clicar na aplicação. Aqui não há embed, conexão ou reprodução.</p></div><p class="metadata" id="list-note">Amostra visual de “Quero ver”; não salva dados. A ficha completa terá elenco, equipe, galeria e recomendações abaixo.</p></div></div></section>
+    </main>
+    <footer class="notes" id="sample-note"><p>Filmes, pessoas, notas e sinopses fictícios. Pôsteres SVG originais, sem dados ou imagens TMDB. Demais cards levam a esta nota.</p><p>Sem fontes de CDN, scripts ou persistência. <a href="LICENSES.md">Créditos e licenças</a> · <a href="#home">Voltar ao início ↑</a></p></footer>
+  </div>
+</body>
+</html>

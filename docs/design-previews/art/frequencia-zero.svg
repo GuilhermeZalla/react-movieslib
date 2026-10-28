@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600">
+  <title>Pôster abstrato original de Frequência zero, filme fictício</title>
+  <rect width="400" height="600" fill="#242424"/>
+  <g fill="none" stroke="#dcd8ce" stroke-width="3">
+    <ellipse cx="200" cy="270" rx="160" ry="160"/>
+    <ellipse cx="200" cy="270" rx="120" ry="160"/>
+    <ellipse cx="200" cy="270" rx="80" ry="160"/>
+    <ellipse cx="200" cy="270" rx="40" ry="160"/>
+    <path d="M40 270H360M55 210H345M55 330H345"/>
+  </g>
+  <rect x="150" y="175" width="100" height="190" fill="#242424"/>
+  <text x="30" y="503" fill="#f5f2e9" font-family="Arial,sans-serif" font-size="32" letter-spacing="1">FREQUÊNCIA</text>
+  <text x="30" y="554" fill="#f5f2e9" font-family="Arial,sans-serif" font-size="49" font-weight="700" letter-spacing="8">ZERO</text>
+  <text x="31" y="580" fill="#dcd8ce" font-family="Arial,sans-serif" font-size="12" letter-spacing="3">ESTUDO GRÁFICO · 03</text>
+</svg>

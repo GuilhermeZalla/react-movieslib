@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>01 · Caderno — direção visual MoviesLib</title>
+  <link rel="stylesheet" href="base.css"><link rel="stylesheet" href="caderno.css">
+</head>
+<body>
+  <a class="skip" href="#home">Pular para a amostra</a>
+  <div class="review-bar">
+    <a href="index.html">← Todas as direções</a><span>01 / Caderno · amostra estática</span>
+    <fieldset class="theme-switch"><legend>Visualizar tema</legend><label><input id="theme-dark" name="theme" type="radio" checked>Escuro</label><label><input id="theme-light" name="theme" type="radio">Claro</label></fieldset>
+  </div>
+  <div class="page">
+    <header class="masthead"><a class="brand" href="#home">MoviesLib<span>.</span></a><nav class="navigation" aria-label="Amostras"><a href="#home">Início</a><a href="#shelf">Filmes</a><a href="#detail">Detalhe do filme</a></nav></header>
+    <main id="home">
+      <div class="edition"><span>Caderno de cinema</span><span>Um filme de cada vez.</span></div>
+      <section class="editorial" aria-labelledby="home-title">
+        <div class="editorial-copy"><p class="label">Em foco / drama</p><h1 class="display" id="home-title">Quando a sala<br>fica em silêncio.</h1><p class="lede">Alguns filmes continuam depois dos créditos. Encontre o próximo para levar com você.</p><a class="ink-link" href="#detail">Ler sobre A última sessão ↗</a></div>
+        <figure class="editorial-art"><img class="poster" src="art/ultima-sessao.svg" alt="Arte abstrata de um projetor sobre uma sala de cinema" width="400" height="600"><figcaption>A última sessão · 2026<br>Um lugar, muitas despedidas.</figcaption></figure>
+      </section>
+      <section id="shelf" class="shelf" aria-labelledby="shelf-title"><div class="section-heading"><h2 id="shelf-title">Para a sua próxima noite</h2><span class="metadata">Quatro histórias, outros caminhos.</span></div>
+        <div class="film-grid">
+          <article class="film"><a href="#detail"><img class="poster" src="art/ultima-sessao.svg" alt="" width="400" height="600" loading="lazy"><h3>A última sessão</h3><p class="metadata"><span>2026 · Drama</span><span class="score">8,2 / 10</span></p></a></article>
+          <article class="film"><a href="#sample-note"><img class="poster" src="art/margem-norte.svg" alt="" width="400" height="600" loading="lazy"><h3>Margem norte</h3><p class="metadata"><span>2025 · Aventura</span><span class="score">7,6 / 10</span></p></a></article>
+          <article class="film"><a href="#sample-note"><img class="poster" src="art/frequencia-zero.svg" alt="" width="400" height="600" loading="lazy"><h3>Frequência zero</h3><p class="metadata"><span>2026 · Ficção</span><span class="score">7,9 / 10</span></p></a></article>
+          <article class="film"><a href="#sample-note"><img class="poster" src="art/depois-da-chuva.svg" alt="" width="400" height="600" loading="lazy"><h3>Depois da chuva</h3><p class="metadata"><span>2024 · Drama</span><span class="score">8,0 / 10</span></p></a></article>
+        </div>
+      </section>
+      <section class="detail" id="detail" aria-labelledby="detail-title"><p class="label">Amostra / topo do detalhe</p>
+        <div class="detail-grid"><img class="poster" src="art/ultima-sessao.svg" alt="Pôster ilustrativo de A última sessão" width="400" height="600" loading="lazy">
+          <div class="detail-copy"><p class="metadata">2026 · Drama · 1h 48min</p><h2 class="detail-title" id="detail-title">A última sessão</h2><blockquote>“Todo fim guarda uma primeira vez.”</blockquote><p>Na véspera de fechar o cinema da família, Lia encontra uma caixa de cartas esquecidas na cabine. Cada remetente tem uma última história para contar.</p><dl class="facts"><div><dt>Nota da comunidade</dt><dd>8,2 / 10</dd></div><div><dt>Direção fictícia</dt><dd>Clara Nunes</dd></div></dl><div class="actions"><a class="button" href="#trailer-note">Ver trailer</a><a class="button secondary" href="#list-note">Quero ver</a></div><div class="empty-sample" id="trailer-note"><strong>O trailer começa quando você quiser.</strong><p>Na aplicação, o vídeo youtube-nocookie será carregado ao clicar. Este preview não se conecta ao YouTube.</p></div></div>
+          <aside class="detail-aside"><p class="label">Por dentro do filme</p><p><strong>Uma cidade pequena.<br>Uma tela enorme.</strong></p><p>Elenco, equipe, galeria e recomendações continuam abaixo na aplicação. Aqui mostramos somente o início da ficha.</p><p id="list-note">“Quero ver” é uma amostra visual. Nenhum dado é salvo.</p></aside>
+        </div>
+      </section>
+    </main>
+    <footer class="notes" id="sample-note"><p>Filmes, pessoas, notas e sinopses fictícios. Pôsteres SVG originais, sem dados ou imagens TMDB. Os links dos demais filmes levam a esta nota.</p><p>Fontes do sistema como fallback; nenhuma fonte é baixada. <a href="LICENSES.md">Créditos e licenças</a> · <a href="#home">Voltar ao início ↑</a></p></footer>
+  </div>
+</body>
+</html>
