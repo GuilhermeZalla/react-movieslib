@@ -134,6 +134,20 @@ npm.cmd run test:coverage
 
 Abra coverage/index.html após o comando. coverage/ é ignorado pelo Git. O relatório inclui os fontes do src (inclusive main.tsx não exercitado por estes testes), excluindo apenas testes e declarações .d.ts. A suíte usa respostas fictícias e fetch bloqueado por padrão. Os testes dos dois efeitos controlam a entrega das respostas e verificam contagens após atualizações de estado e de rota; a prova de regressão em cópias temporárias fica no STATUS.md.
 
+## Testes E2E
+
+Testes end-to-end com Playwright (Chromium) cobrem navegação por URLs diretas, 404 e fluxo voltar ao início.
+
+```powershell
+npm.cmd run test:e2e
+```
+
+Modo interativo:
+
+```powershell
+npm.cmd run test:e2e:ui
+```
+
 O it.fails compara as páginas esperadas 1–5 com as chamadas atuais 1,2,3,3,3. Se o bug for corrigido, esse teste falhará por passar inesperadamente e deverá virar it normal na Fase 3. Testes de cliques dos menus não certificam acessibilidade por teclado; essa revisão continua na Fase 6.
 
 Auditoria do novo lockfile em 28/10/2026: **2 entradas moderadas no Router, 0 críticas e 0 altas**. A fotografia anterior tinha 96 entradas afetadas. Atualização do Router e riscos restantes no lote de dependências, antes da publicação; sem audit fix --force. Detalhes em [DEPENDENCIES.md](docs/DEPENDENCIES.md).
@@ -183,6 +197,6 @@ Sem o proxy, a conferência preenchida e dos campos nulos está limitada às fix
 
 Dados e imagens futuros: [TMDB](https://www.themoviedb.org). A interface ainda precisa de logo aprovado e atribuição em Sobre/Créditos, conforme a [documentação oficial](https://developer.themoviedb.org/docs/faq). Aviso: “This product uses the TMDB API but is not endorsed or certified by TMDB.” README não substitui atribuição na interface.
 
-Ícones: React Icons. Fontes: PT Sans e Source Sans Pro, agora locais em src/fonts/ (antes via Google Fonts). Reset: Meyer Reset via cdnjs. Licenças específicas serão registradas em CREDITS.md ao incorporar/substituir recursos; créditos dos estudos estão em [LICENSES.md](docs/design-previews/LICENSES.md).
+Ícones: React Icons. Fontes: PT Sans e Source Sans Pro, locais em src/fonts/. Reset: Meyer Reset via cdnjs. Licenças detalhadas em [CREDITS.md](CREDITS.md). Licenças específicas serão registradas em CREDITS.md ao incorporar/substituir recursos; créditos dos estudos estão em [LICENSES.md](docs/design-previews/LICENSES.md).
 
 Código sob [MIT](LICENSE), sem transferir direitos sobre dados, imagens e marcas de terceiros. Não há autenticação, lista persistente ou tratamento completo de erros. Interface legada em inglês; nova 404 em pt-BR. Sem configuração de deploy/headers ou Lighthouse medido; não publicar esta etapa como catálogo completo.

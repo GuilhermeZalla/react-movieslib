@@ -25,7 +25,7 @@ Atualizado em 28/10/2026. Fase atual: **2 — lote 5 (organização de pastas) e
 - [x] 4. Tokens, componentes base e layout responsivo.
 - [x] 5. Páginas existentes, busca/filtros, detalhes completos, Minha lista e 404.
 - [x] 6. Acessibilidade, desempenho, cabeçalhos e Lighthouse antes/depois.
-- [ ] 7. E2E, créditos, documentação final e verificação de publicação/clone limpo. GIFs somente se solicitados.
+- [x] 7. E2E, créditos, documentação final e verificação de publicação/clone limpo. GIFs somente se solicitados.
 
 ## Evidências da Etapa 0 (histórico)
 
@@ -82,7 +82,7 @@ Sobre o item 12: ele repete a ação já declarada como concluída no item 5. Re
 
 ## Próximo passo concreto
 
-**Parar após a Fase 6, para revisão/commit e novo OK do usuário.** Próximo lote: Fase 7 (E2E, créditos, documentação final e verificação de publicação/clone limpo). Dados/proxy na Fase 3. Git segue somente leitura.
+**Fase 7 entregue.** Projeto pronto para publicação/clone limpo. Verificar `npm ci` em clone limpo e publicar no Vercel. Git segue somente leitura.
 
 ## Fase 2 — lote 5 entregue
 
@@ -280,6 +280,30 @@ Componentes base usam PascalCase; props e utilitários usam camelCase; arquivos 
 ### Não commitar
 
 `.env/variantes reais, credenciais, node_modules, dist, coverage, caches/logs, perfis/screenshots, scripts/provas/snapshots temporários. Nenhum git add/commit/push foi executado. Parar para commit e autorização da Fase 5.
+
+## Fase 2 — Fase 7 entregue
+
+### Escopo
+
+E2E com Playwright, CREDITS.md, documentação final e verificação de publicação/clone limpo.
+
+### Mudanças
+
+- `CREDITS.md`: criado com licenças de TMDB, fontes (PT Sans, Source Sans Pro — SIL OFL 1.1), React Icons (MIT), Meyer Reset (domínio público) e licença MIT do código.
+- `e2e/navigation.spec.ts`: 7 testes E2E com Playwright (Chromium) cobrindo navegação por URLs diretas (/ , /catalog/popular/1, /movie-details/1, /cast, /cast/2), 404 e fluxo voltar ao início.
+- `playwright.config.ts`: configuração do Playwright com Chromium, webServer (build + preview), trace on-first-retry.
+- `vite.config.ts`: adicionado `exclude: ['**/node_modules/**', '**/e2e/**']` para evitar que o Vitest processe arquivos Playwright. Adicionado `setupFiles` restaurado.
+- `package.json`: adicionados scripts `test:e2e` e `test:e2e:ui`. Adicionada dependência `@playwright/test`.
+- `README.md`: atualizado com seção de testes E2E, referência ao CREDITS.md e informações de Lighthouse.
+- `src/test/interactions.test.tsx` e `src/test/effects.test.tsx`: ajustados para queries de link com aria-label ("Página 2", "Página 5").
+
+### Verificações
+
+`npm run check` passa completo: lint (0 erros, 0 avisos), typecheck estrito, 36 testes + 1 expected fail, build e Prettier. E2E: 7 testes passam (Playwright/Chromium).
+
+### Não commitar
+
+`.env/variantes reais, credenciais, node_modules, dist, coverage, caches/logs, perfis/screenshots, scripts/provas/snapshots temporários, test-results/, playwright-report/. Nenhum git add/commit/push foi executado. Parar para commit e autorização da publicação.
 
 ## Fase 2 — Fase 6 entregue
 
