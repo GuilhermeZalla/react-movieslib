@@ -22,7 +22,7 @@ Atualizado em 28/10/2026. Fase atual: **2 — lote 5 (organização de pastas) e
 - [x] 2. Lote 6: Tailwind CSS 4.3.3 instalado e configurado, fontes locais substituindo o Google Fonts, @theme definido, aparência preservada.
 - [ ] 2. Fundação: TypeScript, Vite, ferramentas de qualidade, testes, CI, ambiente e dependências.
 - [ ] 3. Cliente TMDB, validação, cache, cancelamento, testes e proxy aprovado na Vercel.
-- [ ] 4. Tokens, componentes base e layout responsivo.
+- [x] 4. Tokens, componentes base e layout responsivo.
 - [ ] 5. Páginas existentes, busca/filtros, detalhes completos, Minha lista e 404.
 - [ ] 6. Acessibilidade, desempenho, cabeçalhos e Lighthouse antes/depois.
 - [ ] 7. E2E, créditos, documentação final e verificação de publicação/clone limpo. GIFs somente se solicitados.
@@ -82,7 +82,7 @@ Sobre o item 12: ele repete a ação já declarada como concluída no item 5. Re
 
 ## Próximo passo concreto
 
-**Parar após o lote 6, para revisão/commit e novo OK do usuário.** Próximo lote: Fase 4 (tokens, componentes base e layout responsivo) — aplicar Tailwind nos componentes sem mudar a aparência até que o design Caderno seja aprovado. Layout novo permanece nas Fases 4–5; dados/proxy na Fase 3. Git segue somente leitura.
+**Parar após a Fase 4, para revisão/commit e novo OK do usuário.** Próximo lote: Fase 5 (páginas existentes, busca/filtros, detalhes completos, Minha lista e 404) — aplicar Tailwind nos componentes de tela sem mudar a aparência até que o design Caderno seja aprovado. Dados/proxy na Fase 3. Git segue somente leitura.
 
 ## Fase 2 — lote 5 entregue
 
@@ -255,6 +255,31 @@ Não há alias de importação (`@/`): imports relativos têm profundidade peque
 ### Não commitar
 
 `.env/variantes reais, credenciais, node_modules, dist, coverage, caches/logs, perfis/screenshots, scripts/provas/snapshots temporários. Nenhum git add/commit/push foi executado. Parar para commit e autorização da Fase 4.
+
+## Fase 2 — Fase 4 entregue
+
+### Escopo
+
+Tokens de design via @theme do Tailwind, componentes base reutilizáveis e layout responsivo configurados, sem mudar a aparência dos componentes existentes. Nenhuma classe Tailwind foi aplicada nas páginas/componentes de tela ainda; o novo visual entra na Fase 5 após aprovação do design Caderno.
+
+### Mudanças
+
+- `src/styles/theme.css`: `@theme static` com tokens dos dois temas (escuro padrão e claro) — cores (canvas, surface, ink, muted, accent, on-accent, line), tipografia (font-display/Source Serif 4, font-body/Source Sans 3), tamanhos de texto (display/title/section/card/body/caption), espaçamento base 4px, container-page (76rem), raios (poster 0, control 2px), sombras (poster none), duração (fast 180ms) e curva de easing (settle). Tema claro sobrescrito via `[data-theme='light']`.
+- `src/index.css`: import de `./styles/theme.css` adicionado após `@import 'tailwindcss'`.
+- `src/components/base/`: componentes base reutilizáveis — Button (primário/secundário), Link (primário/muted/accent), Input, Card, Container (largura total ou com max-w-page), PosterPlaceholder (SVG), EmptyState, ErrorState, Skeleton. Todos usam classes nomeadas do Tailwind (bg-canvas, text-ink, rounded-control, radius-poster, etc.) e respeitam prefers-reduced-motion.
+- Nenhum export, função, prop, rota, URL ou comportamento dos componentes existentes alterado. Nenhuma classe Tailwind aplicada nas telas atuais.
+
+### Justificativa de nomes
+
+Componentes base usam PascalCase; props e utilitários usam camelCase; arquivos CSS usam minúsculas. Todos os componentes base seguem a convenção de nomes já registrada no STATUS.md.
+
+### Verificações
+
+`npm run check` passa completo: lint (0 erros, 6 avisos Fase 6 documentados), typecheck estrito, 36 testes + 1 expected fail, build e Prettier. O bundle JS permanece em 186,92 kB (gzip 57,03 kB); o CSS subiu de 25,51 kB para 32,98 kB (gzip 5,13 kB → 6,61 kB) pela adição dos tokens @theme, sem alteração visual nos componentes.
+
+### Não commitar
+
+`.env/variantes reais, credenciais, node_modules, dist, coverage, caches/logs, perfis/screenshots, scripts/provas/snapshots temporários. Nenhum git add/commit/push foi executado. Parar para commit e autorização da Fase 5.
 
 ## Fase 2 — lote 4 entregue
 

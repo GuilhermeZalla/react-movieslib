@@ -26,7 +26,7 @@ Dois loops de requisição foram corrigidos para validar a migração; outras li
 
 React/DOM 18.2.0, Router DOM 6.3.0 e React Icons 4.4.0 foram mantidos para separar a troca do build da atualização do runtime. Fundação: Vite 8.3.5, TypeScript 6.0.3, ESLint 9.39.5, Prettier 3.9.10 e Vitest 4.1.12. Removidos CRA/react-scripts, Web Vitals, ferramentas Jest do template e seus transitivos exclusivos. Somente package-lock.json permanece. ESLint 9 é necessário para os peers dos plugins React/a11y instalados, mas está fora de suporte; risco e atualização pendente em [DEPENDENCIES.md](docs/DEPENDENCIES.md).
 
-Todo o src, incluindo telas, componentes e testes, usa TypeScript com strict:true, allowJs:false, noUncheckedIndexedAccess e exactOptionalPropertyTypes, sem exclusões de fontes ou skipLibCheck. Os contratos de filmes, pessoas, gêneros, elenco e equipe ficam em [src/types/tmdb.ts](src/types/tmdb.ts). São tipos estáticos: as respostas JSON ainda são convertidas explicitamente nos limites dos fetches legados, sem validação em execução; Zod e o cliente de dados entram na Fase 3. Tailwind CSS 4.3.3 está instalado e configurado (plugin Vite + @import "tailwindcss" no index.css), as fontes PT Sans e Source Sans Pro são locais em src/fonts/, e o @theme está definido mas ainda não aplicado aos componentes. CSS/Sass mantêm o visual legado; não há mudança de aparência neste lote.
+Todo o src, incluindo telas, componentes e testes, usa TypeScript com strict:true, allowJs:false, noUncheckedIndexedAccess e exactOptionalPropertyTypes, sem exclusões de fontes ou skipLibCheck. Os contratos de filmes, pessoas, gêneros, elenco e equipe ficam em [src/types/tmdb.ts](src/types/tmdb.ts). São tipos estáticos: as respostas JSON ainda são convertidas explicitamente nos limites dos fetches legados, sem validação em execução; Zod e o cliente de dados entram na Fase 3. Tailwind CSS 4.3.3 está instalado e configurado (plugin Vite + @import "tailwindcss" no index.css), o @theme está definido em src/styles/theme.css com tokens dos dois temas (escuro padrão e claro) e fontes locais em src/fonts/. Componentes base reutilizáveis (Button, Link, Input, Card, Container, PosterPlaceholder, EmptyState, ErrorState, Skeleton) foram criados em src/components/base/ mas ainda não aplicados nas telas. CSS/Sass mantêm o visual legado; não há mudança de aparência nesta fase.
 
 O [STATUS.md](docs/STATUS.md) é a fonte da verdade. Direção **Caderno**, escuro padrão; PXN Games é referência apenas de clima. A paleta terá hexadecimais próprios, descritos como “paleta inspirada em” no DESIGN.md, com contraste AA recalculado nos dois temas antes da Fase 4. Não copiar cores exatas, logo, textos ou layout; os previews não precisam ser refeitos.
 
@@ -56,6 +56,7 @@ src/
     layout/
     movies/
     people/
+    base/
   test/
     fixtures/
     helpers/
@@ -69,13 +70,14 @@ src/
   index.css
   sass/
   style/
+  styles/
   fonts/
   vite-env.d.ts
 ```
 
-app contém App e LayoutRoutes; pages preserva as telas e seus wrappers existentes. components agrupa layout, filmes e pessoas; test guarda os testes e dados fictícios. Componentes usam PascalCase; utilitários/testes, camelCase; pastas, minúsculas/kebab-case. Imports relativos simples, sem alias. Os exports e as URLs existentes permanecem iguais.
+app contém App e LayoutRoutes; pages preserva as telas e seus wrappers existentes. components agrupa layout, filmes, pessoas e componentes base (Button, Link, Input, Card, Container, PosterPlaceholder, EmptyState, ErrorState, Skeleton); test guarda os testes e dados fictícios. Componentes usam PascalCase; utilitários/testes, camelCase; pastas, minúsculas/kebab-case. Imports relativos simples, sem alias. Os exports e as URLs existentes permanecem iguais.
 
-src/sass e src/style continuam no lugar durante a transição. O app ainda consome o CSS legado compilado e seu mapa; o Tailwind está importado no index.css e as fontes são locais em src/fonts/, mas nenhuma classe Tailwind foi aplicada aos componentes, então a aparência não mudou.
+src/sass e src/style continuam no lugar durante a transição. O app ainda consome o CSS legado compilado e seu mapa; o Tailwind está importado no index.css com @theme definido em src/styles/theme.css e as fontes são locais em src/fonts/, mas nenhuma classe Tailwind foi aplicada aos componentes de tela, então a aparência não mudou.
 
 ## Como rodar
 
