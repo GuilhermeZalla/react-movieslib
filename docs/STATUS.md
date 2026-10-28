@@ -1,6 +1,11 @@
 # Status do MoviesLib
 
-Atualizado em 28/10/2026. Fase atual: **3 — grupo 2, proxy protegido, entregue para revisão/commit**. Grupo 1 aprovado e commitado pelo usuário em **f1fff59**. Executar um grupo por vez e aguardar OK antes do seguinte. O trabalho anterior foi preservado; títulos dos commits chamados Fases 4–7 não equivalem ao aceite completo dessas fases. Git somente leitura. Mensagens de commit em inglês, conforme orientação posterior do usuário.
+Atualizado em 28/10/2026. Fase atual: **3 — grupo 3, cliente, consultas e debounce implementados, sem migrar telas, entregue para revisão/commit**. Grupo 2 aprovado e commitado pelo usuário; HEAD local **2ace33f**. Executar um grupo por vez e aguardar OK antes do seguinte. O trabalho anterior foi preservado; títulos dos commits chamados Fases 4–7 não equivalem ao aceite completo dessas fases. Git somente leitura. **Mensagens de commit sempre em português**, conforme orientação mais recente; referências anteriores em inglês são históricas.
+
+## Pendências de pré-publicação — vigentes
+
+- [ ] **Ativar e testar a regra WAF no painel da Vercel.** Não há confirmação de ativação; conferir bloqueio/429 e observabilidade no projeto publicado.
+- [ ] **Revisar a limitação do contador em memória antes de publicar:** a quota é compartilhada por todos os visitantes da mesma instância. README deve explicitar essa divisão, cold starts e ausência de coordenação entre instâncias; é melhor esforço, por instância, não limite por visitante. A documentação já explica a limitação; a mitigação/publicação continua pendente.
 
 ## Fase 3 — grupo 2: proxy TMDB protegido
 
@@ -205,7 +210,7 @@ Sobre o item 12: ele repete a ação já declarada como concluída no item 5. Re
 
 ## Próximo passo concreto
 
-Revisar e commitar o grupo 2 da Fase 3. Após OK, implementar o grupo 3 (cliente da API), sem visual. Fontes/paleta ficam na Fase 4; não publicar como catálogo completo. Git segue somente leitura.
+Revisar e commitar o grupo 3 da Fase 3: cliente centralizado com cancelamento distinto de falha de rede, consultas TanStack Query com repetição automática limitada a uma tentativa nas falhas de rede, debounce de busca e QueryClient. Sem conexão às telas. Após OK, implementar o grupo 4 (integração às telas), sem visual. Fontes/paleta ficam na Fase 4; não publicar como catálogo completo. Git segue somente leitura.
 
 ## Fase 2 — lote 5 entregue
 
