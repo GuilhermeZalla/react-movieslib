@@ -31,7 +31,7 @@ const MovieDetails = () => {
     }
     getDetails()
       .then((details) => setDetails(details))
-      .catch((error: unknown) => console.log(error));
+      .catch((error: unknown) => console.error(error));
   }, [id]);
 
   return (
@@ -45,7 +45,7 @@ const MovieDetails = () => {
             <img
               src={
                 details?.poster_path
-                  ? 'https://image.tmdb.org/t/p/w500/' + details.poster_path
+                  ? `https://image.tmdb.org/t/p/w500/${details.poster_path}`
                   : undefined
               }
               alt={details?.title ?? ''}
@@ -96,7 +96,7 @@ const MovieDetails = () => {
               <Cast
                 key={index}
                 id={cast.id}
-                photo={'https://image.tmdb.org/t/p/w500' + cast.profile_path}
+                photo={`https://image.tmdb.org/t/p/w500${cast.profile_path}`}
                 name={cast.name}
                 character={cast.character}
               />

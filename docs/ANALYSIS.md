@@ -20,16 +20,16 @@ Versões declaradas, resolvidas no lockfile, atuais no registro e vulnerabilidad
 
 ## Telas e componentes
 
-| Caminho | Implementação atual |
-| --- | --- |
-| / | Tendências do dia, populares, em cartaz e faixa de backdrops |
-| /movie-details/:id | Filme e até 20 pessoas do elenco; append_to_response=credits |
-| /catalog/:category/:page | Categoria, busca dentro da tela e páginas fixas 1–5 |
-| /upcoming_&_just_released/:category/:page | Mesmo catálogo; menu usa upcoming |
-| /top_rated/:category/:page | Mesmo catálogo; menu usa top_rated |
-| /genres/:id/:genre | Gênero filtrado no cliente sobre recorte de resultados |
-| /cast | Pessoas populares e busca; até seis páginas antecipadas |
-| /cast/:id | Biografia e filmografia, com person/:id e movie_credits |
+| Caminho                                   | Implementação atual                                          |
+| ----------------------------------------- | ------------------------------------------------------------ |
+| /                                         | Tendências do dia, populares, em cartaz e faixa de backdrops |
+| /movie-details/:id                        | Filme e até 20 pessoas do elenco; append_to_response=credits |
+| /catalog/:category/:page                  | Categoria, busca dentro da tela e páginas fixas 1–5          |
+| /upcoming_&_just_released/:category/:page | Mesmo catálogo; menu usa upcoming                            |
+| /top_rated/:category/:page                | Mesmo catálogo; menu usa top_rated                           |
+| /genres/:id/:genre                        | Gênero filtrado no cliente sobre recorte de resultados       |
+| /cast                                     | Pessoas populares e busca; até seis páginas antecipadas      |
+| /cast/:id                                 | Biografia e filmografia, com person/:id e movie_credits      |
 
 src/screens contém seis wrappers simples. Compartilhados: Header, Aside, AsideMobile, Footer (paginação), FilmCard, BannerImg, Cast e dois componentes Genres de funções diferentes. Não há 404/rota curinga, Minha lista ou Sobre/Créditos. Equipe técnica, recomendações e galeria do filme não são renderizadas. A faixa da home não equivale a uma galeria do filme.
 
@@ -49,16 +49,16 @@ Cobertura: main, origin/main e origin/master disponíveis localmente; 8 commits 
 
 Uma API key e um Bearer distintos na árvore atual. **Cada um dos oito arquivos abaixo contém credenciais em cada um dos seis commits listados a seguir**:
 
-| Arquivo | Achado |
-| --- | --- |
-| src/components/common/aside/aside.jsx | Bearer literal |
-| src/components/common/asideMobile/asideMobile.jsx | Bearer literal |
-| src/components/home/castCatalog/castCatalog.jsx | API key e Bearer |
-| src/components/home/castDetails/castDetails.jsx | API key e Bearer |
+| Arquivo                                             | Achado           |
+| --------------------------------------------------- | ---------------- |
+| src/components/common/aside/aside.jsx               | Bearer literal   |
+| src/components/common/asideMobile/asideMobile.jsx   | Bearer literal   |
+| src/components/home/castCatalog/castCatalog.jsx     | API key e Bearer |
+| src/components/home/castDetails/castDetails.jsx     | API key e Bearer |
 | src/components/home/genresCatalog/genresCatalog.jsx | API key e Bearer |
-| src/components/home/home.jsx | API key e Bearer |
+| src/components/home/home.jsx                        | API key e Bearer |
 | src/components/home/moviesCatalog/moviesCatalog.jsx | API key e Bearer |
-| src/components/movie-details/movie-details.jsx | API key e Bearer |
+| src/components/movie-details/movie-details.jsx      | API key e Bearer |
 
 Commits com achados (snapshots, não necessariamente introduções independentes):
 
@@ -75,35 +75,35 @@ Sem correspondência dos padrões em b22c9dd4a2a5d95ba40554f8fd09e714027a7698 e 
 
 ## Problemas e correções propostas
 
-| Prioridade | Evidência e efeito | Correção planejada |
-| --- | --- | --- |
-| Crítica | Credenciais literais nos oito arquivos acima | Revogação informada como concluída pelo proprietário; retirar literais na fundação e configurar ambiente de servidor/proxy aprovado na Vercel |
-| Alta | MoviesCatalog: efeito depende de movies e atualiza movies com novo array | Query por category/page validados, sem ciclo de atualização |
-| Alta | CastDetails: efeito depende de cast/credits e atualiza ambos | Query por id, cancelamento e cache |
-| Alta | MovieDetails e GenresCatalog: efeito [] ignora mudança de id | Incluir identificadores na chave de consulta e testar navegação entre IDs |
-| Alta | Sem response.ok, erros só no console | Distinguir rede, HTTP, 404, 429 e resposta inválida; recuperação e erro amigável |
-| Alta | Busca MoviesCatalog pede página 3 três vezes | Paginação única por parâmetros; usar total_pages e eliminar duplicatas |
-| Alta | Gêneros: só quatro páginas populares e uma top_rated filtradas localmente | discover/movie com with_genres, filtros e ordenação validados |
-| Média | Busca substitui espaços por + e interpola texto | Normalizar, limitar tamanho, URLSearchParams, debounce e AbortSignal |
-| Média | Cinco/seis páginas buscadas antecipadamente; busca fora da URL | Página por vez; query/filtros/sort na URL; testar voltar/avançar |
-| Média | Resposta antiga pode sobrescrever busca nova | Cancelar e identificar consulta por parâmetros normalizados |
-| Média | results/cast assumidos, optional chaining parcial | Schemas Zod na fronteira e modelos normalizados |
-| Média | Sem imagem, pessoa/filme some; detalhe gera URL null/undefined | Fallback visual preservando conteúdo, proporção fixa e tratamento de erro da imagem |
-| Média | Footer fixa 1–5 e sempre aponta para /catalog | Limites da resposta e preservação de filtros/contexto |
-| Média | Imagens sempre w500, sem lazy/srcset/sizes/dimensões | Tamanhos suportados no TMDB, aspect-ratio e lazy fora da área inicial |
-| Média | Home usa grid-auto-rows:0px, mantendo itens no DOM | Limitar itens explicitamente sem esconder linhas por altura zero |
-| Média | Link do card visibility:hidden até hover | Card navegável, título/foco visíveis e acesso por toque/teclado |
-| Média | Links role=button sem suporte de teclado; inputs/ícones sem label | button real, labels, nomes acessíveis, aria-expanded e foco previsível |
-| Média | Menus mudam estilos por refs; controles transparentes permanecem no fluxo | Estado React, CSS, hidden/inert quando necessário e foco gerenciado |
-| Média | outline:none, sem reduced-motion; títulos em pseudo-elementos | focus-visible, prefers-reduced-motion e headings semânticos |
-| Média | Colunas mínimas 180px com imagens 190px; detalhe com gap 150px; hover scale | Grid fluido, min-width:0, limites de imagem e testes nas quatro larguras |
-| Média | Pessoa: todo gênero diferente de 2 vira feminino | Tratar enum completo e não informado com textos pt-BR |
-| Média | UI inglesa, metadados CRA, manifest com logos inexistentes | Copy pt-BR e metadados/manifesto coerentes |
-| Média | .env genérico não ignorado e sem exemplo | .gitignore, .env.example sem valores reais e explicação de VITE_ público |
-| Média | Sem Boundary, atribuição ou headers/deploy versionados | Boundary, Créditos e headers testados na hospedagem escolhida |
-| Média | Teste template, scripts faltantes, dois lockfiles, CRA legado | Vite/TS, lint/format, testes comportamentais, CI e Dependabot |
-| Baixa | Wrappers, fetch duplicado e key por índice | app/pages/features/shared simples, componentes coesos e IDs estáveis |
-| Baixa | README com marcadores de conflito | Corrigido apenas na documentação desta fase |
+| Prioridade | Evidência e efeito                                                          | Correção planejada                                                                                                                            |
+| ---------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Crítica    | Credenciais literais nos oito arquivos acima                                | Revogação informada como concluída pelo proprietário; retirar literais na fundação e configurar ambiente de servidor/proxy aprovado na Vercel |
+| Alta       | MoviesCatalog: efeito depende de movies e atualiza movies com novo array    | Query por category/page validados, sem ciclo de atualização                                                                                   |
+| Alta       | CastDetails: efeito depende de cast/credits e atualiza ambos                | Query por id, cancelamento e cache                                                                                                            |
+| Alta       | MovieDetails e GenresCatalog: efeito [] ignora mudança de id                | Incluir identificadores na chave de consulta e testar navegação entre IDs                                                                     |
+| Alta       | Sem response.ok, erros só no console                                        | Distinguir rede, HTTP, 404, 429 e resposta inválida; recuperação e erro amigável                                                              |
+| Alta       | Busca MoviesCatalog pede página 3 três vezes                                | Paginação única por parâmetros; usar total_pages e eliminar duplicatas                                                                        |
+| Alta       | Gêneros: só quatro páginas populares e uma top_rated filtradas localmente   | discover/movie com with_genres, filtros e ordenação validados                                                                                 |
+| Média      | Busca substitui espaços por + e interpola texto                             | Normalizar, limitar tamanho, URLSearchParams, debounce e AbortSignal                                                                          |
+| Média      | Cinco/seis páginas buscadas antecipadamente; busca fora da URL              | Página por vez; query/filtros/sort na URL; testar voltar/avançar                                                                              |
+| Média      | Resposta antiga pode sobrescrever busca nova                                | Cancelar e identificar consulta por parâmetros normalizados                                                                                   |
+| Média      | results/cast assumidos, optional chaining parcial                           | Schemas Zod na fronteira e modelos normalizados                                                                                               |
+| Média      | Sem imagem, pessoa/filme some; detalhe gera URL null/undefined              | Fallback visual preservando conteúdo, proporção fixa e tratamento de erro da imagem                                                           |
+| Média      | Footer fixa 1–5 e sempre aponta para /catalog                               | Limites da resposta e preservação de filtros/contexto                                                                                         |
+| Média      | Imagens sempre w500, sem lazy/srcset/sizes/dimensões                        | Tamanhos suportados no TMDB, aspect-ratio e lazy fora da área inicial                                                                         |
+| Média      | Home usa grid-auto-rows:0px, mantendo itens no DOM                          | Limitar itens explicitamente sem esconder linhas por altura zero                                                                              |
+| Média      | Link do card visibility:hidden até hover                                    | Card navegável, título/foco visíveis e acesso por toque/teclado                                                                               |
+| Média      | Links role=button sem suporte de teclado; inputs/ícones sem label           | button real, labels, nomes acessíveis, aria-expanded e foco previsível                                                                        |
+| Média      | Menus mudam estilos por refs; controles transparentes permanecem no fluxo   | Estado React, CSS, hidden/inert quando necessário e foco gerenciado                                                                           |
+| Média      | outline:none, sem reduced-motion; títulos em pseudo-elementos               | focus-visible, prefers-reduced-motion e headings semânticos                                                                                   |
+| Média      | Colunas mínimas 180px com imagens 190px; detalhe com gap 150px; hover scale | Grid fluido, min-width:0, limites de imagem e testes nas quatro larguras                                                                      |
+| Média      | Pessoa: todo gênero diferente de 2 vira feminino                            | Tratar enum completo e não informado com textos pt-BR                                                                                         |
+| Média      | UI inglesa, metadados CRA, manifest com logos inexistentes                  | Copy pt-BR e metadados/manifesto coerentes                                                                                                    |
+| Média      | .env genérico não ignorado e sem exemplo                                    | .gitignore, .env.example sem valores reais e explicação de VITE_ público                                                                      |
+| Média      | Sem Boundary, atribuição ou headers/deploy versionados                      | Boundary, Créditos e headers testados na hospedagem escolhida                                                                                 |
+| Média      | Teste template, scripts faltantes, dois lockfiles, CRA legado               | Vite/TS, lint/format, testes comportamentais, CI e Dependabot                                                                                 |
+| Baixa      | Wrappers, fetch duplicado e key por índice                                  | app/pages/features/shared simples, componentes coesos e IDs estáveis                                                                          |
+| Baixa      | README com marcadores de conflito                                           | Corrigido apenas na documentação desta fase                                                                                                   |
 
 Não foi encontrado dangerouslySetInnerHTML. Não há login ou analytics próprio identificado; TMDB e CDNs ainda são terceiros na comunicação de rede. “Sem coleta de dados pessoais” deve significar sem coleta adicional pelo aplicativo, sem prometer ausência de tratamento pelos provedores. Novos links externos em outra aba precisam de rel="noopener noreferrer" e URL validada.
 
@@ -147,17 +147,17 @@ Ganho: segredo fora do cliente, cache de borda curto e controle de consumo. Cust
 
 Esforço relativo incluindo implementação/testes, preservando a avaliação de ganho e risco da análise inicial. Busca/filtros, Minha lista, estados e acessibilidade permanecem no plano principal. A coluna de situação abaixo reflete as decisões vigentes.
 
-| Ideia | Situação | Esforço | Ganho | Risco / cuidado |
-| --- | --- | --- | --- | --- |
-| Trailer youtube-nocookie ao clicar | Aprovado para a entrega | Médio | Avaliar filme sem sair | CSP e terceiros; modo de privacidade não significa ausência total de dados |
-| Em cartaz / em breve | Preservar | Baixo–médio | Contexto de lançamentos | Já existem; corrigir região/datas e apresentação |
-| Filmes parecidos / recomendações | Escopo principal | Médio | Descoberta | Usar recomendações TMDB simples com fallback |
-| Comparação de filmes | **Futuro** | Alto | Comparar opções | Fora da entrega inicial; amplia escopo de UI e testes |
-| Claro/escuro | Aprovado para a entrega | Médio | Preferência de leitura | Verificar contraste dos dois temas |
-| pt-BR/en por idioma API | **Futuro** | Médio | Alcance e prática i18n | Traduzir UI/datas também e prever fallback; UI inicial em pt-BR |
-| Atalho para busca | **Futuro** | Baixo | Agilidade no teclado | Evitar captura durante digitação; acessibilidade básica de teclado permanece obrigatória agora |
-| Pessoa com filmografia | Preservar | Médio para modernizar | Navegar do elenco a outros filmes | Já existe; corrigir loop, sem nova página obrigatória |
-| Onde assistir | Fora da entrega inicial, sem aprovação específica | Médio | Disponibilidade no Brasil | Atribuição JustWatch, dados mutáveis, sem deep links completos |
+| Ideia                              | Situação                                          | Esforço               | Ganho                             | Risco / cuidado                                                                                |
+| ---------------------------------- | ------------------------------------------------- | --------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Trailer youtube-nocookie ao clicar | Aprovado para a entrega                           | Médio                 | Avaliar filme sem sair            | CSP e terceiros; modo de privacidade não significa ausência total de dados                     |
+| Em cartaz / em breve               | Preservar                                         | Baixo–médio           | Contexto de lançamentos           | Já existem; corrigir região/datas e apresentação                                               |
+| Filmes parecidos / recomendações   | Escopo principal                                  | Médio                 | Descoberta                        | Usar recomendações TMDB simples com fallback                                                   |
+| Comparação de filmes               | **Futuro**                                        | Alto                  | Comparar opções                   | Fora da entrega inicial; amplia escopo de UI e testes                                          |
+| Claro/escuro                       | Aprovado para a entrega                           | Médio                 | Preferência de leitura            | Verificar contraste dos dois temas                                                             |
+| pt-BR/en por idioma API            | **Futuro**                                        | Médio                 | Alcance e prática i18n            | Traduzir UI/datas também e prever fallback; UI inicial em pt-BR                                |
+| Atalho para busca                  | **Futuro**                                        | Baixo                 | Agilidade no teclado              | Evitar captura durante digitação; acessibilidade básica de teclado permanece obrigatória agora |
+| Pessoa com filmografia             | Preservar                                         | Médio para modernizar | Navegar do elenco a outros filmes | Já existe; corrigir loop, sem nova página obrigatória                                          |
+| Onde assistir                      | Fora da entrega inicial, sem aprovação específica | Médio                 | Disponibilidade no Brasil         | Atribuição JustWatch, dados mutáveis, sem deep links completos                                 |
 
 A entrega aprovada inclui tema claro/escuro e trailer, além da preservação das telas e funcionalidades do plano principal. pt-BR/en, atalhos de teclado e comparação são aprovados como **futuro**. Não confundir recomendações de filmes do escopo principal com comparação futura.
 

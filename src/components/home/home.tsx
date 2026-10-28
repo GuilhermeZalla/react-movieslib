@@ -46,13 +46,13 @@ const Home = () => {
   useEffect(() => {
     getTrendingMovies()
       .then((movies) => setTrendingMovies([movies]))
-      .catch((error: unknown) => console.log(error));
+      .catch((error: unknown) => console.error(error));
     getPopularMovies()
       .then((movies) => setPopularMovies([movies]))
-      .catch((error: unknown) => console.log(error));
+      .catch((error: unknown) => console.error(error));
     getNowPlayingMovies()
       .then((movies) => setNowPlayingMovies([movies]))
-      .catch((error: unknown) => console.log(error));
+      .catch((error: unknown) => console.error(error));
   }, []);
 
   return (
@@ -93,7 +93,7 @@ const Home = () => {
             {trendingMovies[0]?.results.map((movie, index) => (
               <FilmCard
                 key={index}
-                poster={'https://image.tmdb.org/t/p/w500/' + movie.poster_path}
+                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                 title={movie.title}
                 vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                 movieId={movie.id}
@@ -101,11 +101,11 @@ const Home = () => {
             ))}
           </div>
           <div className="popular container__films">
-            <Link to={`/catalog/${'popular'}/${1}`}>MORE</Link>
+            <Link to={`/catalog/popular/1`}>MORE</Link>
             {popularMovies[0]?.results.map((movie, index) => (
               <FilmCard
                 key={index}
-                poster={'https://image.tmdb.org/t/p/w500/' + movie.poster_path}
+                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                 title={movie.title}
                 vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                 movieId={movie.id}
@@ -113,11 +113,11 @@ const Home = () => {
             ))}
           </div>
           <div className="now-playing container__films">
-            <Link to={`/catalog/${'now_playing'}/${1}`}>MORE</Link>
+            <Link to={`/catalog/now_playing/1`}>MORE</Link>
             {nowPlayingMovies[0]?.results.map((movie, index) => (
               <FilmCard
                 key={index}
-                poster={'https://image.tmdb.org/t/p/w500/' + movie.poster_path}
+                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                 title={movie.title}
                 vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                 movieId={movie.id}

@@ -1,4 +1,10 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../App';
 import { fixtureFetch } from './fixtures/fetch';
@@ -31,7 +37,11 @@ describe('contratos de navegação preservados na migração', () => {
     expect(
       vi
         .mocked(fetch)
-        .mock.calls.every(([url]) => String(url).startsWith('/api/tmdb/')),
+        .mock.calls.every(([url]) =>
+          String(url instanceof Request ? url.url : url).startsWith(
+            '/api/tmdb/',
+          ),
+        ),
     ).toBe(true);
   });
 
@@ -43,6 +53,10 @@ describe('contratos de navegação preservados na migração', () => {
     const link = people[0]?.closest('a');
     expect(link).toBeInstanceOf(HTMLAnchorElement);
     if (!link) throw new Error('Link de pessoa ausente na fixture.');
+    // Router 6 activates navigation in a passive effect; flush it before the click.
+    await act(async () => {
+      await Promise.resolve();
+    });
     fireEvent.click(link);
     expect(
       await screen.findByRole('heading', {
@@ -55,7 +69,9 @@ describe('contratos de navegação preservados na migração', () => {
       '/movie-details/1',
     );
     const calls = vi.mocked(fetch).mock.calls.length;
-    await new Promise((resolve) => setTimeout(resolve, 75));
+    await act(async () => {
+      await Promise.resolve();
+    });
     expect(fetch).toHaveBeenCalledTimes(calls);
   });
 
@@ -86,7 +102,11 @@ describe('contratos de navegação preservados na migração', () => {
       expect(
         vi
           .mocked(fetch)
-          .mock.calls.some(([url]) => String(url).includes('/movie/3?')),
+          .mock.calls.some(([url]) =>
+            String(url instanceof Request ? url.url : url).includes(
+              '/movie/3?',
+            ),
+          ),
       ).toBe(true),
     );
   });

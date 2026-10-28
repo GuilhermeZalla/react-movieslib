@@ -24,7 +24,7 @@ const Aside = () => {
     }
     getGenres()
       .then((genres) => setGenres(genres))
-      .catch((error: unknown) => console.log(error));
+      .catch((error: unknown) => console.error(error));
   }, []);
 
   const handleAside = () => {
@@ -111,7 +111,7 @@ const Aside = () => {
             <BiTimer />
           </button>
           <Link
-            to={`/upcoming_&_just_released/${'upcoming'}/${1}`}
+            to={`/upcoming_&_just_released/upcoming/1`}
             onClick={handleAside}
           >
             Upcoming
@@ -121,7 +121,7 @@ const Aside = () => {
           <button type="button" onClick={handleAside}>
             <BiStar />
           </button>
-          <Link to={`/top_rated/${'top_rated'}/${1}`} onClick={handleAside}>
+          <Link to={`/top_rated/top_rated/1`} onClick={handleAside}>
             Top Rated
           </Link>
         </li>

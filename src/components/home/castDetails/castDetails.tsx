@@ -42,10 +42,10 @@ const CastDetails = () => {
     }
     getCast()
       .then((cast) => setCast([cast]))
-      .catch((error: unknown) => console.log(error));
+      .catch((error: unknown) => console.error(error));
     getCredits()
       .then((cast) => setCredits([cast]))
-      .catch((error: unknown) => console.log(error));
+      .catch((error: unknown) => console.error(error));
   }, [id]);
 
   return (
@@ -58,7 +58,7 @@ const CastDetails = () => {
           <img
             src={
               person?.profile_path
-                ? 'https://image.tmdb.org/t/p/w500' + person.profile_path
+                ? `https://image.tmdb.org/t/p/w500${person.profile_path}`
                 : undefined
             }
             alt={person?.name ?? ''}
@@ -102,7 +102,7 @@ const CastDetails = () => {
           {credits[0]?.cast?.map((movie, index) => (
             <FilmCard
               key={index}
-              poster={'https://image.tmdb.org/t/p/w500/' + movie.poster_path}
+              poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
               title={movie.title}
               vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
               movieId={movie.id}

@@ -11,7 +11,7 @@ const BannerImg = (props: BannerImgProps) => {
   return (
     <Link to={`/movie-details/${props.movieId}`}>
       <img
-        src={'https://image.tmdb.org/t/p/w500/' + props.url}
+        src={`https://image.tmdb.org/t/p/w500/${props.url}`}
         alt={props.title}
       />
     </Link>

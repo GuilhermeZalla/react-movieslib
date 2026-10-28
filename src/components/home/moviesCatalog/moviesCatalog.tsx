@@ -29,7 +29,7 @@ const MoviesCatalog = () => {
     }
     getMovies()
       .then((data) => setMovies([data]))
-      .catch((error: unknown) => console.log(error));
+      .catch((error: unknown) => console.error(error));
   }, [category, page]);
 
   const handleSearchMovies = (result: string) => {
@@ -91,19 +91,19 @@ const MoviesCatalog = () => {
       }
       searchMovie()
         .then((data) => setSearch(data))
-        .catch((error: unknown) => console.log(error));
+        .catch((error: unknown) => console.error(error));
       searchMovie2()
         .then((data) => setSearch2(data))
-        .catch((error: unknown) => console.log(error));
+        .catch((error: unknown) => console.error(error));
       searchMovie3()
         .then((data) => setSearch3(data))
-        .catch((error: unknown) => console.log(error));
+        .catch((error: unknown) => console.error(error));
       searchMovie4()
         .then((data) => setSearch4(data))
-        .catch((error: unknown) => console.log(error));
+        .catch((error: unknown) => console.error(error));
       searchMovie5()
         .then((data) => setSearch5(data))
-        .catch((error: unknown) => console.log(error));
+        .catch((error: unknown) => console.error(error));
     }
   };
 
@@ -118,18 +118,18 @@ const MoviesCatalog = () => {
             <h1 className="home__title movies-catalog">
               Overviewing{' '}
               <span>
-                {category.split('_')[0] +
-                  ' ' +
-                  (category.split('_')[1] === undefined
+                {`${category.split('_')[0]} ${
+                  category.split('_')[1] === undefined
                     ? ''
-                    : category.split('_')[1])}
+                    : category.split('_')[1]
+                }`}
               </span>{' '}
               movies
             </h1>
             {movies[0]?.results.map((movie, index) => (
               <FilmCard
                 key={index}
-                poster={'https://image.tmdb.org/t/p/w500/' + movie.poster_path}
+                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                 title={movie.title}
                 vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                 movieId={movie.id}
@@ -154,7 +154,7 @@ const MoviesCatalog = () => {
             {search?.results?.map((movie, index) => (
               <FilmCard
                 key={index}
-                poster={'https://image.tmdb.org/t/p/w500/' + movie.poster_path}
+                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                 title={movie.title}
                 vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                 movieId={movie.id}
@@ -163,7 +163,7 @@ const MoviesCatalog = () => {
             {search2?.results?.map((movie, index) => (
               <FilmCard
                 key={index}
-                poster={'https://image.tmdb.org/t/p/w500/' + movie.poster_path}
+                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                 title={movie.title}
                 vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                 movieId={movie.id}
@@ -172,7 +172,7 @@ const MoviesCatalog = () => {
             {search3?.results?.map((movie, index) => (
               <FilmCard
                 key={index}
-                poster={'https://image.tmdb.org/t/p/w500/' + movie.poster_path}
+                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                 title={movie.title}
                 vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                 movieId={movie.id}
@@ -181,7 +181,7 @@ const MoviesCatalog = () => {
             {search4?.results?.map((movie, index) => (
               <FilmCard
                 key={index}
-                poster={'https://image.tmdb.org/t/p/w500/' + movie.poster_path}
+                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                 title={movie.title}
                 vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                 movieId={movie.id}
@@ -190,7 +190,7 @@ const MoviesCatalog = () => {
             {search5?.results?.map((movie, index) => (
               <FilmCard
                 key={index}
-                poster={'https://image.tmdb.org/t/p/w500/' + movie.poster_path}
+                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                 title={movie.title}
                 vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                 movieId={movie.id}

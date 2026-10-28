@@ -28,7 +28,7 @@ const AsideMobile = () => {
     }
     getGenres()
       .then((genres) => setGenres(genres))
-      .catch((error: unknown) => console.log(error));
+      .catch((error: unknown) => console.error(error));
   }, []);
 
   const handleDropUpMenu = () => {
@@ -74,12 +74,12 @@ const AsideMobile = () => {
           </Link>
         </li>
         <li className="aside__item">
-          <Link to={`/upcoming_&_just_released/${'upcoming'}/${1}`}>
+          <Link to={`/upcoming_&_just_released/upcoming/1`}>
             <BiTimer />
           </Link>
         </li>
         <li className="aside__item">
-          <Link to={`/top_rated/${'top_rated'}/${1}`}>
+          <Link to={`/top_rated/top_rated/1`}>
             <BiStar />
           </Link>
         </li>

@@ -67,22 +67,22 @@ const CastCatalog = () => {
     }
     getPeople()
       .then((data) => setPeople([data]))
-      .catch((error: unknown) => console.log(error));
+      .catch((error: unknown) => console.error(error));
     getPeople2()
       .then((data) => setPeople2([data]))
-      .catch((error: unknown) => console.log(error));
+      .catch((error: unknown) => console.error(error));
     getPeople3()
       .then((data) => setPeople3([data]))
-      .catch((error: unknown) => console.log(error));
+      .catch((error: unknown) => console.error(error));
     getPeople4()
       .then((data) => setPeople4([data]))
-      .catch((error: unknown) => console.log(error));
+      .catch((error: unknown) => console.error(error));
     getPeople5()
       .then((data) => setPeople5([data]))
-      .catch((error: unknown) => console.log(error));
+      .catch((error: unknown) => console.error(error));
     getPeople6()
       .then((data) => setPeople6([data]))
-      .catch((error: unknown) => console.log(error));
+      .catch((error: unknown) => console.error(error));
   }, []);
 
   const handleSearch = () => {
@@ -154,22 +154,22 @@ const CastCatalog = () => {
       }
       searchPerson()
         .then((data) => setPerson(data))
-        .catch((error: unknown) => console.log(error));
+        .catch((error: unknown) => console.error(error));
       searchPerson2()
         .then((data) => setPerson2(data))
-        .catch((error: unknown) => console.log(error));
+        .catch((error: unknown) => console.error(error));
       searchPerson3()
         .then((data) => setPerson3(data))
-        .catch((error: unknown) => console.log(error));
+        .catch((error: unknown) => console.error(error));
       searchPerson4()
         .then((data) => setPerson4(data))
-        .catch((error: unknown) => console.log(error));
+        .catch((error: unknown) => console.error(error));
       searchPerson5()
         .then((data) => setPerson5(data))
-        .catch((error: unknown) => console.log(error));
+        .catch((error: unknown) => console.error(error));
       searchPerson6()
         .then((data) => setPerson6(data))
-        .catch((error: unknown) => console.log(error));
+        .catch((error: unknown) => console.error(error));
     }
   };
 
@@ -191,7 +191,7 @@ const CastCatalog = () => {
               <Cast
                 key={index}
                 id={cast.id}
-                photo={'https://image.tmdb.org/t/p/w500' + cast.profile_path}
+                photo={`https://image.tmdb.org/t/p/w500${cast.profile_path}`}
                 name={cast.name}
               />
             ))}
@@ -199,7 +199,7 @@ const CastCatalog = () => {
               <Cast
                 key={index}
                 id={cast.id}
-                photo={'https://image.tmdb.org/t/p/w500' + cast.profile_path}
+                photo={`https://image.tmdb.org/t/p/w500${cast.profile_path}`}
                 name={cast.name}
               />
             ))}
@@ -207,7 +207,7 @@ const CastCatalog = () => {
               <Cast
                 key={index}
                 id={cast.id}
-                photo={'https://image.tmdb.org/t/p/w500' + cast.profile_path}
+                photo={`https://image.tmdb.org/t/p/w500${cast.profile_path}`}
                 name={cast.name}
               />
             ))}
@@ -215,7 +215,7 @@ const CastCatalog = () => {
               <Cast
                 key={index}
                 id={cast.id}
-                photo={'https://image.tmdb.org/t/p/w500' + cast.profile_path}
+                photo={`https://image.tmdb.org/t/p/w500${cast.profile_path}`}
                 name={cast.name}
               />
             ))}
@@ -223,7 +223,7 @@ const CastCatalog = () => {
               <Cast
                 key={index}
                 id={cast.id}
-                photo={'https://image.tmdb.org/t/p/w500' + cast.profile_path}
+                photo={`https://image.tmdb.org/t/p/w500${cast.profile_path}`}
                 name={cast.name}
               />
             ))}
@@ -231,7 +231,7 @@ const CastCatalog = () => {
               <Cast
                 key={index}
                 id={cast.id}
-                photo={'https://image.tmdb.org/t/p/w500' + cast.profile_path}
+                photo={`https://image.tmdb.org/t/p/w500${cast.profile_path}`}
                 name={cast.name}
               />
             ))}
@@ -257,7 +257,7 @@ const CastCatalog = () => {
               <Cast
                 key={index}
                 id={cast.id}
-                photo={'https://image.tmdb.org/t/p/w500' + cast.profile_path}
+                photo={`https://image.tmdb.org/t/p/w500${cast.profile_path}`}
                 name={cast.name}
               />
             ))}
@@ -265,7 +265,7 @@ const CastCatalog = () => {
               <Cast
                 key={index}
                 id={cast.id}
-                photo={'https://image.tmdb.org/t/p/w500' + cast.profile_path}
+                photo={`https://image.tmdb.org/t/p/w500${cast.profile_path}`}
                 name={cast.name}
               />
             ))}
@@ -273,7 +273,7 @@ const CastCatalog = () => {
               <Cast
                 key={index}
                 id={cast.id}
-                photo={'https://image.tmdb.org/t/p/w500' + cast.profile_path}
+                photo={`https://image.tmdb.org/t/p/w500${cast.profile_path}`}
                 name={cast.name}
               />
             ))}
@@ -281,7 +281,7 @@ const CastCatalog = () => {
               <Cast
                 key={index}
                 id={cast.id}
-                photo={'https://image.tmdb.org/t/p/w500' + cast.profile_path}
+                photo={`https://image.tmdb.org/t/p/w500${cast.profile_path}`}
                 name={cast.name}
               />
             ))}
@@ -289,7 +289,7 @@ const CastCatalog = () => {
               <Cast
                 key={index}
                 id={cast.id}
-                photo={'https://image.tmdb.org/t/p/w500' + cast.profile_path}
+                photo={`https://image.tmdb.org/t/p/w500${cast.profile_path}`}
                 name={cast.name}
               />
             ))}
@@ -297,7 +297,7 @@ const CastCatalog = () => {
               <Cast
                 key={index}
                 id={cast.id}
-                photo={'https://image.tmdb.org/t/p/w500' + cast.profile_path}
+                photo={`https://image.tmdb.org/t/p/w500${cast.profile_path}`}
                 name={cast.name}
               />
             ))}

@@ -12,11 +12,11 @@ Setas e sinais são caracteres de texto; não há pacote de ícones. base.css e 
 
 Nenhum binário de fonte é distribuído ou baixado por estes previews. As famílias livres são nomes preferenciais nas pilhas CSS: se estiverem instaladas localmente, o navegador pode usá-las; caso contrário, usa o fallback. Portanto, a métrica e a quebra de linha podem diferir da futura fonte hospedada no projeto.
 
-| Direção | Par gratuito proposto | Licença verificada | Fallback efetivo sem instalação |
-| --- | --- | --- | --- |
-| Caderno | Source Serif 4 + Source Sans 3 | SIL Open Font License 1.1; Adobe | Georgia/Times New Roman + Segoe UI/Arial |
-| Sala 02 | Barlow Condensed + Barlow | SIL Open Font License 1.1; The Barlow Project Authors | Impact/Arial Narrow + Arial |
-| Atlas | IBM Plex Sans + IBM Plex Mono | SIL Open Font License 1.1; IBM Corp. | Segoe UI/Arial + Consolas/Courier New |
+| Direção | Par gratuito proposto          | Licença verificada                                    | Fallback efetivo sem instalação          |
+| ------- | ------------------------------ | ----------------------------------------------------- | ---------------------------------------- |
+| Caderno | Source Serif 4 + Source Sans 3 | SIL Open Font License 1.1; Adobe                      | Georgia/Times New Roman + Segoe UI/Arial |
+| Sala 02 | Barlow Condensed + Barlow      | SIL Open Font License 1.1; The Barlow Project Authors | Impact/Arial Narrow + Arial              |
+| Atlas   | IBM Plex Sans + IBM Plex Mono  | SIL Open Font License 1.1; IBM Corp.                  | Segoe UI/Arial + Consolas/Courier New    |
 
 Fontes das licenças, consultadas em 28/10/2026:
 

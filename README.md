@@ -24,9 +24,9 @@ Dois loops de requisição foram corrigidos para validar a migração; outras li
 
 ## Stack e decisões
 
-React/DOM 18.2.0, Router DOM 6.3.0 e React Icons 4.4.0 foram mantidos para separar a troca do build da atualização do runtime. Fundação: Vite 8.3.5, TypeScript 6.0.3, ESLint 10.13.0, Prettier 3.9.10 e Vitest 4.1.12. Removidos CRA/react-scripts, Web Vitals, ferramentas Jest do template e seus transitivos exclusivos. Somente package-lock.json permanece.
+React/DOM 18.2.0, Router DOM 6.3.0 e React Icons 4.4.0 foram mantidos para separar a troca do build da atualização do runtime. Fundação: Vite 8.3.5, TypeScript 6.0.3, ESLint 9.39.5, Prettier 3.9.10 e Vitest 4.1.12. Removidos CRA/react-scripts, Web Vitals, ferramentas Jest do template e seus transitivos exclusivos. Somente package-lock.json permanece. ESLint 9 é necessário para os peers dos plugins React/a11y instalados, mas está fora de suporte; risco e atualização pendente em [DEPENDENCIES.md](docs/DEPENDENCIES.md).
 
-Todo o src, incluindo telas, componentes e testes, usa TypeScript com strict:true, allowJs:false, noUncheckedIndexedAccess e exactOptionalPropertyTypes, sem exclusões de fontes ou skipLibCheck. Os contratos de filmes, pessoas, gêneros, elenco e equipe ficam em [src/types/tmdb.ts](src/types/tmdb.ts). São tipos estáticos: as respostas JSON ainda são convertidas explicitamente nos limites dos fetches legados, sem validação em execução; Zod e o cliente de dados entram na Fase 3. CSS/Sass existentes foram preservados byte a byte; não há novo tema ou Preflight aplicado.
+Todo o src, incluindo telas, componentes e testes, usa TypeScript com strict:true, allowJs:false, noUncheckedIndexedAccess e exactOptionalPropertyTypes, sem exclusões de fontes ou skipLibCheck. Os contratos de filmes, pessoas, gêneros, elenco e equipe ficam em [src/types/tmdb.ts](src/types/tmdb.ts). São tipos estáticos: as respostas JSON ainda são convertidas explicitamente nos limites dos fetches legados, sem validação em execução; Zod e o cliente de dados entram na Fase 3. CSS/Sass mantêm o visual legado; não há novo tema ou Preflight aplicado.
 
 O [STATUS.md](docs/STATUS.md) é a fonte da verdade. Direção **Caderno**, escuro padrão; PXN Games é referência apenas de clima. A paleta terá hexadecimais próprios, descritos como “paleta inspirada em” no DESIGN.md, com contraste AA recalculado nos dois temas antes da Fase 4. Não copiar cores exatas, logo, textos ou layout; os previews não precisam ser refeitos.
 
@@ -74,15 +74,24 @@ Proxy aprovado: função mínima em /api na Vercel, validação de parâmetros, 
 ## Verificações
 
 ```powershell
-npm.cmd run lint
-npm.cmd run typecheck
-npm.cmd run test -- --run
-npm.cmd run build
+npm.cmd run check
 ```
 
-Lint, tipos estritos, testes e build passaram: **22 testes em dois arquivos**, cobrindo rotas diretas, card → filme → voltar, mudança de ID, 404, ausência de loop em pessoa, busca/limpeza e campos nulos de filmes/pessoas. Testes bloqueiam requisições sem fixture. Dev e build servido também foram verificados no Chromium com interceptação de dados fictícios, sem API real. Vitest 4.1.12 foi escolhido por compatibilidade de tipos com Testing Library; não foi usado skipLibCheck para ocultar a incompatibilidade com Vitest 5.
+Lint, tipos estritos, testes e build passaram: **37 testes em cinco arquivos: 36 passam e um it.fails registra o bug conhecido das páginas de busca**, cobrindo rotas diretas, card → filme → voltar, mudança de ID, 404, ausência de loop em pessoa, busca/limpeza e campos nulos de filmes/pessoas. Testes bloqueiam requisições sem fixture. Dev e build servido também foram verificados no Chromium com interceptação de dados fictícios, sem API real. Vitest 4.1.12 foi escolhido por compatibilidade de tipos com Testing Library; não foi usado skipLibCheck para ocultar a incompatibilidade com Vitest 5.
 
-format:check está preparado; a formatação global do legado/documentos pertence ao lote ESLint/Prettier e não é apresentada como concluída. CI, E2E completo, acessibilidade e Lighthouse seguem nas fases previstas.
+check executa lint → tipos → testes (uma execução) → build → format:check e será o comando do CI. npm run format aplica Prettier; npm run format:check verifica sem escrever. Configuração enxuta: aspas simples, trailing commas e finais de linha LF. O CSS/mapa gerado em src/style e o lockfile ficam fora do formatador; os fontes Sass são formatados.
+
+ESLint usa flat config, strictTypeChecked com projectService, React Hooks/Refresh, jsx-a11y e eslint-config-prettier. HTML perigoso e console.log são erros; links target="_blank" exigem explicitamente noopener e noreferrer. O lint aceita apenas seis avisos conhecidos dos dois dropdowns de gêneros; avisos novos falham. Lista e justificativas das exceções no [STATUS.md](docs/STATUS.md#fase-2--lote-3-entregue). CI, E2E completo, correções de acessibilidade e Lighthouse seguem nas fases previstas.
+
+Para gerar o relatório informativo de cobertura v8, sem percentual mínimo:
+
+```powershell
+npm.cmd run test:coverage
+```
+
+Abra coverage/index.html após o comando. coverage/ é ignorado pelo Git. O relatório inclui os fontes do src (inclusive main.tsx não exercitado por estes testes), excluindo apenas testes e declarações .d.ts. A suíte usa respostas fictícias e fetch bloqueado por padrão. Os testes dos dois efeitos controlam a entrega das respostas e verificam contagens após atualizações de estado e de rota; a prova de regressão em cópias temporárias fica no STATUS.md.
+
+O it.fails compara as páginas esperadas 1–5 com as chamadas atuais 1,2,3,3,3. Se o bug for corrigido, esse teste falhará por passar inesperadamente e deverá virar it normal na Fase 3. Testes de cliques dos menus não certificam acessibilidade por teclado; essa revisão continua na Fase 6.
 
 Auditoria do novo lockfile em 28/10/2026: **2 entradas moderadas no Router, 0 críticas e 0 altas**. A fotografia anterior tinha 96 entradas afetadas. Atualização do Router e riscos restantes no lote de dependências, antes da publicação; sem audit fix --force. Detalhes em [DEPENDENCIES.md](docs/DEPENDENCIES.md).
 
@@ -90,17 +99,17 @@ Auditoria do novo lockfile em 28/10/2026: **2 entradas moderadas no Router, 0 cr
 
 1. Com npm run dev, abra cada caminho diretamente após `http://127.0.0.1:5173` e recarregue com F5:
 
-   | Caminho | Conferência |
-   | --- | --- |
-   | / | Cabeçalho, menus e estrutura da home |
-   | /catalog/popular/1 | Catálogo e paginação |
-   | /upcoming_&_just_released/upcoming/1 | Categoria em breve |
-   | /top_rated/top_rated/1 | Categoria bem avaliados |
-   | /genres/18/Drama | Estrutura por gênero |
-   | /movie-details/1 | Estrutura do detalhe; dados dependem do proxy |
-   | /cast | Busca e estrutura de pessoas |
-   | /cast/2 | Estrutura de biografia/filmografia; dados dependem do proxy |
-   | /endereco-inexistente | 404 com link Voltar ao início |
+   | Caminho                              | Conferência                                                 |
+   | ------------------------------------ | ----------------------------------------------------------- |
+   | /                                    | Cabeçalho, menus e estrutura da home                        |
+   | /catalog/popular/1                   | Catálogo e paginação                                        |
+   | /upcoming_&_just_released/upcoming/1 | Categoria em breve                                          |
+   | /top_rated/top_rated/1               | Categoria bem avaliados                                     |
+   | /genres/18/Drama                     | Estrutura por gênero                                        |
+   | /movie-details/1                     | Estrutura do detalhe; dados dependem do proxy               |
+   | /cast                                | Busca e estrutura de pessoas                                |
+   | /cast/2                              | Estrutura de biografia/filmografia; dados dependem do proxy |
+   | /endereco-inexistente                | 404 com link Voltar ao início                               |
 
 2. Na home, use MORE, abra página 2 no catálogo, volte pelo navegador e recarregue. Confira links de categorias no menu. Gêneros/cards dependem de dados e serão conferidos manualmente após o proxy; os testes com fixtures já exercitam card → filme → voltar.
 3. Na 404, clique Voltar ao início. A rota da SPA usa fallback HTML com HTTP 200 no dev/preview; não é uma resposta HTTP 404 do servidor.

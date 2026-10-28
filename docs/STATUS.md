@@ -1,6 +1,6 @@
 # Status do MoviesLib
 
-Atualizado em 28/10/2026. Fase atual: **2 — lote 2 (conversão completa para TypeScript estrito) entregue, aguardando commit e OK do usuário para o lote 3**. Lote 1 aprovado e commitado pelo usuário. Somente um lote por vez está autorizado. Dados reais dependem do proxy da Fase 3; termos TMDB seguem pendentes. Não iniciar lote 3 nesta entrega. As seções de lotes e fases anteriores são registros históricos, não pendências da versão atual.
+Atualizado em 28/10/2026. Fase atual: **2 — lote 4 (ampliação de testes) entregue, aguardando commit e OK do usuário para o lote 5**. Usuário aprovou o lote 3 e informou dois commits; a inspeção deste checkout ainda mostra HEAD em bd51e61 e os arquivos do lote 3 pendentes. O estado de entrada foi preservado; ver ressalva de Git neste lote. Sem mudança de comportamento, Tailwind, fontes ou redesign. Dados reais/proxy e termos TMDB continuam pendentes das fases previstas.
 
 ## Fases
 
@@ -12,7 +12,11 @@ Atualizado em 28/10/2026. Fase atual: **2 — lote 2 (conversão completa para T
 - [x] 2. Lote 1: Vite sem CRA, entrada TS, checks mínimos, saneamento e 404 mínima.
 - [x] 2. Usuário commitou lote 1 e autorizou lote 2 (conversão TS completa).
 - [x] 2. Lote 2: todo o legado convertido para TS estrito, contratos de API e testes de nulidade.
-- [ ] 2. Usuário commitar lote 2 e autorizar lote 3 (ESLint/Prettier).
+- [x] 2. Usuário commitou lote 2 e autorizou lote 3 (ESLint/Prettier).
+- [x] 2. Lote 3: regras tipadas, React/hooks/a11y/segurança, formatação e check sequencial.
+- [x] 2. Usuário aprovou o lote 3 e autorizou o lote 4; informou dois commits (divergência no checkout registrada).
+- [x] 2. Lote 4: testes de regressão dos efeitos, interações, busca conhecida e cobertura v8.
+- [ ] 2. Usuário commitar lote 4 e autorizar lote 5.
 - [ ] 2. Fundação: TypeScript, Vite, ferramentas de qualidade, testes, CI, ambiente e dependências.
 - [ ] 3. Cliente TMDB, validação, cache, cancelamento, testes e proxy aprovado na Vercel.
 - [ ] 4. Tokens, componentes base e layout responsivo.
@@ -39,24 +43,24 @@ Decidido nesta fase: editar somente documentação; registrar capacidades reais,
 
 Este STATUS.md é a **fonte da verdade das decisões vigentes**. As decisões abaixo substituem as propostas preliminares divergentes. README, ANALYSIS e DEPENDENCIES foram sincronizados; ANALYSIS preserva os achados originais em seção separada das decisões atuais.
 
-| Decisão | Motivo e limites |
-| --- | --- |
-| Manter SPA React e plano de TypeScript, Vite e React Router | Modernizar qualidade sem ampliar a arquitetura; implementação somente nas fases autorizadas |
-| Proxy serverless na Vercel, função mínima em /api | Manter a chave somente no ambiente do servidor; validar parâmetros, permitir apenas caminhos definidos, usar cache de borda curto e limitar requisições |
-| Sem login/cadastro e sem coleta de dados pessoais pelo aplicativo | Não há necessidade de autenticação no escopo; não adicionar analytics, rastreamento ou cadastro. Documentar comunicação com TMDB, Vercel e YouTube sem prometer ausência de tratamento por terceiros |
-| Tema claro/escuro e trailer com embed youtube-nocookie | Extras aprovados para a entrega; prever tokens para ambos os temas, contraste, carregamento do embed sob demanda e CSP compatível |
-| Direção Caderno aprovada; tema escuro como padrão; tonalidade do PXN Games nos dois temas | Escolha do usuário combina a hierarquia editorial e o pôster protagonista do Caderno com carvão/cinzas e vermelho da referência. Preservar telas, fluxos e URLs do legado; adaptar a camada visual, sem assumir preservação da antiga paleta amarela |
-| PXN Games é só referência de clima; paleta com hexadecimais próprios | Não copiar cores exatas, logo, textos ou layout. Antes da Fase 4, registrar no DESIGN.md como “paleta inspirada em” e recalcular AA nos dois temas. Não é necessário refazer os previews |
-| Preservar pessoa/filmografia, em cartaz e em breve | Já existem no legado; preservar comportamento e corrigir os defeitos identificados |
-| pt-BR/en, atalhos de teclado e comparação de filmes: **futuro** | Aprovados para evolução posterior, fora da implementação inicial; UI inicial em pt-BR. Acessibilidade básica por teclado continua obrigatória agora |
-| API key e token Bearer revogados e substituídos, conforme relato do usuário | Tratar a exposição anterior sem depender da privacidade do repositório; não testar ou reproduzir valores, nem reescrever o histórico |
-| Manter licença MIT existente | Preservar a licença escolhida pelo proprietário; recursos de terceiros mantêm seus próprios direitos |
+| Decisão                                                                                                                            | Motivo e limites                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ---------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Manter SPA React e plano de TypeScript, Vite e React Router                                                                        | Modernizar qualidade sem ampliar a arquitetura; implementação somente nas fases autorizadas                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Proxy serverless na Vercel, função mínima em /api                                                                                  | Manter a chave somente no ambiente do servidor; validar parâmetros, permitir apenas caminhos definidos, usar cache de borda curto e limitar requisições                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Sem login/cadastro e sem coleta de dados pessoais pelo aplicativo                                                                  | Não há necessidade de autenticação no escopo; não adicionar analytics, rastreamento ou cadastro. Documentar comunicação com TMDB, Vercel e YouTube sem prometer ausência de tratamento por terceiros                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Tema claro/escuro e trailer com embed youtube-nocookie                                                                             | Extras aprovados para a entrega; prever tokens para ambos os temas, contraste, carregamento do embed sob demanda e CSP compatível                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Direção Caderno aprovada; tema escuro como padrão; tonalidade do PXN Games nos dois temas                                          | Escolha do usuário combina a hierarquia editorial e o pôster protagonista do Caderno com carvão/cinzas e vermelho da referência. Preservar telas, fluxos e URLs do legado; adaptar a camada visual, sem assumir preservação da antiga paleta amarela                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| PXN Games é só referência de clima; paleta com hexadecimais próprios                                                               | Não copiar cores exatas, logo, textos ou layout. Antes da Fase 4, registrar no DESIGN.md como “paleta inspirada em” e recalcular AA nos dois temas. Não é necessário refazer os previews                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| Preservar pessoa/filmografia, em cartaz e em breve                                                                                 | Já existem no legado; preservar comportamento e corrigir os defeitos identificados                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| pt-BR/en, atalhos de teclado e comparação de filmes: **futuro**                                                                    | Aprovados para evolução posterior, fora da implementação inicial; UI inicial em pt-BR. Acessibilidade básica por teclado continua obrigatória agora                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| API key e token Bearer revogados e substituídos, conforme relato do usuário                                                        | Tratar a exposição anterior sem depender da privacidade do repositório; não testar ou reproduzir valores, nem reescrever o histórico                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Manter licença MIT existente                                                                                                       | Preservar a licença escolhida pelo proprietário; recursos de terceiros mantêm seus próprios direitos                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | Tailwind CSS 4.3.3, estável mais recente consultada em 28/10/2026; DaisyUI e bibliotecas de componentes visuais **não utilizados** | Versão confirmada no [registro oficial npm](https://registry.npmjs.org/tailwindcss/latest). Seguir a [integração oficial com Vite](https://tailwindcss.com/docs/installation/using-vite): tailwindcss + @tailwindcss/vite, plugin na configuração Vite e @import "tailwindcss" no CSS. Definir tokens de cores, tipografia, espaçamento, raios, sombras e movimento no tema via @theme, conforme a [documentação oficial](https://tailwindcss.com/docs/theme), evitando valores arbitrários soltos nos componentes. Direções visuais implementáveis com Tailwind e esses tokens, sem biblioteca de componentes visuais por decisão do usuário. Reconfirmar a versão estável na Fase 2 antes de instalar; nada foi instalado nesta fase |
-| TanStack Query | Cache e ciclo de consultas centralizados, deduplicação e integração de cancelamento, sem reconstruir um cache próprio |
-| Cache TMDB apenas em memória no cliente e de borda curto no proxy | Política provisória enquanto os termos não são conferidos; não persistir respostas ou metadados TMDB em localStorage nem ativar persistência do cache de consultas |
-| Minha lista persiste somente IDs | Guardar a seleção local sem armazenar títulos, pôsteres, sinopses ou outros metadados; leitura validada e dados consultados novamente quando necessário |
-| Priorizar vulnerabilidades críticas e altas na Fase 2; documentar riscos restantes | Reduzir os riscos conhecidos antes de ampliar funcionalidades; reauditar e registrar o que restar, sem prometer resultado antes da execução |
-| URL para busca/filtros/página e paginação acessível; npm com um lockfile | Manter navegação compartilhável e instalação reproduzível; remoção de yarn.lock somente na fundação aprovada |
+| TanStack Query                                                                                                                     | Cache e ciclo de consultas centralizados, deduplicação e integração de cancelamento, sem reconstruir um cache próprio                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Cache TMDB apenas em memória no cliente e de borda curto no proxy                                                                  | Política provisória enquanto os termos não são conferidos; não persistir respostas ou metadados TMDB em localStorage nem ativar persistência do cache de consultas                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Minha lista persiste somente IDs                                                                                                   | Guardar a seleção local sem armazenar títulos, pôsteres, sinopses ou outros metadados; leitura validada e dados consultados novamente quando necessário                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Priorizar vulnerabilidades críticas e altas na Fase 2; documentar riscos restantes                                                 | Reduzir os riscos conhecidos antes de ampliar funcionalidades; reauditar e registrar o que restar, sem prometer resultado antes da execução                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| URL para busca/filtros/página e paginação acessível; npm com um lockfile                                                           | Manter navegação compartilhável e instalação reproduzível; remoção de yarn.lock somente na fundação aprovada                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 
 Sobre o item 12: ele repete a ação já declarada como concluída no item 5. Registrar a revogação pelo relato do usuário, sem alegar execução pelo agente ou acesso ao painel TMDB. Novas credenciais devem ficar fora do código e dos arquivos versionados, preferencialmente em gerenciador de senhas e no ambiente do servidor na Vercel. A configuração local futura usará segredo de servidor em arquivo ignorado, sem prefixo VITE_.
 
@@ -75,7 +79,265 @@ Sobre o item 12: ele repete a ação já declarada como concluída no item 5. Re
 
 ## Próximo passo concreto
 
-**Parar após o lote 2, para revisão/commit e novo OK do usuário.** Próximo lote: consolidar ESLint/Prettier conforme o plano aprovado. Não implementar ainda Tailwind/fontes, redesign, CI, cliente de dados ou proxy. Git segue somente leitura; staging, commits e pushes são feitos pelo usuário.
+**Parar após o lote 4, para revisão/commit e novo OK do usuário.** Próximo lote: organizar pastas por responsabilidade conforme a sequência aprovada, preservando URLs/comportamento. Não iniciado. Sem Tailwind/fontes, redesign, CI ou cliente/proxy nesta entrega. Git segue somente leitura.
+
+## Fase 2 — lote 4 entregue
+
+### Escopo e respostas sobre as ferramentas anteriores
+
+- scripts/lint.mjs executa ESLint com a flat config, imprime os diagnósticos e falha por erros ou qualquer aviso não autorizado. Só aceita seis avisos nas duas linhas de origem dos dropdowns (caminho/regra/trecho/ocorrência única). eslint . direto aceita avisos novos; --max-warnings 0 rejeitaria também os seis adiados. O script foi preservado neste lote.
+- src/style/style.css e src/style/style.css.map estão versionados. App.tsx importa o CSS gerado do legado; ele foi mantido para preservar aparência e permitir build sem recompilar Sass nesta transição. Esses dois arquivos não foram reformatados/regenerados. Retirar essa dependência só em lote visual aprovado.
+- Cobertura v8 4.1.12, mesma versão do Vitest, com test:coverage e relatórios text/json-summary/html em coverage/ ignorado. Sem threshold. Inclui todo src TS/TSX, exceto testes e declarações; não oculta main.tsx não exercitado. Nenhuma dependência de runtime alterada.
+- Mantidos os 22 testes existentes; adicionados 15 casos, total 37 em cinco arquivos: **36 passam e um é falha esperada (it.fails)**. Sem snapshots grandes, test IDs, respostas reais ou rede real. Fixtures anteriores continuam pequenas e fictícias; a nova lista de gêneros tem três itens e o fetch controlado reutiliza essas respostas.
+- Queries por papel/nome/rótulo sempre que há semântica disponível. Ícones de busca/menu móvel ainda sem nome acessível usam papel/ordem em helper comentado. Ausência de aria-expanded exige conferir apenas o estado inline legado dos menus; nenhuma marcação alterada para satisfazer teste.
+- Teste antigo de navegação apresentou uma falha intermitente com aviso de navegação antes do efeito do Router 6.3. O teste agora aguarda act/microtasks antes de clicar; removida espera fixa de 75ms em favor de act. Código do aplicativo preservado. Busca/main do teste de nulidade agora usam queries por role e o helper comum, sem seletores de botão.
+
+### Provas de regressão dos efeitos
+
+- src/test/effects.test.tsx monta MoviesCatalog e CastDetails reais com MemoryRouter, sem StrictMode nesse cenário para contar uma montagem. O modo StrictMode do app não foi alterado. Render/rerender explícitos, estado do pai e respostas de fetch provocam novas renderizações; a resolução controlada impede loops ilimitados quando uma correção é revertida.
+- Catálogo: 1 requisição de filmes na montagem, nenhuma extra após resposta/rerender/estado; 1 adicional ao mudar página e 1 ao mudar categoria. Incluindo os dois menus, os totais de fetch são 3 e, após as duas mudanças de rota, 5.
+- Pessoa: 2 requisições por id (detalhes/créditos), nenhuma extra após cada resposta/rerender/estado; 2 adicionais ao mudar id. Incluindo os dois menus, os totais são 4 e depois 6.
+- Os testes verificam também as URLs consultadas; não basta estabilizar com chamadas ao endpoint errado. A prova de reversão executa somente os testes direcionados em cópia temporária, sem tocar nos componentes reais.
+
+| Experimento em cópia temporária               | Resultado                                                                     |
+| --------------------------------------------- | ----------------------------------------------------------------------------- |
+| Catálogo: trocar [category,page] por [movies] | Teste falhou na contagem: esperado 1, recebido 2 após resposta                |
+| Pessoa: retirar [id] do efeito                | Teste falhou na contagem: esperado 2, recebido 6 após respostas               |
+| Busca: corrigir somente page=4 e page=5       | it.fails ficou vermelho por passar inesperadamente, confirmando a expectativa |
+
+Todas as alterações temporárias foram restauradas na cópia. Os arquivos reais de MoviesCatalog/CastDetails permanecem byte a byte iguais ao estado de entrada. Não houve checkout/reset, escrita no índice ou commit para esses experimentos.
+
+### Busca e interações preservadas
+
+- Bug de busca **continua presente** em src/components/home/moviesCatalog/moviesCatalog.tsx:64,74,84: as funções searchMovie3/4/5 consultam page=3. src/test/search-pagination.test.tsx usa it.fails com a expectativa [1,2,3,4,5]. Preparação, renderização, query enviada e cinco respostas/cards são verificados no beforeEach, fora do it.fails, para não mascarar uma falha de fixture como bug conhecido.
+- **Fase 3:** corrigir páginas distintas e transformar o it.fails em teste normal; manter validação/cancelamento/cache para a camada de dados. Nada dessa lógica foi corrigido agora.
+- Novos testes de componente cobrem pôster null/vazio/sentinela, nota vazia/travessão, cinco links de paginação por categoria e scroll, busca vazia sem requisição, retorno ao catálogo ao limpar, menus desktop/mobile com filtragem/navegação e 404 sem API.
+- Limpeza testa o comportamento atual: X limpa o resultado e oculta o campo sem nova busca; não afirma que o legado apaga o valor do input. Revisar esse controle na Fase 3/5 junto da busca, sem mudança neste lote.
+
+### Verificações e cobertura
+
+| Verificação             | Resultado                                                                                                                                                  |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Antes                   | 22 testes em 2 arquivos passaram                                                                                                                           |
+| Depois                  | 37 casos em 5 arquivos: 36 passaram, 1 falha esperada (it.fails), 0 todos/skips na suíte completa                                                          |
+| npm run check           | Passou: lint → tipos → testes → build → format:check                                                                                                       |
+| Lint                    | 0 erros, 6 avisos previamente autorizados, 0 novos avisos; script/regra preservados                                                                        |
+| Tipos                   | strict sem exclusões/supressões; fontes do app e novos testes/utilitários verificados                                                                      |
+| Build                   | 54 módulos; JS 186,92 kB (gzip 57,03 kB), CSS 19,55 kB (gzip 3,56 kB); hashes/nome dos bundles preservados em relação ao lote 3                            |
+| npm run test:coverage   | Passou com v8: relatórios HTML/json-summary/text, sem thresholds                                                                                           |
+| Cobertura de statements | 72.16% (337/467)                                                                                                                                           |
+| Cobertura de branches   | 66.66% (100/150)                                                                                                                                           |
+| Cobertura de funções    | 62.75% (123/196)                                                                                                                                           |
+| Cobertura de linhas     | 73.52% (336/457)                                                                                                                                           |
+| Snapshots dos commits   | npm ci limpo sobre o estado de entrada; commit 1 passa check com 22 testes; commit 2 passa check com 37                                                    |
+| Revisão                 | Delta de 14 caminhos deste lote, sem mudança nos componentes/estilos/rotas; preservado o estado anterior de 46 caminhos pendentes; ver ressalva Git abaixo |
+
+Cobertura é informação sobre execução, não garantia de correção, acessibilidade ou contrato da API. main.tsx não é exercitado pelos testes de componente. Buscas de pessoas/gêneros e caminhos de erro continuam parcialmente cobertos; camada de dados/erros/cancelamento/429 na Fase 3. Relatórios ficam em coverage/ ignorado; abrir coverage/index.html após test:coverage.
+
+Lighthouse não medido. Auditoria repetida após a dependência v8: 2 moderadas no Router, zero altas/críticas. ESLint 9 EOL e os seis avisos da Fase 6 permanecem; não são declarados resolvidos por testes de clique.
+
+### Git e plano de commits do lote 4
+
+**Ressalva do checkout:** o usuário informou o lote 3 commitado, mas a inspeção inicial encontrou os 46 caminhos anteriores pendentes e HEAD bd51e61 (conclusão do lote 2). Nenhuma tentativa de reconciliar/stage/commitar foi feita. Um snapshot do estado de entrada separa exatamente o delta deste lote. Os snapshots verificáveis abaixo partem desse estado, que já contém os arquivos aprovados do lote 3; não se afirma que aplicar só os caminhos do lote 4 sobre o HEAD observado disponibiliza a configuração ausente. Confirmar os commits do lote 3 neste checkout antes de executar os comandos do lote 4, sobretudo nos arquivos compartilhados package.json/lockfile, README/STATUS/DEPENDENCIES e testes existentes.
+
+#### 1. Infraestrutura, fixtures e utilitários
+
+```text
+test: preparar fixtures controladas e cobertura v8
+
+Adiciona o provedor compatível com Vitest e fixtures pequenas sem rede.
+Permite controlar respostas para verificar regressões de efeitos.
+```
+
+PowerShell a partir da raiz, após confirmar os commits do lote 3 neste checkout:
+
+```powershell
+$paths = @(
+    'package.json'
+    'package-lock.json'
+    'vite.config.ts'
+    'src/test/fixtures/controlled-fetch.ts'
+    'src/test/fixtures/genres.ts'
+    'src/test/helpers/controls.ts'
+    'docs/DEPENDENCIES.md'
+)
+git add -- $paths
+```
+
+#### 2. Testes e registro da entrega
+
+```text
+test: ampliar regressões de efeitos e interações do legado
+
+Verifica contagens de fetch, busca, menus, paginação, cards e 404.
+Registra o bug de páginas com it.fails e documenta as provas de reversão.
+```
+
+PowerShell a partir da raiz, após confirmar os commits do lote 3 neste checkout:
+
+```powershell
+$paths = @(
+    'src/test/effects.test.tsx'
+    'src/test/interactions.test.tsx'
+    'src/test/search-pagination.test.tsx'
+    'src/test/navigation.test.tsx'
+    'src/test/nullability.test.tsx'
+    'README.md'
+    'docs/STATUS.md'
+)
+git add -- $paths
+```
+
+Cada grupo de sete caminhos entra inteiro no seu commit; package.json e lockfile permanecem juntos. Fixtures/utilitários e dependências entram no primeiro, testes e README/STATUS no segundo; sem staging parcial após o lote 3 estar commitado. Não há renomeações/remoções neste lote. Os dois snapshots passaram no check completo, com as ressalvas da base Git documentadas acima.
+
+Não commitar .env/variantes reais, credenciais, node_modules, dist, coverage (incluindo HTML/json-summary), caches/logs, scripts/snapshots/relatórios brutos de mutação temporários. Os demais caminhos do lote 3 não pertencem ao delta deste lote e devem ser reconciliados nos commits anteriores pelo usuário. Nenhum git add/commit/push executado. Não iniciar o lote 5 sem OK.
+
+## Fase 2 — lote 3 entregue
+
+### Configuração, limites e decisão de commits
+
+- Flat config com typescript-eslint 8.72.1 strictTypeChecked e projectService sobre todo o src e vite.config.ts. Sem exclusões de fontes TypeScript, alterações no tsconfig ou supressões locais. JS de ferramentas tem globals Node e lint recomendado.
+- Plugins react 7.37.5 (no-danger/links), react-hooks 7.1.1 (recommended), react-refresh 0.5.7, jsx-a11y 6.10.2 e eslint-config-prettier 10.1.8. Hooks e Refresh são erros; Prettier vem por último e desliga somente conflitos de estilo.
+- ESLint/@eslint/js 9.39.5, pois os peers de React/a11y não aceitam 10. Instalação sem force/legacy-peer-deps; npm ls --depth=0 sem incompatibilidades. **ESLint 9 está em EOL**: risco de manutenção registrado no DEPENDENCIES.md, para reavaliar no lote de dependências. Não foi declarado seguro só por o audit não apontar advisory.
+- Segurança: react/no-danger e no-console como erro (somente warn/error permitidos para diagnóstico); target="_blank" exige explicitamente os dois tokens noopener/noreferrer, incluindo links internos/Link e valores literais em expressão JSX. Regra React de links mais seletores no-restricted-syntax impõem essa política.
+- Prettier enxuto: aspas simples, trailing commas e LF. Scripts format e format:check para o repositório; src/style contém CSS/mapa gerados e não é reformatado, assim como package-lock.json. Fontes Sass, CSS de entrada, docs e previews entram na formatação. check executa lint → typecheck → test -- --run → build → format:check, sem watch.
+- **Ressalva aprovada pelo usuário nesta conversa:** manter dois commits. No primeiro, lint/tipos/testes/build passam, mas format:check e, portanto, check completo ainda falham por dívida de formatação preexistente. O segundo deixa check integral verde. Não usar baseline temporário de formatação nem ocultar esses arquivos para afirmar que o primeiro passa.
+- O primeiro commit inclui as adequações mínimas exigidas pelas novas regras: 36 console.log de erro passam a console.error (mesmo payload; muda a severidade do diagnóstico), concatenações de URL/título passam a templates equivalentes, interpolação de literais de rota é simplificada e testes extraem a URL de Request explicitamente. Sem mudar telas, URLs, buscas, efeitos, estado ou CSS aplicado. Esses ajustes **não são apresentados como formatação**.
+- O segundo commit contém somente a saída do Prettier sobre arquivos existentes. README/STATUS/DEPENDENCIES com conteúdo atualizado entram inteiros no primeiro commit, já formatados, para não misturar conteúdo documental com o segundo.
+
+### Exceções justificadas nas regras
+
+Todas têm comentário na configuração; não há eslint-disable.
+
+| Regra/opção                                             | Escopo e motivo                                                                                                                                                                                                                                                                       |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| no-confusing-void-expression: ignoreArrowShorthand      | Continua erro; permite callbacks React curtos que retornam void, sem exigir blocos artificiais                                                                                                                                                                                        |
+| restrict-template-expressions: allowNumber/allowNullish | Continua erro; serialização de IDs/páginas e preservação dos sentinelas null das imagens legadas. Pipeline de imagens/validação fica na Fase 3                                                                                                                                        |
+| no-unnecessary-condition: off                           | Somente Aside, AsideMobile, CastCatalog, CastDetails, GenresCatalog, MoviesCatalog e MovieDetails: os fetches ainda fazem asserção de DTO sem validar JSON. Guardas defensivas não devem ser removidas por inferência estática até o Zod da Fase 3; regra mantida nos demais arquivos |
+| jsx-a11y: três regras em warn                           | Somente nos arquivos dos dois dropdowns abaixo. scripts/lint.mjs aceita apenas os seis diagnósticos dessas duas linhas de origem; qualquer outro aviso falha, inclusive dentro dos mesmos arquivos                                                                                    |
+| no-console: allow warn/error                            | Continua erro para console.log e demais métodos; preserva diagnóstico de falhas enquanto o tratamento de erro da Fase 3 não existe                                                                                                                                                    |
+| react-refresh: allowConstantExport                      | Constantes são suportadas pelo Fast Refresh do Vite; a regra de exportação de componentes continua erro                                                                                                                                                                               |
+| eslint-config-prettier                                  | Preset final desliga apenas regras que conflitam com o formatador, cujo check é obrigatório na versão final                                                                                                                                                                           |
+
+### Acessibilidade adiada — Fase 6
+
+A configuração conhece Link/to do React Router; não rebaixa falsos positivos de links válidos. Os únicos seis avisos mantidos são três por controle:
+
+| Arquivo e localização                                | Controle                                                            | Regras/defeito                                                                 | Ação futura                                                                             |
+| ---------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| src/components/common/aside/aside.tsx:79             | Genres desktop; a com role button e onClick handleDropDown          | anchor-is-valid; click-events-have-key-events; interactive-supports-focus      | Trocar por controle semântico, garantir foco/teclado e revisar estilos/estado expandido |
+| src/components/common/asideMobile/asideMobile.tsx:57 | Menu de gêneros móvel; a com role button e onClick handleDropUpMenu | Mesmas três regras: âncora agindo como botão, sem acionamento por teclado/foco | Mesma revisão de semântica, teclado e aparência na Fase 6                               |
+
+Nenhuma marcação/visual desses controles foi alterada. scripts/lint.mjs verifica caminho, regra, trecho de origem e ocorrência única; não usa tolerância genérica por quantidade de avisos. Isso não é auditoria completa de acessibilidade: nomes acessíveis de controles com ícones, foco, contraste e leitores de tela continuam na Fase 6.
+
+### Evidências e resultados
+
+- Antes da formatação isolada: tipos passaram, 22 testes passaram e build passou (54 módulos). Lint: zero erros, seis avisos documentados e zero inesperados.
+- Onze probes temporários confirmaram que regras bloqueiam HTML perigoso, console.log, links internos/Link sem ambos os tokens, hooks condicionais, acesso sem tipo e novas infrações de acessibilidade. Links com os dois tokens, inclusive expressão literal JSX, foram aceitos.
+- Auditoria repetida: 2 moderadas no Router, zero críticas/altas/baixas. Dependências de runtime preservadas. Nenhum audit fix. Lighthouse não medido; sem proxy/dados reais.
+- A prova do commit de formatação compara cada arquivo antes/depois com a saída exata do mesmo Prettier/configuração e confere testes/build. Resultados finais e contagens abaixo.
+
+| Verificação          | Resultado final                                                                                                                                   |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| npm run check        | Passou na árvore final e no snapshot do segundo commit com instalação limpa                                                                       |
+| Lint                 | 0 erros, 6 avisos documentados nos dois dropdowns, 0 avisos inesperados                                                                           |
+| Tipos                | strict sobre todo o src/config, sem mudança de tsconfig nem exclusões                                                                             |
+| Testes               | 2 arquivos, 22 passaram antes e depois da formatação                                                                                              |
+| Build                | Passou antes/depois; 54 módulos, JS 186,92 kB (gzip 57,03 kB), CSS 19,55 kB (gzip 3,56 kB)                                                        |
+| Formatação           | 25 arquivos existentes alterados no segundo commit; todos iguais à saída exata do Prettier sobre a versão anterior; nenhum arquivo extra no grupo |
+| Prova de preservação | JS e CSS compilados antes/depois da formatação byte a byte idênticos (SHA-256); CSS/mapa gerados em src/style preservados                         |
+| Exceções a11y        | Probe em cópia temporária inseriu outra infração dentro de Aside; lint rejeitou os três novos avisos. Arquivo temporário restaurado               |
+| Conflitos de estilo  | eslint-config-prettier CLI não encontrou regras conflitantes nos quatro arquivos representativos                                                  |
+| Snapshot commit 1    | npm ci limpo; lint/tipos/testes/build passaram. format:check falhou conforme ressalva autorizada; check completo não é verde nesse commit         |
+| Snapshot commit 2    | npm run check completo passou após aplicar somente os 25 arquivos formatados                                                                      |
+
+21 arquivos de configuração/adequações/documentação no primeiro commit e 25 de formatação no segundo, sem sobreposição. Não houve alteração de comportamento das telas/URLs; a severidade do diagnóstico de erros mudou explicitamente de log para error no primeiro. A prova de bundles idênticos refere-se ao segundo commit, não à troca de diagnóstico do primeiro. Revisão final de escopo, padrões de credenciais/caminhos locais e git diff --check concluída sem correspondências/erros; não é garantia contra todos os formatos possíveis de segredo.
+
+### Plano de commits do lote 3
+
+#### 1. Configuração e adequações mínimas
+
+```text
+chore: consolidar lint tipado e ferramentas de formatação
+
+Configura regras de segurança, hooks, acessibilidade e check sequencial.
+Inclui adequações mínimas e documenta os avisos adiados e o EOL do ESLint 9.
+```
+
+PowerShell a partir da raiz, somente pelo usuário:
+
+```powershell
+$paths = @(
+    '.prettierignore'
+    '.prettierrc.json'
+    'README.md'
+    'docs/DEPENDENCIES.md'
+    'docs/STATUS.md'
+    'eslint.config.js'
+    'package-lock.json'
+    'package.json'
+    'scripts/lint.mjs'
+    'src/components/common/aside/aside.tsx'
+    'src/components/common/asideMobile/asideMobile.tsx'
+    'src/components/common/footer/footer.tsx'
+    'src/components/home/bannerImg/bannerImg.tsx'
+    'src/components/home/castCatalog/castCatalog.tsx'
+    'src/components/home/castDetails/castDetails.tsx'
+    'src/components/home/genresCatalog/genresCatalog.tsx'
+    'src/components/home/home.tsx'
+    'src/components/home/moviesCatalog/moviesCatalog.tsx'
+    'src/components/movie-details/movie-details.tsx'
+    'src/test/navigation.test.tsx'
+    'src/test/nullability.test.tsx'
+)
+git add -- $paths
+```
+
+#### 2. Somente formatação — 25 arquivos
+
+```text
+style: aplicar Prettier ao legado e à documentação
+
+Uniformiza a formatação sem alterar lógica, conteúdo ou aparência.
+Conclui format:check e o check integral após a configuração.
+```
+
+PowerShell a partir da raiz, somente pelo usuário:
+
+```powershell
+$paths = @(
+    'docs/ANALYSIS.md'
+    'docs/DESIGN.md'
+    'docs/design-previews/LICENSES.md'
+    'docs/design-previews/atlas.css'
+    'docs/design-previews/atlas.html'
+    'docs/design-previews/base.css'
+    'docs/design-previews/caderno.css'
+    'docs/design-previews/caderno.html'
+    'docs/design-previews/index.html'
+    'docs/design-previews/sala.css'
+    'docs/design-previews/sala.html'
+    'src/index.css'
+    'src/sass/components/castDetails/castDetails.scss'
+    'src/sass/components/common/aside/aside.scss'
+    'src/sass/components/common/asideMobile/asideMobile.scss'
+    'src/sass/components/common/footer/footer.scss'
+    'src/sass/components/common/header/header.scss'
+    'src/sass/components/home/castCatalog/castCatalog.scss'
+    'src/sass/components/home/filmCard/filmCard.scss'
+    'src/sass/components/home/home.scss'
+    'src/sass/components/movie-details/movie-details.scss'
+    'src/sass/style.scss'
+    'src/sass/variables/colors/colors.scss'
+    'src/sass/variables/common/common.scss'
+    'src/sass/variables/fonts/fonts.scss'
+)
+git add -- $paths
+```
+
+Os 21 arquivos do primeiro commit entram inteiros, incluindo atualizações documentais e adequações de lint; os 25 do segundo não têm sobreposição com eles. Não é necessário staging parcial. A exceção de format:check no primeiro foi aprovada expressamente pelo usuário; não afirmar que os dois checks integrais passam isoladamente. Sem renomeações ou remoções neste lote.
+
+Não commitar .env/variantes reais, credenciais, node_modules, dist, coverage, caches/logs, provas/scripts/snapshots/perfis temporários. Não incluir src/style gerado, fontes, Tailwind ou alterações de runtime/deploy. Nenhum git add/commit/push executado. Parar para commit e autorização do lote 4.
 
 ## Fase 2 — lote 2 entregue
 
@@ -111,17 +373,17 @@ Os dois efeitos já haviam sido corrigidos no **lote 1**, antes desta solicitaç
 
 ### Verificações do lote
 
-| Verificação | Resultado |
-| --- | --- |
-| npm run lint | Passou; 0 erros/avisos |
-| npm run typecheck | Passou; todo o src em strict, sem exclusões nem skipLibCheck |
-| npm run test -- --run | 2 arquivos, 22 testes passaram (11 anteriores + 11 novos) |
-| npm run build | Passou; 54 módulos, JS 186,78 kB (gzip 57,03 kB), CSS 19,55 kB (gzip 3,56 kB) |
-| Snapshots dos três commits propostos | npm ci limpo; lint/tipos/testes/build passaram em cada etapa acumulada, fora do repositório e sem escrita Git |
-| Navegador Chromium | 18 acessos diretos (8 rotas + 404 em dev/preview), card → detalhe → voltar nos dois; nenhuma exceção não tratada, com fixtures |
-| Cobertura de fontes | Programa TypeScript contém os 31 arquivos TS/TSX do src e vite.config.ts; nenhum JS/JSX, any ou supressão de tipos no src |
-| Revisão de escopo | 18 arquivos de dependências/estilos conferidos iguais ao HEAD; plano cobre exatamente os 57 caminhos alterados, incluindo remoções e inclusões |
-| Varredura final | 80 arquivos de texto versionáveis/build sem correspondência de padrões de API key, JWT, Bearer literal ou caminho local de usuário; git diff --check passou |
+| Verificação                          | Resultado                                                                                                                                                   |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| npm run lint                         | Passou; 0 erros/avisos                                                                                                                                      |
+| npm run typecheck                    | Passou; todo o src em strict, sem exclusões nem skipLibCheck                                                                                                |
+| npm run test -- --run                | 2 arquivos, 22 testes passaram (11 anteriores + 11 novos)                                                                                                   |
+| npm run build                        | Passou; 54 módulos, JS 186,78 kB (gzip 57,03 kB), CSS 19,55 kB (gzip 3,56 kB)                                                                               |
+| Snapshots dos três commits propostos | npm ci limpo; lint/tipos/testes/build passaram em cada etapa acumulada, fora do repositório e sem escrita Git                                               |
+| Navegador Chromium                   | 18 acessos diretos (8 rotas + 404 em dev/preview), card → detalhe → voltar nos dois; nenhuma exceção não tratada, com fixtures                              |
+| Cobertura de fontes                  | Programa TypeScript contém os 31 arquivos TS/TSX do src e vite.config.ts; nenhum JS/JSX, any ou supressão de tipos no src                                   |
+| Revisão de escopo                    | 18 arquivos de dependências/estilos conferidos iguais ao HEAD; plano cobre exatamente os 57 caminhos alterados, incluindo remoções e inclusões              |
+| Varredura final                      | 80 arquivos de texto versionáveis/build sem correspondência de padrões de API key, JWT, Bearer literal ou caminho local de usuário; git diff --check passou |
 
 Cada snapshot representa aplicar os commits anteriores mais aquele commit, na ordem abaixo. Nos dois primeiros, a cobertura de tipos permanece transicional como no lote 1; o terceiro encerra allowJs e exige strict sobre todo o src. Isso não representa exclusão ou tolerância na entrega final. README/STATUS completos entram no terceiro commit para descrever a conversão concluída. Dependências e estilos não entram em nenhum dos três.
 
@@ -233,18 +495,18 @@ Os pares JSX/TSX incluem tanto o caminho removido quanto o novo. Arquivos compar
 
 ### Resultados obtidos
 
-| Verificação | Resultado |
-| --- | --- |
-| npm run lint | Passou, 0 erros e 0 avisos |
-| npm run typecheck | Passou; strict para entrada/config/testes TS, JS legado ainda com checkJs:false |
-| npm run test -- --run | 1 arquivo, 11 testes passaram |
-| npm run build | Passou; 54 módulos, JS 185,95 kB (gzip 56,84 kB), CSS 19,55 kB (gzip 3,56 kB) |
-| npm run dev | Vite pronto em 267ms, 127.0.0.1:5173 |
-| npm run preview | dist servido em 127.0.0.1:4173 |
-| Instalação limpa | npm ci e os quatro checks repetidos em cópia temporária, todos passaram |
-| Smoke de navegador | 8 rotas existentes + 404 em dev e preview: 18 acessos diretos; card → detalhe → voltar nos dois; sem exceções não tratadas |
-| Audit | 2 moderadas (react-router e react-router-dom), 0 críticas/altas/baixas; atualização no lote de dependências |
-| Revisão final | 80 arquivos versionáveis e dist sem valores de credenciais/padrões verificados ou caminhos locais de usuário; comparados os dois literais do HEAD sem imprimi-los. Sem dependências CRA no lockfile; hashes CSS preservados; git diff --check passou |
+| Verificação           | Resultado                                                                                                                                                                                                                                            |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| npm run lint          | Passou, 0 erros e 0 avisos                                                                                                                                                                                                                           |
+| npm run typecheck     | Passou; strict para entrada/config/testes TS, JS legado ainda com checkJs:false                                                                                                                                                                      |
+| npm run test -- --run | 1 arquivo, 11 testes passaram                                                                                                                                                                                                                        |
+| npm run build         | Passou; 54 módulos, JS 185,95 kB (gzip 56,84 kB), CSS 19,55 kB (gzip 3,56 kB)                                                                                                                                                                        |
+| npm run dev           | Vite pronto em 267ms, 127.0.0.1:5173                                                                                                                                                                                                                 |
+| npm run preview       | dist servido em 127.0.0.1:4173                                                                                                                                                                                                                       |
+| Instalação limpa      | npm ci e os quatro checks repetidos em cópia temporária, todos passaram                                                                                                                                                                              |
+| Smoke de navegador    | 8 rotas existentes + 404 em dev e preview: 18 acessos diretos; card → detalhe → voltar nos dois; sem exceções não tratadas                                                                                                                           |
+| Audit                 | 2 moderadas (react-router e react-router-dom), 0 críticas/altas/baixas; atualização no lote de dependências                                                                                                                                          |
+| Revisão final         | 80 arquivos versionáveis e dist sem valores de credenciais/padrões verificados ou caminhos locais de usuário; comparados os dois literais do HEAD sem imprimi-los. Sem dependências CRA no lockfile; hashes CSS preservados; git diff --check passou |
 
 Comparação da auditoria: 96 entradas no snapshot original → 2 moderadas agora; não é contagem de explorações comprovadas. Não houve audit fix --force. O advisory/risco residual do Router está documentado em DEPENDENCIES.md e não foi declarado resolvido. Tempos/tamanhos são desta execução, não metas de desempenho ou números Lighthouse.
 
@@ -338,17 +600,17 @@ Após cada lote acima, executar e mostrar saída resumida de **npm.cmd run lint*
 
 ### Riscos da migração e detecção
 
-| Risco | Como detectar |
-| --- | --- |
-| HTML/entry, JSX em .js, imports e arquivos públicos diferentes entre CRA/Vite | Build de produção, servir dist, verificar carregamento de assets e ausência de React CDN |
-| Rotas diretas e botão voltar quebrados; diferenças Router/React e remoção de exact | Smoke com fixtures nas URLs existentes, abrir detalhe por URL, navegar entre IDs e voltar; separar fallback Vercel de dev server |
-| Tipos de props/refs e null/undefined expostos pela conversão | typecheck estrito, testes de componente e smoke com dados incompletos; sem any indiscriminado |
-| Jest, setupTests e módulos CSS/fontes incompatíveis com Vitest/Vite | Testes em jsdom, mocks explícitos, verificação dos imports e do build final |
-| Preflight, ordem CSS, pesos das fontes ou nova paleta mudarem o legado antes do redesign | Comparar capturas/estilos antes/depois e manter a infraestrutura visual sem ativação prematura |
-| Efeitos legados dispararem requisições contínuas ou conteúdo falhar sem proxy | Rede isolada nos testes/smokes; observar contagem de chamadas. Loop não deve ser ocultado por fixture. Correção da camada de dados na Fase 3; qualquer bloqueio real da fundação é relatado antes de ampliar o escopo |
-| Dados reais indisponíveis na Fase 2 porque o proxy só nasce na Fase 3 | Não usar segredo no browser nem simular validação da API real; testes com fixtures e limitação documentada. Não implantar Fase 2 como catálogo completo |
-| Literais antigos acabarem em código convertido, bundle ou logs | Varredura de src, arquivos versionáveis e dist sem imprimir valores; .env.example sem segredo e nenhum token VITE_ |
-| Atualizações reintroduzirem vulnerabilidades ou divergirem do lockfile | npm ci, audit e quatro checks após cada lote; registrar versões e advisories remanescentes |
+| Risco                                                                                    | Como detectar                                                                                                                                                                                                         |
+| ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| HTML/entry, JSX em .js, imports e arquivos públicos diferentes entre CRA/Vite            | Build de produção, servir dist, verificar carregamento de assets e ausência de React CDN                                                                                                                              |
+| Rotas diretas e botão voltar quebrados; diferenças Router/React e remoção de exact       | Smoke com fixtures nas URLs existentes, abrir detalhe por URL, navegar entre IDs e voltar; separar fallback Vercel de dev server                                                                                      |
+| Tipos de props/refs e null/undefined expostos pela conversão                             | typecheck estrito, testes de componente e smoke com dados incompletos; sem any indiscriminado                                                                                                                         |
+| Jest, setupTests e módulos CSS/fontes incompatíveis com Vitest/Vite                      | Testes em jsdom, mocks explícitos, verificação dos imports e do build final                                                                                                                                           |
+| Preflight, ordem CSS, pesos das fontes ou nova paleta mudarem o legado antes do redesign | Comparar capturas/estilos antes/depois e manter a infraestrutura visual sem ativação prematura                                                                                                                        |
+| Efeitos legados dispararem requisições contínuas ou conteúdo falhar sem proxy            | Rede isolada nos testes/smokes; observar contagem de chamadas. Loop não deve ser ocultado por fixture. Correção da camada de dados na Fase 3; qualquer bloqueio real da fundação é relatado antes de ampliar o escopo |
+| Dados reais indisponíveis na Fase 2 porque o proxy só nasce na Fase 3                    | Não usar segredo no browser nem simular validação da API real; testes com fixtures e limitação documentada. Não implantar Fase 2 como catálogo completo                                                               |
+| Literais antigos acabarem em código convertido, bundle ou logs                           | Varredura de src, arquivos versionáveis e dist sem imprimir valores; .env.example sem segredo e nenhum token VITE_                                                                                                    |
+| Atualizações reintroduzirem vulnerabilidades ou divergirem do lockfile                   | npm ci, audit e quatro checks após cada lote; registrar versões e advisories remanescentes                                                                                                                            |
 
 ### Estrutura proposta
 

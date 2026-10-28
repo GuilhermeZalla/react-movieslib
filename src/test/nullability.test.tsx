@@ -9,6 +9,7 @@ import Cast from '../components/movie-details/cast/cast';
 import BannerImg from '../components/home/bannerImg/bannerImg';
 import fixture from './fixtures/tmdb.json';
 import { fixtureFetch } from './fixtures/fetch';
+import { searchControls } from './helpers/controls';
 import type {
   MovieDetails,
   MoviePage,
@@ -24,17 +25,12 @@ beforeEach(() => {
 describe('ausências tratadas durante a conversão estrita', () => {
   it('mantém pesquisa e limpeza no cabeçalho com botões válidos', () => {
     const onSearch = vi.fn<(query: string) => void>();
-    const { container } = render(
+    render(
       <MemoryRouter>
         <Header handleSearchMovies={onSearch} />
       </MemoryRouter>,
     );
-    const input = screen.getByPlaceholderText('Search for a movie');
-    const search = container.querySelector<HTMLButtonElement>(
-      'button[name="search"]',
-    );
-    const close = container.querySelector<HTMLButtonElement>('button');
-    if (!search || !close) throw new Error('Controles de busca ausentes.');
+    const { input, submit: search, clear: close } = searchControls();
     fireEvent.change(input, { target: { value: 'Filme' } });
     fireEvent.click(search);
     expect(onSearch).toHaveBeenLastCalledWith('Filme');
@@ -86,7 +82,9 @@ describe('ausências tratadas durante a conversão estrita', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn((input: RequestInfo | URL) =>
-        String(input).startsWith('/api/tmdb/movie/1?')
+        String(input instanceof Request ? input.url : input).startsWith(
+          '/api/tmdb/movie/1?',
+        )
           ? Promise.resolve(new Response(JSON.stringify(movie)))
           : fixtureFetch(input),
       ),
@@ -94,7 +92,7 @@ describe('ausências tratadas durante a conversão estrita', () => {
     window.history.replaceState(null, '', '/movie-details/1');
     render(<App />);
     await screen.findByRole('heading', { level: 1, name: 'Filme de exemplo' });
-    const main = document.querySelector('main');
+    const main = screen.getByRole('main');
     expect(main).toHaveTextContent('$—');
     expect(main).toHaveTextContent('— minutes');
     expect(main).not.toHaveTextContent(/NaN|undefined|null/);
@@ -129,7 +127,8 @@ describe('ausências tratadas durante a conversão estrita', () => {
       vi.stubGlobal(
         'fetch',
         vi.fn((input: RequestInfo | URL) =>
-          String(input) === '/api/tmdb/person/2'
+          String(input instanceof Request ? input.url : input) ===
+          '/api/tmdb/person/2'
             ? Promise.resolve(new Response(JSON.stringify(person)))
             : fixtureFetch(input),
         ),
@@ -158,7 +157,9 @@ describe('ausências tratadas durante a conversão estrita', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn((input: RequestInfo | URL) =>
-        String(input).startsWith('/api/tmdb/movie/popular?')
+        String(input instanceof Request ? input.url : input).startsWith(
+          '/api/tmdb/movie/popular?',
+        )
           ? Promise.resolve(new Response(JSON.stringify(page)))
           : fixtureFetch(input),
       ),

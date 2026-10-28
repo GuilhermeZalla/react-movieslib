@@ -60,19 +60,19 @@ const GenresCatalog = () => {
     }
     getMovies()
       .then((data) => setMovies(data))
-      .catch((error: unknown) => console.log(error));
+      .catch((error: unknown) => console.error(error));
     getMoviesPage2()
       .then((data) => setMoviesPage2(data))
-      .catch((error: unknown) => console.log(error));
+      .catch((error: unknown) => console.error(error));
     getMoviesPage3()
       .then((data) => setMoviesPage3(data))
-      .catch((error: unknown) => console.log(error));
+      .catch((error: unknown) => console.error(error));
     getMoviesPage4()
       .then((data) => setMoviesPage4(data))
-      .catch((error: unknown) => console.log(error));
+      .catch((error: unknown) => console.error(error));
     getMoviesPage5()
       .then((data) => setMoviesPage5(data))
-      .catch((error: unknown) => console.log(error));
+      .catch((error: unknown) => console.error(error));
   }, []);
 
   const handleSearchMovies = (result: string) => {
@@ -134,19 +134,19 @@ const GenresCatalog = () => {
       }
       searchMovie()
         .then((data) => setSearch(data))
-        .catch((error: unknown) => console.log(error));
+        .catch((error: unknown) => console.error(error));
       searchMovie2()
         .then((data) => setSearch2(data))
-        .catch((error: unknown) => console.log(error));
+        .catch((error: unknown) => console.error(error));
       searchMovie3()
         .then((data) => setSearch3(data))
-        .catch((error: unknown) => console.log(error));
+        .catch((error: unknown) => console.error(error));
       searchMovie4()
         .then((data) => setSearch4(data))
-        .catch((error: unknown) => console.log(error));
+        .catch((error: unknown) => console.error(error));
       searchMovie5()
         .then((data) => setSearch5(data))
-        .catch((error: unknown) => console.log(error));
+        .catch((error: unknown) => console.error(error));
     }
   };
 
@@ -166,9 +166,7 @@ const GenresCatalog = () => {
                 ids === Number(id) ? (
                   <FilmCard
                     key={index}
-                    poster={
-                      'https://image.tmdb.org/t/p/w500/' + movie.poster_path
-                    }
+                    poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                     title={movie.title}
                     vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                     movieId={movie.id}
@@ -181,9 +179,7 @@ const GenresCatalog = () => {
                 ids === Number(id) ? (
                   <FilmCard
                     key={index}
-                    poster={
-                      'https://image.tmdb.org/t/p/w500/' + movie.poster_path
-                    }
+                    poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                     title={movie.title}
                     vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                     movieId={movie.id}
@@ -196,9 +192,7 @@ const GenresCatalog = () => {
                 ids === Number(id) ? (
                   <FilmCard
                     key={index}
-                    poster={
-                      'https://image.tmdb.org/t/p/w500/' + movie.poster_path
-                    }
+                    poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                     title={movie.title}
                     vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                     movieId={movie.id}
@@ -211,9 +205,7 @@ const GenresCatalog = () => {
                 ids === Number(id) ? (
                   <FilmCard
                     key={index}
-                    poster={
-                      'https://image.tmdb.org/t/p/w500/' + movie.poster_path
-                    }
+                    poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                     title={movie.title}
                     vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                     movieId={movie.id}
@@ -226,9 +218,7 @@ const GenresCatalog = () => {
                 ids === Number(id) ? (
                   <FilmCard
                     key={index}
-                    poster={
-                      'https://image.tmdb.org/t/p/w500/' + movie.poster_path
-                    }
+                    poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                     title={movie.title}
                     vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                     movieId={movie.id}
@@ -254,7 +244,7 @@ const GenresCatalog = () => {
             {search?.results?.map((movie, index) => (
               <FilmCard
                 key={index}
-                poster={'https://image.tmdb.org/t/p/w500/' + movie.poster_path}
+                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                 title={movie.title}
                 vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                 movieId={movie.id}
@@ -263,7 +253,7 @@ const GenresCatalog = () => {
             {search2?.results?.map((movie, index) => (
               <FilmCard
                 key={index}
-                poster={'https://image.tmdb.org/t/p/w500/' + movie.poster_path}
+                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                 title={movie.title}
                 vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                 movieId={movie.id}
@@ -272,7 +262,7 @@ const GenresCatalog = () => {
             {search3?.results?.map((movie, index) => (
               <FilmCard
                 key={index}
-                poster={'https://image.tmdb.org/t/p/w500/' + movie.poster_path}
+                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                 title={movie.title}
                 vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                 movieId={movie.id}
@@ -281,7 +271,7 @@ const GenresCatalog = () => {
             {search4?.results?.map((movie, index) => (
               <FilmCard
                 key={index}
-                poster={'https://image.tmdb.org/t/p/w500/' + movie.poster_path}
+                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                 title={movie.title}
                 vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                 movieId={movie.id}
@@ -290,7 +280,7 @@ const GenresCatalog = () => {
             {search5?.results?.map((movie, index) => (
               <FilmCard
                 key={index}
-                poster={'https://image.tmdb.org/t/p/w500/' + movie.poster_path}
+                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                 title={movie.title}
                 vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                 movieId={movie.id}

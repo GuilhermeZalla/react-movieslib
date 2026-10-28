@@ -14,27 +14,27 @@ const Footer = (props: FooterProps) => {
     <footer className="home__footer">
       <ul className="home__list">
         <li className="home__item">
-          <Link to={`/catalog/${props.category}/${1}`} onClick={goToTop}>
+          <Link to={`/catalog/${props.category}/1`} onClick={goToTop}>
             1
           </Link>
         </li>
         <li className="home__item">
-          <Link to={`/catalog/${props.category}/${2}`} onClick={goToTop}>
+          <Link to={`/catalog/${props.category}/2`} onClick={goToTop}>
             2
           </Link>
         </li>
         <li className="home__item">
-          <Link to={`/catalog/${props.category}/${3}`} onClick={goToTop}>
+          <Link to={`/catalog/${props.category}/3`} onClick={goToTop}>
             3
           </Link>
         </li>
         <li className="home__item">
-          <Link to={`/catalog/${props.category}/${4}`} onClick={goToTop}>
+          <Link to={`/catalog/${props.category}/4`} onClick={goToTop}>
             4
           </Link>
         </li>
         <li className="home__item">
-          <Link to={`/catalog/${props.category}/${5}`} onClick={goToTop}>
+          <Link to={`/catalog/${props.category}/5`} onClick={goToTop}>
             5
           </Link>
         </li>

@@ -19,14 +19,14 @@ Método: cálculo sRGB de luminância relativa e razão (LmaisClara + 0,05)/(Lma
 
 “Mínimo” abaixo é o menor contraste contra os dois fundos de uso: canvas e surface. Texto de botão usa on-accent sobre accent. Indicador de foco usa accent sobre canvas/surface, com afastamento de 4px para não encostar no preenchimento do botão.
 
-| Direção / tema | Texto mínimo | Secundário mínimo | Destaque/link/foco mínimo | Texto do botão | Borda de controle mínima |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| Caderno / escuro | 13,78 | 7,93 | 7,84 | 8,75 | 4,46 |
-| Caderno / claro | 13,98 | 5,63 | 6,26 | 7,11 | 4,03 |
-| Sala 02 / escuro | 15,10 | 8,44 | 10,82 | 12,37 | 4,54 |
-| Sala 02 / claro | 16,15 | 6,22 | 5,92 | 6,61 | 3,78 |
-| Atlas / escuro | 13,17 | 8,12 | 8,92 | 10,27 | 4,61 |
-| Atlas / claro | 13,58 | 5,70 | 6,10 | 6,79 | 3,47 |
+| Direção / tema   | Texto mínimo | Secundário mínimo | Destaque/link/foco mínimo | Texto do botão | Borda de controle mínima |
+| ---------------- | -----------: | ----------------: | ------------------------: | -------------: | -----------------------: |
+| Caderno / escuro |        13,78 |              7,93 |                      7,84 |           8,75 |                     4,46 |
+| Caderno / claro  |        13,98 |              5,63 |                      6,26 |           7,11 |                     4,03 |
+| Sala 02 / escuro |        15,10 |              8,44 |                     10,82 |          12,37 |                     4,54 |
+| Sala 02 / claro  |        16,15 |              6,22 |                      5,92 |           6,61 |                     3,78 |
+| Atlas / escuro   |        13,17 |              8,12 |                      8,92 |          10,27 |                     4,61 |
+| Atlas / claro    |        13,58 |              5,70 |                      6,10 |           6,79 |                     3,47 |
 
 Todos os pares especificados passam seus limiares. Essa verificação das paletas **não é certificação de acessibilidade do aplicativo**: overlays futuros, dados reais, embeds, estados de foco, zoom e componentes novos precisam de nova conferência. Os SVGs são ilustração; títulos e metadados relevantes se repetem fora deles, em cores verificadas. Não reduzir opacidade de texto, bordas de controle ou elementos focáveis sem recalcular o par resultante.
 
@@ -42,15 +42,15 @@ Todos os pares especificados passam seus limiares. Essa verificação das paleta
 
 Uma cor de destaque: **vermelho de tinta**, suavizado para coral no escuro; não usar ambos no mesmo tema.
 
-| Token | Escuro | Claro |
-| --- | --- | --- |
-| canvas | #191715 | #F6F0E5 |
-| surface | #24211E | #FFFBF3 |
-| ink | #F5EDE0 | #28211C |
-| muted | #C0B5A5 | #695D52 |
-| accent | #FF9B85 | #9E3326 |
+| Token     | Escuro  | Claro   |
+| --------- | ------- | ------- |
+| canvas    | #191715 | #F6F0E5 |
+| surface   | #24211E | #FFFBF3 |
+| ink       | #F5EDE0 | #28211C |
+| muted     | #C0B5A5 | #695D52 |
+| accent    | #FF9B85 | #9E3326 |
 | on-accent | #191715 | #FFFFFF |
-| line | #938575 | #827365 |
+| line      | #938575 | #827365 |
 
 Contraste AA: linha Caderno na tabela de verificação; bordas decorativas podem usar line, sem fazer dele cor de texto pequeno.
 
@@ -58,14 +58,14 @@ Contraste AA: linha Caderno na tabela de verificação; bordas decorativas podem
 
 **Source Serif 4 + Source Sans 3**, gratuitas, SIL OFL 1.1, Adobe. Títulos 500/600 em serif; corpo 400 e labels 600/700 em sans. Preview usa Georgia/Times New Roman e Segoe UI/Arial quando as fontes não estão instaladas. Fontes finais, se essa direção for escolhida, serão WOFF2 locais com licença completa e font-display:swap; não há download nesta fase.
 
-| Papel | Desktop | Mobile | Entrelinha |
-| --- | --- | --- | --- |
-| Display | 88px | 52px | 1,05 |
-| Título de filme | 48px | 36px | 1,1 |
-| Seção | 32px | 28px | 1,2 |
-| Card / abertura | 20px | 20px | 1,25 / 1,6 |
-| Corpo | 16px | 16px | 1,6 |
-| Metadados | 13px | 13px | 1,6 |
+| Papel           | Desktop | Mobile | Entrelinha |
+| --------------- | ------- | ------ | ---------- |
+| Display         | 88px    | 52px   | 1,05       |
+| Título de filme | 48px    | 36px   | 1,1        |
+| Seção           | 32px    | 28px   | 1,2        |
+| Card / abertura | 20px    | 20px   | 1,25 / 1,6 |
+| Corpo           | 16px    | 16px   | 1,6        |
+| Metadados       | 13px    | 13px   | 1,6        |
 
 ### Grid, pôster e telas
 
@@ -82,23 +82,39 @@ Pôster 2:3, sem moldura, raio zero e sem sombra. A imagem abre o card, título 
 ### Exemplo de tema Tailwind 4
 
 ```css
-@import "tailwindcss";
+@import 'tailwindcss';
 @theme static {
-  --color-canvas: #191715; --color-surface: #24211E;
-  --color-ink: #F5EDE0; --color-muted: #C0B5A5;
-  --color-accent: #FF9B85; --color-on-accent: #191715; --color-line: #938575;
-  --font-display: "Source Serif 4", Georgia, "Times New Roman", serif;
-  --font-body: "Source Sans 3", "Segoe UI", Arial, sans-serif;
-  --text-display: 5.5rem; --text-title: 3rem; --text-section: 2rem;
-  --text-card: 1.25rem; --text-body: 1rem; --text-caption: .8125rem;
-  --spacing: .25rem; --container-page: 76rem;
-  --radius-poster: 0; --radius-control: 2px; --shadow-poster: none;
-  --duration-fast: 180ms; --ease-settle: cubic-bezier(.2,.7,.2,1);
+  --color-canvas: #191715;
+  --color-surface: #24211e;
+  --color-ink: #f5ede0;
+  --color-muted: #c0b5a5;
+  --color-accent: #ff9b85;
+  --color-on-accent: #191715;
+  --color-line: #938575;
+  --font-display: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-body: 'Source Sans 3', 'Segoe UI', Arial, sans-serif;
+  --text-display: 5.5rem;
+  --text-title: 3rem;
+  --text-section: 2rem;
+  --text-card: 1.25rem;
+  --text-body: 1rem;
+  --text-caption: 0.8125rem;
+  --spacing: 0.25rem;
+  --container-page: 76rem;
+  --radius-poster: 0;
+  --radius-control: 2px;
+  --shadow-poster: none;
+  --duration-fast: 180ms;
+  --ease-settle: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-[data-theme="light"] {
-  --color-canvas: #F6F0E5; --color-surface: #FFFBF3;
-  --color-ink: #28211C; --color-muted: #695D52;
-  --color-accent: #9E3326; --color-on-accent: #FFFFFF; --color-line: #827365;
+[data-theme='light'] {
+  --color-canvas: #f6f0e5;
+  --color-surface: #fffbf3;
+  --color-ink: #28211c;
+  --color-muted: #695d52;
+  --color-accent: #9e3326;
+  --color-on-accent: #ffffff;
+  --color-line: #827365;
 }
 ```
 
@@ -114,15 +130,15 @@ Pôster 2:3, sem moldura, raio zero e sem sombra. A imagem abre o card, título 
 
 Uma cor de destaque: **amarelo de programação**, que vira ocre no claro para garantir leitura. Fundos e textos são neutros com leve calor.
 
-| Token | Escuro | Claro |
-| --- | --- | --- |
-| canvas | #101112 | #F3F3EA |
-| surface | #1D1F21 | #FFFFFF |
-| ink | #F5F5EE | #151715 |
-| muted | #B9BAB1 | #575B52 |
-| accent | #F2CE56 | #725A00 |
+| Token     | Escuro  | Claro   |
+| --------- | ------- | ------- |
+| canvas    | #101112 | #F3F3EA |
+| surface   | #1D1F21 | #FFFFFF |
+| ink       | #F5F5EE | #151715 |
+| muted     | #B9BAB1 | #575B52 |
+| accent    | #F2CE56 | #725A00 |
 | on-accent | #101112 | #FFFFFF |
-| line | #85877E | #797D70 |
+| line      | #85877E | #797D70 |
 
 Contraste AA: linha Sala 02 na tabela. O amarelo escuro não é reutilizado como texto sobre fundo claro; o ocre é a variante semântica desse tema.
 
@@ -130,14 +146,14 @@ Contraste AA: linha Sala 02 na tabela. O amarelo escuro não é reutilizado como
 
 **Barlow Condensed + Barlow**, gratuitas, SIL OFL 1.1, The Barlow Project Authors. Título condensado 600/700, corpo regular 400, navegação 600. Fallback: Impact/Arial Narrow e Arial. Impact é fonte do sistema, não arquivo gratuito redistribuído; a substituição será Barlow Condensed local com licença quando implementada. Como Impact é mais pesada, o preview exagera levemente o peso em relação ao par proposto.
 
-| Papel | Desktop / tablet | Mobile | Entrelinha |
-| --- | --- | --- | --- |
-| Display | 128px / 96px | 64px | 1,05 |
-| Título de filme | 80px / 64px | 48px | 1,1 |
-| Seção | 40px | 28px | 1,2 |
-| Card | 24px | 24px | 1,25 |
-| Corpo | 16px | 16px | 1,6 |
-| Metadados | 13px | 13px | 1,6 |
+| Papel           | Desktop / tablet | Mobile | Entrelinha |
+| --------------- | ---------------- | ------ | ---------- |
+| Display         | 128px / 96px     | 64px   | 1,05       |
+| Título de filme | 80px / 64px      | 48px   | 1,1        |
+| Seção           | 40px             | 28px   | 1,2        |
+| Card            | 24px             | 24px   | 1,25       |
+| Corpo           | 16px             | 16px   | 1,6        |
+| Metadados       | 13px             | 13px   | 1,6        |
 
 ### Grid, pôster e telas
 
@@ -154,23 +170,39 @@ Pôster 2:3, cantos retos, sem sombra, número de ordem fora da imagem; metadado
 ### Exemplo de tema Tailwind 4
 
 ```css
-@import "tailwindcss";
+@import 'tailwindcss';
 @theme static {
-  --color-canvas: #101112; --color-surface: #1D1F21;
-  --color-ink: #F5F5EE; --color-muted: #B9BAB1;
-  --color-accent: #F2CE56; --color-on-accent: #101112; --color-line: #85877E;
-  --font-display: "Barlow Condensed", Impact, "Arial Narrow", sans-serif;
+  --color-canvas: #101112;
+  --color-surface: #1d1f21;
+  --color-ink: #f5f5ee;
+  --color-muted: #b9bab1;
+  --color-accent: #f2ce56;
+  --color-on-accent: #101112;
+  --color-line: #85877e;
+  --font-display: 'Barlow Condensed', Impact, 'Arial Narrow', sans-serif;
   --font-body: Barlow, Arial, sans-serif;
-  --text-display: 8rem; --text-title: 5rem; --text-section: 2.5rem;
-  --text-card: 1.5rem; --text-body: 1rem; --text-caption: .8125rem;
-  --spacing: .25rem; --container-page: 76rem;
-  --radius-poster: 0; --radius-control: 0; --shadow-poster: none;
-  --duration-fast: 120ms; --ease-settle: cubic-bezier(.2,.7,.2,1);
+  --text-display: 8rem;
+  --text-title: 5rem;
+  --text-section: 2.5rem;
+  --text-card: 1.5rem;
+  --text-body: 1rem;
+  --text-caption: 0.8125rem;
+  --spacing: 0.25rem;
+  --container-page: 76rem;
+  --radius-poster: 0;
+  --radius-control: 0;
+  --shadow-poster: none;
+  --duration-fast: 120ms;
+  --ease-settle: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-[data-theme="light"] {
-  --color-canvas: #F3F3EA; --color-surface: #FFFFFF;
-  --color-ink: #151715; --color-muted: #575B52;
-  --color-accent: #725A00; --color-on-accent: #FFFFFF; --color-line: #797D70;
+[data-theme='light'] {
+  --color-canvas: #f3f3ea;
+  --color-surface: #ffffff;
+  --color-ink: #151715;
+  --color-muted: #575b52;
+  --color-accent: #725a00;
+  --color-on-accent: #ffffff;
+  --color-line: #797d70;
 }
 ```
 
@@ -186,15 +218,15 @@ Pôster 2:3, cantos retos, sem sombra, número de ordem fora da imagem; metadado
 
 Uma cor de destaque: **verde de catálogo**, menta no escuro e verde-folha no claro. Os demais tokens são neutros minerais dessaturados da mesma temperatura.
 
-| Token | Escuro | Claro |
-| --- | --- | --- |
-| canvas | #111C1B | #F0F4EE |
-| surface | #1A2926 | #FFFFFF |
-| ink | #EBF1E9 | #162A24 |
-| muted | #B1C2B8 | #4C6558 |
-| accent | #8ED6AF | #236743 |
+| Token     | Escuro  | Claro   |
+| --------- | ------- | ------- |
+| canvas    | #111C1B | #F0F4EE |
+| surface   | #1A2926 | #FFFFFF |
+| ink       | #EBF1E9 | #162A24 |
+| muted     | #B1C2B8 | #4C6558 |
+| accent    | #8ED6AF | #236743 |
 | on-accent | #111C1B | #FFFFFF |
-| line | #7A9486 | #6D8877 |
+| line      | #7A9486 | #6D8877 |
 
 Contraste AA: linha Atlas na tabela; a borda no claro é a combinação mais próxima do limite de 3:1, mas passa sem opacidade reduzida.
 
@@ -202,14 +234,14 @@ Contraste AA: linha Atlas na tabela; a borda no claro é a combinação mais pr�
 
 **IBM Plex Sans + IBM Plex Mono**, gratuitas, SIL OFL 1.1, IBM Corp. Sans 400/600 para títulos e leitura; Mono 400/500 somente para IDs, labels e metadados curtos. Fallback: Segoe UI/Arial e Consolas/Courier New. Evitar sinopses e parágrafos longos em mono. WOFF2 local e avisos OFL na implementação da direção escolhida; nenhum binário nesta fase.
 
-| Papel | Desktop | Mobile | Entrelinha |
-| --- | --- | --- | --- |
-| Display | 56px | 40px | 1,05 |
-| Título de filme | 40px | 32px | 1,1 |
-| Seção | 28px | 28px | 1,2 |
-| Card | 20px | 20px | 1,25 |
-| Corpo | 16px | 16px | 1,6 |
-| Dados/labels mono | 13px | 13px | 1,6 |
+| Papel             | Desktop | Mobile | Entrelinha |
+| ----------------- | ------- | ------ | ---------- |
+| Display           | 56px    | 40px   | 1,05       |
+| Título de filme   | 40px    | 32px   | 1,1        |
+| Seção             | 28px    | 28px   | 1,2        |
+| Card              | 20px    | 20px   | 1,25       |
+| Corpo             | 16px    | 16px   | 1,6        |
+| Dados/labels mono | 13px    | 13px   | 1,6        |
 
 ### Grid, pôster e telas
 
@@ -226,24 +258,40 @@ Pôster 2:3, raio de 4px, sem sombra. Dados ficam abaixo e usam algarismos tabul
 ### Exemplo de tema Tailwind 4
 
 ```css
-@import "tailwindcss";
+@import 'tailwindcss';
 @theme static {
-  --color-canvas: #111C1B; --color-surface: #1A2926;
-  --color-ink: #EBF1E9; --color-muted: #B1C2B8;
-  --color-accent: #8ED6AF; --color-on-accent: #111C1B; --color-line: #7A9486;
-  --font-display: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
-  --font-body: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
-  --font-data: "IBM Plex Mono", Consolas, "Courier New", monospace;
-  --text-display: 3.5rem; --text-title: 2.5rem; --text-section: 1.75rem;
-  --text-card: 1.25rem; --text-body: 1rem; --text-caption: .8125rem;
-  --spacing: .25rem; --container-page: 76rem;
-  --radius-poster: 4px; --radius-control: 4px; --shadow-poster: none;
-  --duration-fast: 150ms; --ease-settle: cubic-bezier(.2,.7,.2,1);
+  --color-canvas: #111c1b;
+  --color-surface: #1a2926;
+  --color-ink: #ebf1e9;
+  --color-muted: #b1c2b8;
+  --color-accent: #8ed6af;
+  --color-on-accent: #111c1b;
+  --color-line: #7a9486;
+  --font-display: 'IBM Plex Sans', 'Segoe UI', Arial, sans-serif;
+  --font-body: 'IBM Plex Sans', 'Segoe UI', Arial, sans-serif;
+  --font-data: 'IBM Plex Mono', Consolas, 'Courier New', monospace;
+  --text-display: 3.5rem;
+  --text-title: 2.5rem;
+  --text-section: 1.75rem;
+  --text-card: 1.25rem;
+  --text-body: 1rem;
+  --text-caption: 0.8125rem;
+  --spacing: 0.25rem;
+  --container-page: 76rem;
+  --radius-poster: 4px;
+  --radius-control: 4px;
+  --shadow-poster: none;
+  --duration-fast: 150ms;
+  --ease-settle: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-[data-theme="light"] {
-  --color-canvas: #F0F4EE; --color-surface: #FFFFFF;
-  --color-ink: #162A24; --color-muted: #4C6558;
-  --color-accent: #236743; --color-on-accent: #FFFFFF; --color-line: #6D8877;
+[data-theme='light'] {
+  --color-canvas: #f0f4ee;
+  --color-surface: #ffffff;
+  --color-ink: #162a24;
+  --color-muted: #4c6558;
+  --color-accent: #236743;
+  --color-on-accent: #ffffff;
+  --color-line: #6d8877;
 }
 ```
 
@@ -259,15 +307,15 @@ Antes das páginas: implementar tokens dos dois temas, tipografia, link, botão 
 
 Estimativas relativas para a implementação completa após escolha; desempenho e acessibilidade abaixo são avaliações de projeto, não pontuações medidas do aplicativo.
 
-| Critério | Caderno | Sala 02 | Atlas |
-| --- | --- | --- | --- |
-| Personalidade | Publicação de cinema, calor e leitura | Programação gráfica, impacto e ritmo | Biblioteca, exploração e precisão |
-| Grid | 12 colunas, abertura assimétrica, ficha 3/6/3 | Abertura 5/2, sequência de pôsteres, ficha 2/5 | Trilho lateral, 3 cards e linha compacta, ficha tabular |
-| Esforço | Médio: reflow da assimetria e hierarquia | Médio: títulos condensados e quebras longas | Médio/alto: índice, densidade e alternância de cards |
-| Risco de parecer genérico | Baixo se preservar tipografia e proporção | Médio: preto/amarelo exige composição própria | Médio: pode parecer um dashboard se houver excesso de dados |
-| Desempenho | Bom potencial; duas fontes, pôster de abertura maior | Bom potencial; imagens regulares e pouco efeito | Bom potencial; mais informação e foco no custo do DOM |
-| Acessibilidade | Leitura confortável; cuidar de ordem e respiro no mobile | Contraste forte; limitar caixa alta e largura dos títulos | Hierarquia previsível; limitar mono, densidade e navegação |
-| Ponto de atenção | Conteúdo visível por dobra | Saturação tipográfica | Frieza e excesso de metadados |
+| Critério                  | Caderno                                                  | Sala 02                                                   | Atlas                                                       |
+| ------------------------- | -------------------------------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------- |
+| Personalidade             | Publicação de cinema, calor e leitura                    | Programação gráfica, impacto e ritmo                      | Biblioteca, exploração e precisão                           |
+| Grid                      | 12 colunas, abertura assimétrica, ficha 3/6/3            | Abertura 5/2, sequência de pôsteres, ficha 2/5            | Trilho lateral, 3 cards e linha compacta, ficha tabular     |
+| Esforço                   | Médio: reflow da assimetria e hierarquia                 | Médio: títulos condensados e quebras longas               | Médio/alto: índice, densidade e alternância de cards        |
+| Risco de parecer genérico | Baixo se preservar tipografia e proporção                | Médio: preto/amarelo exige composição própria             | Médio: pode parecer um dashboard se houver excesso de dados |
+| Desempenho                | Bom potencial; duas fontes, pôster de abertura maior     | Bom potencial; imagens regulares e pouco efeito           | Bom potencial; mais informação e foco no custo do DOM       |
+| Acessibilidade            | Leitura confortável; cuidar de ordem e respiro no mobile | Contraste forte; limitar caixa alta e largura dos títulos | Hierarquia previsível; limitar mono, densidade e navegação  |
+| Ponto de atenção          | Conteúdo visível por dobra                               | Saturação tipográfica                                     | Frieza e excesso de metadados                               |
 
 ## Recomendação
 
