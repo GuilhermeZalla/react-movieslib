@@ -2,6 +2,10 @@
 
 Este inventário preserva os achados originais e registra as atualizações dos lotes 1, 3 e 4. O [STATUS.md](STATUS.md) é a fonte da verdade das decisões vigentes.
 
+## Atualização vigente — Fase 3, grupo 1 (28/10/2026)
+
+Adicionados **zod 4.6.7** e **@tanstack/react-query 5.105.0**, tags latest estáveis consultadas no registro npm; versões exatas. Query declara peers React/@types/react ^18 ou ^19, atendidos por React 18.3.1/types 18 instalados. React 18 é desvio aceito; reavaliar 19 depois da Fase 6. Sem force/legacy-peer-deps. Instalação reportou **zero vulnerabilidades**. Zod define contratos/testes; Query instalado, sem integração com telas neste grupo. SDK Vercel e proxy não instalados/implementados ainda. Ferramentas anteriores e risco ESLint 9 EOL preservados. Fotografias abaixo pertencem às etapas anteriores.
+
 ## Atualização vigente — retomada da Fase 2 (28/10/2026)
 
 - React/DOM **18.3.1** e Router DOM **7.18.5**, mantendo BrowserRouter e imports atuais. Router 6.30.6 foi avaliado, mas manteve dois avisos moderados e falhou com exactOptionalPropertyTypes nas declarações da biblioteca. Router 7 aceita React >=18 e Node >=20, atendidos pelo projeto. Sem enfraquecer TS, force, overrides ou legacy-peer-deps.

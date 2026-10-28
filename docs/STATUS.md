@@ -1,6 +1,38 @@
 # Status do MoviesLib
 
-Atualizado em 28/10/2026. Fase atual: **2 — retomada de dependências e CI, aguardando revisão/commit do proprietário**. O usuário escolheu concluir as ferramentas da fundação. O trabalho do outro agente foi preservado; os commits chamados de Fases 4–7 não equivalem ao aceite completo dessas fases. A revisão abaixo prevalece sobre afirmações históricas divergentes. Git utilizado somente para leitura.
+Atualizado em 28/10/2026. Fase atual: **3 — grupo 1, contratos validados, entregue para revisão/commit**. Fase 2 aprovada e commitada pelo usuário em **97c6e3e**. Executar um grupo por vez e aguardar OK antes do seguinte. O trabalho anterior foi preservado; títulos dos commits chamados Fases 4–7 não equivalem ao aceite completo dessas fases. Git somente leitura.
+
+## Fase 3 — grupo 1: contratos e validação
+
+### Ajustes aprovados e limites
+
+- **React 18.3.1 é desvio aceito**; reavaliar React 19 depois da Fase 6. **Adicionar Playwright ao CI é pendência da Fase 7**; o workflow atual executa lint/tipos dos arquivos E2E, mas não o navegador.
+- Cache de borda fixado em **60 s**, sem aumentar até o proprietário conferir os termos TMDB. Cache do cliente somente em memória, sem persistência de metadados; Minha lista futura somente IDs.
+- Pesquisa somente leitura no snapshot original d4036a7 e no código atual: **nenhum language explícito**. O legado usava o default **en-US** do TMDB, confirmado na [referência oficial](https://developer.themoviedb.org/reference/movie-popular-list). No grupo 2 o servidor imporá language=en-US e include_adult=false; cliente não poderá escolher esses valores. A filtragem de conteúdo adulto será aplicada também aos endpoints cujo parâmetro não garanta exclusão. Interface/idioma visual não alterados.
+- [WAF oficial Vercel](https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting), consultado em 28/10/2026: disponível no Hobby; **1 regra de rate limit por projeto**, dentro de 3 regras customizadas totais; janela fixa de **10 s a 10 min**, chaves **IP/JA4**, **1 milhão de requisições permitidas incluídas**. Contadores por região; não prometer cota global entre regiões. Limite proposto continua 60/minuto por IP/região.
+- **Painel Vercel (não versionado): não acessado nem configurado pelo agente; ativação da regra não confirmada. Código neste grupo: nenhum limitador, SDK, proxy ou adaptador criado.** WAF permanece a opção planejada para o grupo 2, pois está disponível no Hobby; plano B de produção em memória não foi necessário. Se a disponibilidade efetiva divergir, documentar eventual fallback como “melhor esforço, por instância”, sem alegar garantia distribuída.
+- O adaptador de desenvolvimento ficará exclusivamente em server, sem import pelo cliente. Critério do grupo 2 e do fim da fase: dist não conter o valor de teste do segredo, o nome da variável de servidor nem marcadores do adaptador. Nenhum token real solicitado ou manuseado neste grupo.
+
+### Entrega do grupo 1
+
+- Instalados **zod 4.6.7** e **@tanstack/react-query 5.105.0**, versões estáveis latest consultadas no registro npm, fixadas no lockfile. Query declara React/types React ^18 ou ^19; React instalado 18.3.1 compatível. Query ainda não tem Provider nem uso pelas telas; isso é grupo 4.
+- src/api/tmdb/schemas.ts define filmes, pessoas, gêneros, elenco, equipe, créditos e páginas. Tipos derivados com z.infer; src/types/tmdb.ts preserva todos os exports/caminhos anteriores por reexport type. Page<T> deriva os metadados do schema e mantém results genérico.
+- Campos essenciais inválidos são rejeitados, sem converter strings da API em números. Campos de apresentação ausentes têm defaults null/arrays vazios; dados novos desconhecidos são removidos do modelo, sem rejeitar a evolução da API. Créditos anexados continuam opcionais. Datas vazias/null são aceitas; imagens devem ser caminhos relativos do TMDB, sem URLs externas/traversal. A validação em execução nas telas só será conectada pelo cliente dos grupos 3/4; fetches legados ainda fazem asserções.
+- shared/tmdbRequest.ts valida IDs inteiros positivos seguros, páginas 1–500, categorias enumeradas e busca até 200 caracteres, normalizada NFC/trim/espaços. Entrada vazia é válida para limpeza, mas não para consulta. Objetos estritos rejeitam parâmetros extras, inclusive language/include_adult, e arrays duplicados. Enforcement HTTP/allowlist entram no grupo 2, sem alterar a busca agora.
+- tsconfig e ESLint tipado incluem **api, server e shared**, sem novas exclusões/supressões. Vitest separado em projetos client/jsdom e server/node, ambos no npm run check. Servidor/compartilhados têm fetch bloqueado por padrão; fixtures e schemas não fazem rede real.
+- Não alterados componentes de produto, estilos, fontes, URLs ou comportamento. O bug da busca continua no it.fails até o grupo 4. README e inventário de dependências atualizados.
+
+### Validação e próximo passo
+
+**npm run check passou** na árvore de trabalho e em snapshot temporário com npm ci e CI=true: lint **0 erros/avisos**, tipos estritos incluindo os diretórios novos, **66 testes passando + 1 it.fails (67 casos, sete arquivos)**, build e Prettier. Antes: 36 + 1; adicionados 30 casos de contratos/parâmetros. Testes de parâmetros executam em Node, sem document; schemas e UI em jsdom. Zero chamadas reais à rede. npm ci reportou zero vulnerabilidades; aviso ESLint 9 EOL preservado.
+
+Cobertura v8 passou com os dois projetos: **70,62% statements, 59,52% branches, 60,95% funções e 71,67% linhas**; schemas e parâmetros compartilhados com 100% das linhas executadas. Sem thresholds mínimos. JS **219,28 kB / 67,56 kB gzip**, CSS **39,12 kB / 7,86 kB gzip**, mesmos nomes/hash Vite da entrega anterior (index-DlojWT0Q.js e index-BowjHu4_.css), sem alteração visual neste grupo.
+
+Build do snapshot com segredo fictício somente no ambiente do processo: dist sem o marcador de teste, sem TMDB_READ_ACCESS_TOKEN e sem o texto identificador do setup Node. Nenhum token real usado. Ainda não há adaptador de desenvolvimento: repetir a prova específica de exclusão quando ele existir no grupo 2. Varredura por padrões de credenciais/caminhos locais: nenhuma correspondência; git diff --check passou. Isso não certifica todos os formatos possíveis de segredo.
+
+Parar para commit/OK; somente então implementar o grupo 2 (proxy). O conjunto deste grupo foi validado isoladamente, sem escrita no Git.
+
+Plano deste grupo: **feat: definir contratos validados da API**. Incluir package.json/lockfile, tsconfig.json, eslint.config.js, vite.config.ts, schemas e testes, reexports de tipos, shared, setup Node, README, STATUS e DEPENDENCIES. Documentação compartilhada entra inteira neste commit. Não incluir .env real, credenciais, node_modules, dist, coverage, relatórios de navegador, caches/logs ou arquivos temporários.
 
 ## Revisão da retomada — dependências e CI
 
@@ -126,7 +158,7 @@ Sobre o item 12: ele repete a ação já declarada como concluída no item 5. Re
 
 ## Próximo passo concreto
 
-Revisar e commitar dependências/CI da retomada da Fase 2. Depois aguardar autorização do próximo lote; fontes/licenças e Fase 3 continuam abertas. Não publicar como catálogo completo. Git segue somente leitura.
+Revisar e commitar o grupo 1 da Fase 3. Após OK, implementar o grupo 2 (proxy e ambiente Vercel), sem visual. Fontes/paleta ficam na Fase 4; não publicar como catálogo completo. Git segue somente leitura.
 
 ## Fase 2 — lote 5 entregue
 

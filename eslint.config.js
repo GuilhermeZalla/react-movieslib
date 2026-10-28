@@ -20,6 +20,9 @@ export default tseslint.config(
     files: [
       'src/**/*.{ts,tsx}',
       'e2e/**/*.ts',
+      'api/**/*.ts',
+      'server/**/*.ts',
+      'shared/**/*.ts',
       'vite.config.ts',
       'playwright.config.ts',
     ],
@@ -105,7 +108,13 @@ export default tseslint.config(
     },
   },
   {
-    files: ['*.{js,ts}', 'scripts/**/*.mjs', 'e2e/**/*.ts'],
+    files: [
+      '*.{js,ts}',
+      'scripts/**/*.mjs',
+      'e2e/**/*.ts',
+      'api/**/*.ts',
+      'server/**/*.ts',
+    ],
     languageOptions: { globals: globals.node },
   },
   // Prettier owns formatting; this preset disables only conflicting stylistic rules.
