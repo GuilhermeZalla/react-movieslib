@@ -1,6 +1,6 @@
 # Status do MoviesLib
 
-Atualizado em 28/10/2026. Fase atual: **2 — lote 1 (Vite e checks mínimos) entregue, aguardando commit e próximo OK do usuário**. Plano da Fase 2 aprovado com ajustes; somente um lote por vez está autorizado. CRA removido, dev/build Vite e checks mínimos verificados. Dados reais dependem do proxy da Fase 3; termos TMDB seguem pendentes. Não iniciar lote 2 nesta entrega.
+Atualizado em 28/10/2026. Fase atual: **2 — lote 2 (conversão completa para TypeScript estrito) entregue, aguardando commit e OK do usuário para o lote 3**. Lote 1 aprovado e commitado pelo usuário. Somente um lote por vez está autorizado. Dados reais dependem do proxy da Fase 3; termos TMDB seguem pendentes. Não iniciar lote 3 nesta entrega. As seções de lotes e fases anteriores são registros históricos, não pendências da versão atual.
 
 ## Fases
 
@@ -10,7 +10,9 @@ Atualizado em 28/10/2026. Fase atual: **2 — lote 1 (Vite e checks mínimos) en
 - [x] 1. Usuário escolheu Caderno, com tema escuro padrão e tonalidade inspirada no PXN Games nos dois temas.
 - [x] 2. Plano aprovado com execução de um lote por vez e parada para commit/OK.
 - [x] 2. Lote 1: Vite sem CRA, entrada TS, checks mínimos, saneamento e 404 mínima.
-- [ ] 2. Usuário commitar lote 1 e autorizar lote 2 (conversão TS completa).
+- [x] 2. Usuário commitou lote 1 e autorizou lote 2 (conversão TS completa).
+- [x] 2. Lote 2: todo o legado convertido para TS estrito, contratos de API e testes de nulidade.
+- [ ] 2. Usuário commitar lote 2 e autorizar lote 3 (ESLint/Prettier).
 - [ ] 2. Fundação: TypeScript, Vite, ferramentas de qualidade, testes, CI, ambiente e dependências.
 - [ ] 3. Cliente TMDB, validação, cache, cancelamento, testes e proxy aprovado na Vercel.
 - [ ] 4. Tokens, componentes base e layout responsivo.
@@ -64,7 +66,7 @@ Sobre o item 12: ele repete a ação já declarada como concluída no item 5. Re
 - Implementar proxy aprovado na Vercel. Definir TTL curto de borda e mecanismo efetivo de rate limit; contador em memória não garante limite entre instâncias. Não persistir respostas TMDB para implementar esse controle.
 - Completar o README na fase de configuração do proxy com os nomes efetivos das variáveis de servidor na Vercel e o passo a passo local com vercel dev ou equivalente, incluindo arquivo ignorado e .env.example sem valores reais. O README já registra a decisão e esclarece que o proxy ainda não está implementado.
 - Usuário conferirá os termos completos sobre cache, retenção, redistribuição e demais cláusulas. Até lá, manter política provisória aprovada: memória no TanStack Query, borda curta no proxy e Minha lista somente com IDs; sem persistência de metadados TMDB em localStorage. A política não constitui confirmação contratual.
-- Lote 1 com instalação, lint, typecheck, 11 testes e build verificados. Tipos ainda não cobrem internamente JS legado (allowJs, checkJs:false); conversão completa no lote 2. Dados reais, cache e proxy não foram validados ou implementados nesta etapa.
+- Lote 2 com lint, typecheck estrito de todo o src, 22 testes e build verificados. Não restam JS/JSX no src, allowJs provisório ou exclusões de fontes. JSON continua sem validação em execução; dados reais, cache e proxy ficam para a Fase 3.
 - Lighthouse antes/depois: **não medido**. Capturar baseline do legado antes de substituir a UI, em ambiente controlado; não medir uma página de erro como baseline.
 - Responsividade em 360/768/1024/1440 px e contraste AA: riscos estáticos identificados, sem verificação visual.
 - 404 mínima adicionada no lote 1 com estilos existentes. Equipe, recomendações e galeria continuam pendentes; não existiam no legado, embora o pedido as descrevesse como preservação.
@@ -73,7 +75,147 @@ Sobre o item 12: ele repete a ação já declarada como concluída no item 5. Re
 
 ## Próximo passo concreto
 
-**Parar após o lote 1, para revisão/commit e novo OK do usuário.** Próximo lote: conversão estrita completa para TypeScript. Não implementar ainda Tailwind/fontes, redesign, CI, cliente de dados ou proxy. O plano abaixo é a referência da sequência aprovada. Git segue somente leitura; staging, commits e pushes são feitos pelo usuário.
+**Parar após o lote 2, para revisão/commit e novo OK do usuário.** Próximo lote: consolidar ESLint/Prettier conforme o plano aprovado. Não implementar ainda Tailwind/fontes, redesign, CI, cliente de dados ou proxy. Git segue somente leitura; staging, commits e pushes são feitos pelo usuário.
+
+## Fase 2 — lote 2 entregue
+
+### Conversão e limites
+
+- Convertidos os 24 arquivos JSX restantes para TSX: componentes comuns, home, catálogos, detalhes, telas, App e rotas. Entrada e testes atualizados para os novos imports; os testes existentes já eram TypeScript desde o lote 1 e foram mantidos e adaptados.
+- tsconfig.json com strict:true, allowJs:false, noUncheckedIndexedAccess:true e exactOptionalPropertyTypes:true. Todo o src e vite.config.ts incluídos; sem exclude, skipLibCheck, supressões @ts-ignore/@ts-nocheck ou any explícito/implícito no código-fonte. O ESLint continua verificando o projeto inteiro.
+- Contratos próprios em src/types/tmdb.ts para filmes/resumos/detalhes, pessoas, gêneros, elenco, equipe e respostas paginadas. Preservam nomes dos campos da API e nulidade; créditos anexados são opcionais com tratamento na tela. Compatíveis com a futura definição de schemas Zod, sem instalar Zod agora.
+- Props, estados, refs DOM, callbacks, parâmetros de rota e retornos assíncronos tipados. Propriedades opcionais têm guardas, fallback ou valor padrão. Respostas JSON passam por unknown e uma asserção explícita do contrato em cada fetch legado; isso **não valida JSON em execução**. Validação, response.ok, cancelamento, cache e centralização do cliente permanecem na Fase 3, sem reescrever a lógica de busca neste lote.
+- URLs, classes, estrutura normal das telas e estilos preservados. package.json, package-lock.json e CSS/Sass/mapas não foram alterados; nenhuma instalação no projeto, Tailwind ou fonte nova. A instalação limpa de verificação ocorreu somente em cópia temporária.
+- Inclusos 11 testes de regressão de nulidade/controles além dos 11 existentes. Sem dados reais ou segredos: todas as respostas dos testes são fictícias.
+
+### Correções reveladas pela tipagem
+
+1. **Refs inicialmente nulas:** Header, Aside e AsideMobile agora verificam a existência dos elementos antes de acessar style/value. Os dois modos de Header exigem callback apenas quando a busca está presente; evita chamar função ausente.
+2. **Botões com type inválido:** type="click" substituído por type="button" em Header/AsideMobile, mantendo os cliques e evitando semântica de submit acidental.
+3. **Callback ausente em gênero:** o link comum de gênero aceita ausência do callback de fechar menu e só o invoca quando fornecido; o uso pelo menu móvel não lança exceção.
+4. **Nota nula:** listas, busca e filmografia usam travessão quando vote_average é null, em vez de chamar toFixed em null. O card com pôster continua visível.
+5. **Campos de detalhe nulos:** data sem valor não recebe split; orçamento/receita/duração ausentes mostram travessão, em vez de NaN ou valores indefinidos. Créditos não anexados não impedem a renderização.
+6. **Imagens ausentes:** detalhe de filme/pessoa não monta URL com null; banner sem fundo não gera imagem quebrada. FilmCard e Cast aceitam null explicitamente e conservam a ocultação legada de cards sem imagem; o personagem opcional recebe padrão null.
+7. **Pessoa ainda não carregada ou com campos nulos:** acesso ao primeiro resultado protegido; deathday ausente não cria linha de falecimento. Gênero 0 é “Not specified” e 3 é “Non-binary”, conservando os rótulos anteriores para 1/2; antes todos os códigos diferentes de 2 viravam “Feminine”. Valores conforme [referência oficial](https://developer.themoviedb.org/reference/person-details).
+8. **Ausência de parâmetros/resultados:** id ausente não dispara fetch de detalhe; categoria/página usam os valores padrão legados. Busca usa estado resposta-ou-null, sem mistura string/objeto; mapas tratam ausência. Nenhuma validação nova de parâmetros introduzida nesta etapa.
+9. **Props removidas do Router:** retirado exact, atributo não suportado pelo Router 6. Os paths e correspondência das rotas permanecem iguais. Removida também a asserção de elemento não nulo no teste de navegação, substituída por verificação explícita.
+
+### Efeitos citados na análise e pendências da Fase 3
+
+Os dois efeitos já haviam sido corrigidos no **lote 1**, antes desta solicitação. Nenhuma nova reescrita de lógica foi necessária neste lote; preservadas as dependências existentes:
+
+- Catálogo: [moviesCatalog.tsx](../src/components/home/moviesCatalog/moviesCatalog.tsx#L22), efeito nas linhas 22–33, dependências category/page. Antes da correção histórica dependia dos dados que atualizava.
+- Pessoa: [castDetails.tsx](../src/components/home/castDetails/castDetails.tsx#L27), efeito nas linhas 27–49, dependência id. Antes da correção histórica não tinha array de dependências.
+- Detalhe de filme continua acompanhando id (linhas 20–35 de movie-details.tsx), como no lote 1. Apenas a guarda de id ausente foi adicionada nos detalhes durante a tipagem.
+- Para a Fase 3: busca de filmes ainda repete page=3 nos fetches das linhas 64, 74 e 84 de moviesCatalog.tsx. Sem deduplicação/cache/cancelamento ou checagem response.ok. Não corrigidos agora para preservar o escopo e a lógica legada.
+
+### Verificações do lote
+
+| Verificação | Resultado |
+| --- | --- |
+| npm run lint | Passou; 0 erros/avisos |
+| npm run typecheck | Passou; todo o src em strict, sem exclusões nem skipLibCheck |
+| npm run test -- --run | 2 arquivos, 22 testes passaram (11 anteriores + 11 novos) |
+| npm run build | Passou; 54 módulos, JS 186,78 kB (gzip 57,03 kB), CSS 19,55 kB (gzip 3,56 kB) |
+| Snapshots dos três commits propostos | npm ci limpo; lint/tipos/testes/build passaram em cada etapa acumulada, fora do repositório e sem escrita Git |
+| Navegador Chromium | 18 acessos diretos (8 rotas + 404 em dev/preview), card → detalhe → voltar nos dois; nenhuma exceção não tratada, com fixtures |
+| Cobertura de fontes | Programa TypeScript contém os 31 arquivos TS/TSX do src e vite.config.ts; nenhum JS/JSX, any ou supressão de tipos no src |
+| Revisão de escopo | 18 arquivos de dependências/estilos conferidos iguais ao HEAD; plano cobre exatamente os 57 caminhos alterados, incluindo remoções e inclusões |
+| Varredura final | 80 arquivos de texto versionáveis/build sem correspondência de padrões de API key, JWT, Bearer literal ou caminho local de usuário; git diff --check passou |
+
+Cada snapshot representa aplicar os commits anteriores mais aquele commit, na ordem abaixo. Nos dois primeiros, a cobertura de tipos permanece transicional como no lote 1; o terceiro encerra allowJs e exige strict sobre todo o src. Isso não representa exclusão ou tolerância na entrega final. README/STATUS completos entram no terceiro commit para descrever a conversão concluída. Dependências e estilos não entram em nenhum dos três.
+
+Roteiro manual reduzido no [README](../README.md#conferência-manual-após-a-conversão-typescript): busca/limpeza e menus, recarga de detalhe de filme/pessoa, card → detalhe → voltar e 404. O roteiro preenchido depende do proxy; regressões de nulidade foram exercitadas com fixtures. Sem mudança de URLs ou novo visual. Auditoria não repetida neste lote: o resultado do lote 1 permanece como fotografia (2 moderadas no Router, 0 críticas/altas); resolução no lote próprio. Lighthouse não medido.
+
+### Plano de commits do lote 2
+
+#### 1. refactor: tipar contratos da API e componentes comuns
+
+```text
+refactor: tipar contratos da API e componentes comuns
+
+Define os formatos TMDB e protege props e referências dos componentes compartilhados.
+Adapta fixtures sem alterar URLs ou estilos.
+```
+
+Executar pelo usuário a partir da raiz:
+
+```powershell
+$paths = @(
+    'src/components/common/aside/aside.jsx', 'src/components/common/aside/aside.tsx'
+    'src/components/common/aside/genres/genres.jsx', 'src/components/common/aside/genres/genres.tsx'
+    'src/components/common/asideMobile/asideMobile.jsx', 'src/components/common/asideMobile/asideMobile.tsx'
+    'src/components/common/footer/footer.jsx', 'src/components/common/footer/footer.tsx'
+    'src/components/common/header/header.jsx', 'src/components/common/header/header.tsx'
+    'src/components/home/bannerImg/bannerImg.jsx', 'src/components/home/bannerImg/bannerImg.tsx'
+    'src/components/home/filmCard/filmCard.jsx', 'src/components/home/filmCard/filmCard.tsx'
+    'src/components/movie-details/cast/cast.jsx', 'src/components/movie-details/cast/cast.tsx'
+    'src/components/movie-details/genres/genres.jsx', 'src/components/movie-details/genres/genres.tsx'
+    'src/types/tmdb.ts'
+    'src/test/fixtures/fetch.ts'
+    'src/test/fixtures/tmdb.json'
+)
+git add -- $paths
+```
+
+#### 2. refactor: converter home e catálogos para TypeScript
+
+```text
+refactor: converter home e catálogos para TypeScript
+
+Tipa estados e respostas das listagens e trata notas nulas.
+Preserva buscas, paginação e apresentação do legado.
+```
+
+Executar pelo usuário a partir da raiz:
+
+```powershell
+$paths = @(
+    'src/components/home/home.jsx', 'src/components/home/home.tsx'
+    'src/components/home/castCatalog/castCatalog.jsx', 'src/components/home/castCatalog/castCatalog.tsx'
+    'src/components/home/genresCatalog/genresCatalog.jsx', 'src/components/home/genresCatalog/genresCatalog.tsx'
+    'src/components/home/moviesCatalog/moviesCatalog.jsx', 'src/components/home/moviesCatalog/moviesCatalog.tsx'
+)
+git add -- $paths
+```
+
+#### 3. refactor: concluir conversão estrita do legado
+
+```text
+refactor: concluir conversão estrita do legado
+
+Converte detalhes, telas e rotas e remove a transição allowJs.
+Cobre nulidade com testes e documenta limites e verificações do lote.
+```
+
+Executar pelo usuário a partir da raiz:
+
+```powershell
+$paths = @(
+    'src/components/home/castDetails/castDetails.jsx', 'src/components/home/castDetails/castDetails.tsx'
+    'src/components/movie-details/movie-details.jsx', 'src/components/movie-details/movie-details.tsx'
+    'src/App.jsx', 'src/App.tsx'
+    'src/routes.jsx', 'src/routes.tsx'
+    'src/screens/castCatalogScreen.jsx', 'src/screens/castCatalogScreen.tsx'
+    'src/screens/castDetailsScreen.jsx', 'src/screens/castDetailsScreen.tsx'
+    'src/screens/genresCatalogScreen.jsx', 'src/screens/genresCatalogScreen.tsx'
+    'src/screens/homeScreen.jsx', 'src/screens/homeScreen.tsx'
+    'src/screens/movie-detailsScreen.jsx', 'src/screens/movie-detailsScreen.tsx'
+    'src/screens/moviesCatalogScreen.jsx', 'src/screens/moviesCatalogScreen.tsx'
+    'src/screens/notFoundScreen.jsx', 'src/screens/notFoundScreen.tsx'
+    'src/main.tsx'
+    'src/test/navigation.test.tsx'
+    'src/test/nullability.test.tsx'
+    'tsconfig.json'
+    'README.md'
+    'docs/STATUS.md'
+)
+git add -- $paths
+```
+
+Os pares JSX/TSX incluem tanto o caminho removido quanto o novo. Arquivos compartilhados de contratos/fixtures entram no primeiro commit; testes finais, configuração strict e toda a atualização documental entram no terceiro. Não é necessário staging parcial de arquivos. Os quatro checks foram verificados para cada snapshot acumulado. Nenhum git add/commit/push foi executado.
+
+**Não commitar:** .env e variantes, credenciais, node_modules, dist, coverage, caches/logs, perfis/screenshots/scripts temporários. package.json/lockfile, estilos, DESIGN/previews, ANALYSIS e DEPENDENCIES estão fora deste lote e não precisam de commit. Não iniciar o lote 3 sem novo OK.
 
 ## Fase 2 — lote 1 entregue
 

@@ -1,4 +1,16 @@
 import fixture from './tmdb.json';
+import type {
+  GenreList,
+  MovieDetails,
+  MoviePage,
+  MovieSummary,
+  PersonDetails,
+  PersonMovieCredits,
+  PersonPage,
+} from '../../types/tmdb';
+
+const movie = fixture.movie satisfies MovieDetails & MovieSummary;
+const person = { ...fixture.person, gender: 0 } satisfies PersonDetails;
 
 export function fixtureFetch(input: RequestInfo | URL): Promise<Response> {
   const value = input instanceof Request ? input.url : String(input);
@@ -13,19 +25,26 @@ export function fixtureFetch(input: RequestInfo | URL): Promise<Response> {
     );
   }
 
-  let data: object;
+  let data:
+    | GenreList
+    | MovieDetails
+    | MoviePage
+    | PersonDetails
+    | PersonMovieCredits
+    | PersonPage;
 
   if (url.pathname === '/api/tmdb/genre/movie/list') {
-    data = { genres: fixture.movie.genres };
+    data = { genres: movie.genres };
   } else if (/\/person\/\d+\/movie_credits$/.test(url.pathname)) {
-    data = { cast: [fixture.movie] };
+    data = { cast: [movie], crew: [] };
   } else if (/\/person\/\d+$/.test(url.pathname)) {
-    data = { ...fixture.person, id: Number(url.pathname.split('/').at(-1)) };
+    data = { ...person, id: Number(url.pathname.split('/').at(-1)) };
   } else if (/\/movie\/\d+$/.test(url.pathname)) {
-    data = { ...fixture.movie, id: Number(url.pathname.split('/').at(-1)) };
+    data = { ...movie, id: Number(url.pathname.split('/').at(-1)) };
   } else if (/\/person\/popular$|\/search\/person$/.test(url.pathname)) {
     data = {
-      results: [fixture.person],
+      results: [person],
+      total_results: 6,
       total_pages: 6,
       page: Number(url.searchParams.get('page') || 1),
     };
@@ -35,7 +54,8 @@ export function fixtureFetch(input: RequestInfo | URL): Promise<Response> {
     )
   ) {
     data = {
-      results: [fixture.movie],
+      results: [movie],
+      total_results: 5,
       total_pages: 5,
       page: Number(url.searchParams.get('page') || 1),
     };

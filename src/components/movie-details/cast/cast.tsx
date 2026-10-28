@@ -1,0 +1,30 @@
+import { Link } from 'react-router-dom';
+
+interface CastProps {
+  id: number;
+  photo: string | null;
+  name: string;
+  character?: string | null;
+}
+
+const Cast = ({ character = null, ...props }: CastProps) => {
+  const goToTop = () => {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  };
+  if (!props.photo || props.photo === 'https://image.tmdb.org/t/p/w500null') {
+    return null;
+  } else {
+    return (
+      <Link to={`/cast/${props.id}`} onClick={goToTop}>
+        <div className="cast">
+          <img src={props.photo} alt={props.name} />
+          <h2 className="cast__title">{props.name}</h2>
+          <h3>{character}</h3>
+        </div>
+      </Link>
+    );
+  }
+};
+
+export default Cast;

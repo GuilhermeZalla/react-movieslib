@@ -3,8 +3,8 @@
 Catálogo de filmes e pessoas com dados do The Movie Database (TMDB). Projeto de estudo e portfólio, sem vínculo com TMDB ou estúdios.
 
 MoviesLib is a React single-page application for browsing movies and people.
-It now builds with Vite and has a TypeScript entry point and automated checks.
-Legacy screens remain in JavaScript and keep their existing styles.
+It builds with Vite and uses strict TypeScript throughout the application.
+Existing screens keep their styles, URLs and navigation.
 Live data awaits the server-only TMDB proxy planned for Phase 3.
 
 Deploy: [LINK DO DEPLOY]
@@ -26,7 +26,7 @@ Dois loops de requisição foram corrigidos para validar a migração; outras li
 
 React/DOM 18.2.0, Router DOM 6.3.0 e React Icons 4.4.0 foram mantidos para separar a troca do build da atualização do runtime. Fundação: Vite 8.3.5, TypeScript 6.0.3, ESLint 10.13.0, Prettier 3.9.10 e Vitest 4.1.12. Removidos CRA/react-scripts, Web Vitals, ferramentas Jest do template e seus transitivos exclusivos. Somente package-lock.json permanece.
 
-Entrada, configuração e testes usam TypeScript. Telas legadas seguem JS/JSX com allowJs e checkJs:false provisórios: o typecheck **ainda não verifica internamente todo o legado JS**. A conversão estrita completa é o próximo lote. CSS/Sass existentes foram preservados byte a byte; não há novo tema ou Preflight aplicado.
+Todo o src, incluindo telas, componentes e testes, usa TypeScript com strict:true, allowJs:false, noUncheckedIndexedAccess e exactOptionalPropertyTypes, sem exclusões de fontes ou skipLibCheck. Os contratos de filmes, pessoas, gêneros, elenco e equipe ficam em [src/types/tmdb.ts](src/types/tmdb.ts). São tipos estáticos: as respostas JSON ainda são convertidas explicitamente nos limites dos fetches legados, sem validação em execução; Zod e o cliente de dados entram na Fase 3. CSS/Sass existentes foram preservados byte a byte; não há novo tema ou Preflight aplicado.
 
 O [STATUS.md](docs/STATUS.md) é a fonte da verdade. Direção **Caderno**, escuro padrão; PXN Games é referência apenas de clima. A paleta terá hexadecimais próprios, descritos como “paleta inspirada em” no DESIGN.md, com contraste AA recalculado nos dois temas antes da Fase 4. Não copiar cores exatas, logo, textos ou layout; os previews não precisam ser refeitos.
 
@@ -80,7 +80,7 @@ npm.cmd run test -- --run
 npm.cmd run build
 ```
 
-Lote 1: lint e tipos passaram; **11 testes passaram**, cobrindo rotas diretas, card → filme → voltar, mudança de ID, 404 e ausência de loop em pessoa. Testes bloqueiam requisições sem fixture. Dev e build servido também foram verificados no Chromium com interceptação de dados fictícios, sem API real. Vitest 4.1.12 foi escolhido por compatibilidade de tipos com Testing Library; não foi usado skipLibCheck para ocultar a incompatibilidade com Vitest 5.
+Lint, tipos estritos, testes e build passaram: **22 testes em dois arquivos**, cobrindo rotas diretas, card → filme → voltar, mudança de ID, 404, ausência de loop em pessoa, busca/limpeza e campos nulos de filmes/pessoas. Testes bloqueiam requisições sem fixture. Dev e build servido também foram verificados no Chromium com interceptação de dados fictícios, sem API real. Vitest 4.1.12 foi escolhido por compatibilidade de tipos com Testing Library; não foi usado skipLibCheck para ocultar a incompatibilidade com Vitest 5.
 
 format:check está preparado; a formatação global do legado/documentos pertence ao lote ESLint/Prettier e não é apresentada como concluída. CI, E2E completo, acessibilidade e Lighthouse seguem nas fases previstas.
 
@@ -106,6 +106,16 @@ Auditoria do novo lockfile em 28/10/2026: **2 entradas moderadas no Router, 0 cr
 3. Na 404, clique Voltar ao início. A rota da SPA usa fallback HTML com HTTP 200 no dev/preview; não é uma resposta HTTP 404 do servidor.
 4. Encerre o dev, execute build/preview e repita os caminhos na porta 4173. O fallback da hospedagem Vercel ainda não foi configurado.
 5. Confira o visual legado e ausência de chave no código/Network. Não espere dados reais nem insira credenciais para completar essa conferência.
+
+## Conferência manual após a conversão TypeScript
+
+As URLs não mudaram. Com npm run dev, confira somente os pontos afetados pela conversão:
+
+1. Em /catalog/popular/1 e /cast, abra a busca pela lupa, digite e limpe pelo X; confira também abrir/fechar menus. Resultados dependem do proxy; os testes usam fixtures.
+2. Recarregue /movie-details/1 e /cast/2: a estrutura deve abrir sem erro de importação. Com dados disponíveis, confirme card → detalhe → voltar; campos ausentes não devem produzir NaN, URLs de imagem terminadas em null ou atribuir gênero feminino a pessoas sem gênero informado.
+3. Abra /endereco-inexistente e use Voltar ao início. Não é necessário repetir todas as categorias do roteiro anterior; os caminhos foram mantidos e cobertos pelos testes.
+
+Sem o proxy, a conferência preenchida e dos campos nulos está limitada às fixtures dos testes. Não adicione credenciais ao frontend para fazê-la.
 
 ## Créditos e licença
 

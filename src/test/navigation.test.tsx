@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import App from '../App.jsx';
+import App from '../App';
 import { fixtureFetch } from './fixtures/fetch';
 
 beforeEach(() => {
@@ -40,7 +40,10 @@ describe('contratos de navegação preservados na migração', () => {
     const people = await screen.findAllByRole('heading', {
       name: 'Pessoa de exemplo',
     });
-    fireEvent.click(people[0].closest('a')!);
+    const link = people[0]?.closest('a');
+    expect(link).toBeInstanceOf(HTMLAnchorElement);
+    if (!link) throw new Error('Link de pessoa ausente na fixture.');
+    fireEvent.click(link);
     expect(
       await screen.findByRole('heading', {
         level: 1,
