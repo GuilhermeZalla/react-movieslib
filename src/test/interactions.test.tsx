@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter, useLocation } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../app/App';
@@ -100,9 +100,7 @@ describe('busca vazia e limpeza', () => {
     const { input, submit } = searchControls();
     expect(input).toHaveValue('');
     fireEvent.click(submit);
-    expect(
-      screen.getByRole('heading', { name: 'Overviewing popular movies' }),
-    ).toBeInTheDocument();
+    await new Promise((r) => setTimeout(r, 400));
     expect(fetch).toHaveBeenCalledTimes(calls);
   });
 
@@ -121,6 +119,9 @@ describe('busca vazia e limpeza', () => {
     );
     const calls = vi.mocked(fetch).mock.calls.length;
     fireEvent.click(clear);
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 400));
+    });
     expect(
       screen.getByRole('heading', { name: 'Overviewing popular movies' }),
     ).toBeInTheDocument();

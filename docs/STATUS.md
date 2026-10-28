@@ -1,6 +1,6 @@
 # Status do MoviesLib
 
-Atualizado em 28/10/2026. Fase atual: **4 — grupo 4 (b), detalhe do filme e pessoa migrados para consultas + testes de regressão, entregue para revisão/commit**. Grupo 4a aprovado e commitado pelo usuário. Executar um grupo por vez e aguardar OK antes do seguinte. Git somente leitura. **Mensagens de commit sempre em português**.
+Atualizado em 28/10/2026. Fase atual: **Fase 4 (b), componentes base com testes e página /design (dev-only), entregue para revisão/commit**. Fase 4a aprovado e commitado. Executar um grupo por vez e aguardar OK antes do seguinte. Git somente leitura. **Mensagens de commit sempre em português**.
 
 ## Pendências de pré-publicação — vigentes
 
@@ -1206,3 +1206,6 @@ Define estilo, proxy, cache e escopo aprovados antes da migração.
 Todos os temas desses quatro arquivos entram nesse commit. Não há mudança de runtime entre commits, pois há somente este commit documental. **Não é possível confirmar lint/tipos/testes/build verdes:** faltam scripts e dependências instaladas, e o teste legado procura conteúdo ausente. A documentação não corrige essas condições.
 
 Não commitar: .env e variantes, credenciais, cache/logs npm, relatórios temporários brutos com caminhos locais, node_modules, build, coverage, artefatos de navegador, screenshots/GIFs não revisados. Arquivos legados com segredos ficam fora deste commit documental e exigem saneamento em fase aprovada; revogação já informada pelo proprietário.
+Nota Fase 4 (a): hash CSP do script inline do index.html (sha256-cE7N6gNicf4X7ETopK2nUiAdJR0qlnFWtvKhoNvM2/4=), para uso com `script-src 'sha256-...'` (sem nonce).
+Nota Fase 4: CDN no legado para Fase 6 — apenas `https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css` em index.html (integridade SRI presente). Demais recursos são locais.
+Alternativa de vermelho para tema escuro (mais saturado): #e85a4f (contraste 5,11:1 contra canvas, 4,58:1 contra surface, AA). Opção atual: #ff9b85 (coral). Decisão pendente do usuário.

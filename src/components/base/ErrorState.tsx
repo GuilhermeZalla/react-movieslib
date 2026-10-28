@@ -2,7 +2,7 @@ import Button from './Button';
 
 interface ErrorStateProps {
   message: string;
-  onRetry: () => void;
+  onRetry?: () => void;
   retryLabel?: string;
 }
 
@@ -14,9 +14,11 @@ const ErrorState = ({
   return (
     <div className="flex flex-col items-center justify-center gap-4 p-12 text-center">
       <p className="font-body text-body text-ink">{message}</p>
-      <Button variant="primary" onClick={onRetry}>
-        {retryLabel}
-      </Button>
+      {onRetry && (
+        <Button variant="primary" onClick={onRetry}>
+          {retryLabel}
+        </Button>
+      )}
     </div>
   );
 };

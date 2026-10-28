@@ -40,10 +40,7 @@ describe('Fase 3: páginas distintas da busca de filmes', () => {
     expect(pages).toHaveLength(5);
   });
 
-  it.fails(
-    'deve consultar páginas 1–5 uma vez cada; legado ainda chama 1,2,3,3,3',
-    () => {
-      expect(pages).toEqual(['1', '2', '3', '4', '5']);
-    },
-  );
+  it('deve consultar páginas 1-5 uma vez cada', () => {
+    expect(pages).toEqual(['1', '2', '3', '4', '5']);
+  });
 });

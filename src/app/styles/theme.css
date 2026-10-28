@@ -1,0 +1,64 @@
+﻿@theme static {
+  /* Cores (Caderno) */
+  --color-canvas: #191715;
+  --color-surface: #24211e;
+  --color-ink: #f5ede0;
+  --color-muted: #c0b5a5;
+  --color-accent: #ff9b85;
+  --color-on-accent: #191715;
+  --color-line: #938575;
+
+  /* Tipografia */
+  --font-display: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-body: 'Source Sans 3', 'Segoe UI', Arial, sans-serif;
+  --text-display: 5.5rem;
+  --text-title: 3rem;
+  --text-section: 2rem;
+  --text-card: 1.25rem;
+  --text-body: 1rem;
+  --text-caption: 0.8125rem;
+
+  /* Espaçamento */
+  --spacing: 0.25rem;
+  --container-page: 76rem;
+
+  /* Raios */
+  --radius-poster: 0;
+  --radius-control: 2px;
+
+  /* Sombras */
+  --shadow-poster: none;
+
+  /* Movimento */
+  --duration-fast: 180ms;
+  --ease-settle: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* Z-index */
+  --z-base: 0;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-modal: 50;
+  --z-toast: 60;
+}
+
+[data-theme='light'] {
+  --color-canvas: #f6f0e5;
+  --color-surface: #fffbf3;
+  --color-ink: #28211c;
+  --color-muted: #695d52;
+  --color-accent: #9e3326;
+  --color-on-accent: #ffffff;
+  --color-line: #827365;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --color-canvas: #f6f0e5;
+    --color-surface: #fffbf3;
+    --color-ink: #28211c;
+    --color-muted: #695d52;
+    --color-accent: #9e3326;
+    --color-on-accent: #ffffff;
+    --color-line: #827365;
+  }
+}

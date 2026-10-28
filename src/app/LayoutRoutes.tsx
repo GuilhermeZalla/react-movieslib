@@ -6,6 +6,10 @@ import MoviesCatalogScreen from '../pages/movies/MoviesCatalogScreen';
 import CastDetailsScreen from '../pages/person-details/CastDetailsScreen';
 import CastCatalogScreen from '../pages/people/CastCatalogScreen';
 import NotFoundScreen from '../pages/not-found/NotFoundScreen';
+import React from 'react';
+const DesignSystemScreen = import.meta.env.DEV
+  ? React.lazy(() => import('../pages/design/DesignSystem'))
+  : null;
 
 const LayoutRoutes = () => {
   return (
@@ -28,6 +32,16 @@ const LayoutRoutes = () => {
         <Route path={'/genres/:id/:genre'} element={<GenresCatalogScreen />} />
         <Route path={'/cast/:id'} element={<CastDetailsScreen />} />
         <Route path={'/cast'} element={<CastCatalogScreen />} />
+        {import.meta.env.DEV && (
+          <Route
+            path="/design"
+            element={
+              <React.Suspense fallback={null}>
+                {DesignSystemScreen ? <DesignSystemScreen /> : null}
+              </React.Suspense>
+            }
+          />
+        )}
         <Route path="*" element={<NotFoundScreen />} />
       </Routes>
     </BrowserRouter>

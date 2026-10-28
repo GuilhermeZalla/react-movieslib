@@ -1,5 +1,6 @@
-@import 'tailwindcss';
-@import './styles/theme.css';
+﻿@import 'tailwindcss/theme' layer(theme);
+@import 'tailwindcss/utilities' layer(utilities);
+@import './app/styles/theme.css';
 @import './fonts/fonts.css';
 
 body {

@@ -30,7 +30,7 @@ TypeScript estrito cobre src, api, server, shared, e2e e configurações Vite/Pl
 
 O [STATUS.md](docs/STATUS.md) é a fonte da verdade. Direção **Caderno**, escuro padrão; PXN Games é referência apenas de clima. A paleta terá hexadecimais próprios, descritos como “paleta inspirada em” no DESIGN.md, com contraste AA recalculado nos dois temas antes da Fase 4. Não copiar cores exatas, logo, textos ou layout; os previews não precisam ser refeitos.
 
-Estilo aprovado: Tailwind CSS 4.3.3, tokens em @theme, sem DaisyUI ou biblioteca de componentes visuais. Há fontes legadas locais (PT Sans/Source Sans Pro); as famílias Caderno Source Serif 4/Source Sans 3 e os arquivos completos de licença ficam para a Fase 4. Proxy implementado; cliente centralizado e consultas integradas à Home, catálogos, menus, detalhe do filme e pessoa (grupos 4a/4b); busca no grupo 4c. [Inventário de dependências](docs/DEPENDENCIES.md).
+Estilo aprovado: Tailwind CSS 4.3.3, tokens em @theme, sem DaisyUI ou biblioteca de componentes visuais. Há fontes legadas locais (PT Sans/Source Sans Pro); as famílias Caderno Source Serif 4/Source Sans 3 e os arquivos completos de licença ficam para a Fase 4. Proxy implementado; cliente centralizado e consultas integradas (Fase 3). Fase 4 (b): componentes base (Button, IconButton, PosterImage, MovieCard, Skeleton, EmptyState, ErrorState, Badge, ThemeToggle) com testes e página /design (dev-only). [Inventário de dependências](docs/DEPENDENCIES.md).
 
 Tema claro/escuro e trailer youtube-nocookie aprovados; preservar pessoa/filmografia e em cartaz/em breve. pt-BR/en, atalhos e comparação ficam como **futuro**. Sem login/cadastro, analytics, rastreamento ou coleta de dados pessoais pelo aplicativo; documentar comunicação com provedores terceiros.
 

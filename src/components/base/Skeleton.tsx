@@ -12,7 +12,7 @@ const Skeleton = ({
   return (
     <div
       className={[
-        'animate-pulse rounded-poster bg-surface border line border-line',
+        'animate-pulse motion-reduce:animate-none rounded-poster bg-surface border line border-line',
         className,
       ]
         .filter(Boolean)
