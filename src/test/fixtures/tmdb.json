@@ -1,0 +1,40 @@
+{
+  "movie": {
+    "id": 1,
+    "title": "Filme de exemplo",
+    "poster_path": "/fixture.svg",
+    "backdrop_path": "/fixture.svg",
+    "vote_average": 8.2,
+    "genre_ids": [18],
+    "genres": [{ "id": 18, "name": "Drama" }],
+    "release_date": "2026-01-01",
+    "status": "Released",
+    "tagline": "Uma história de teste.",
+    "overview": "Sinopse fictícia usada somente para verificar a migração.",
+    "budget": 100,
+    "revenue": 200,
+    "runtime": 108,
+    "credits": {
+      "cast": [
+        {
+          "id": 2,
+          "name": "Pessoa de exemplo",
+          "profile_path": "/fixture.svg",
+          "character": "Personagem de teste"
+        }
+      ]
+    }
+  },
+  "person": {
+    "id": 2,
+    "name": "Pessoa de exemplo",
+    "profile_path": "/fixture.svg",
+    "biography": "Biografia fictícia para o smoke test.",
+    "birthday": "1990-01-01",
+    "deathday": null,
+    "known_for_department": "Acting",
+    "gender": 0,
+    "place_of_birth": "Lugar de exemplo",
+    "imdb_id": "fixture"
+  }
+}

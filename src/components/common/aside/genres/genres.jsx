@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const Genres = (props, {handleAside}) => {
+const Genres = (props) => {
     return (
         <li className="aside__sub-item">
             <Link to={`/genres/${props.id}/${props.name}`} onClick={props.handleAside}>{props.name}</Link>

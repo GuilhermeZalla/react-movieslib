@@ -7,17 +7,13 @@ import AsideMobile from "../common/asideMobile/asideMobile";
 import BannerImg from "./bannerImg/bannerImg";
 import { HiArrowSmRight } from 'react-icons/hi';
 
-const accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZTVhYmNiMDQ5YzY0YzY2MTQyYThjOTlhMDRkN2U2YyIsInN1YiI6IjYyYzUwNTcwMjIzYThiMDBiODIxYmU5MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.wKjRI_GKf8zJjtqWyRrgavhGIpA7VlOr3zom2OrupPk';
-const popular = 'https://api.themoviedb.org/3/movie/popular?api_key=fe5abcb049c64c66142a8c99a04d7e6c&page=1';
-const playing = 'https://api.themoviedb.org/3/movie/now_playing?api_key=fe5abcb049c64c66142a8c99a04d7e6c&page=1';
-const trending = 'https://api.themoviedb.org/3/trending/movie/day?api_key=fe5abcb049c64c66142a8c99a04d7e6c&page=1';
+const popular = '/api/tmdb/movie/popular?page=1';
+const playing = '/api/tmdb/movie/now_playing?page=1';
+const trending = '/api/tmdb/trending/movie/day?page=1';
 
 async function getTrendingMovies() {
     let response = await fetch(trending, {
-        method: 'GET',
-        headers: {
-            "Authorization": 'Bearer ' + accessToken
-        }
+        method: 'GET'
     });
     let result = response.json();
     return result;
@@ -25,10 +21,7 @@ async function getTrendingMovies() {
 
 async function getPopularMovies() {
     let response = await fetch(popular, {
-        method: 'GET',
-        headers: {
-            "Authorization": 'Bearer ' + accessToken
-        }
+        method: 'GET'
     });
     let result = response.json();
     return result;
@@ -36,10 +29,7 @@ async function getPopularMovies() {
 
 async function getNowPlayingMovies() {
     let response = await fetch(playing, {
-        method: 'GET',
-        headers: {
-            "Authorization": 'Bearer ' + accessToken
-        }
+        method: 'GET'
     });
     let result = response.json();
     return result;
@@ -50,7 +40,6 @@ const Home = () => {
     const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
     const [trendingMovies, setTrendingMovies] = useState([]);
     let next = useRef(null);
-    let scroll = useRef(null);
 
     useEffect(() => {
         getTrendingMovies().then(movies => setTrendingMovies([movies])).catch((err) => console.log(err));

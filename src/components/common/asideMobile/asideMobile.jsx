@@ -6,7 +6,6 @@ import { IoPeopleOutline } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
 import Genres from '../aside/genres/genres';
 
-const accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZTVhYmNiMDQ5YzY0YzY2MTQyYThjOTlhMDRkN2U2YyIsInN1YiI6IjYyYzUwNTcwMjIzYThiMDBiODIxYmU5MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.wKjRI_GKf8zJjtqWyRrgavhGIpA7VlOr3zom2OrupPk';
 
 const AsideMobile = () => {
     const [genres, setGenres] = useState();
@@ -20,11 +19,8 @@ const AsideMobile = () => {
 
     useEffect(() => {
         async function getGenres() {
-            let response = await fetch(`https://api.themoviedb.org/3/genre/movie/list`, {
-                method: "GET",
-                headers: {
-                    "Authorization": 'Bearer ' + accessToken
-                }
+            let response = await fetch(`/api/tmdb/genre/movie/list`, {
+                method: "GET"
             });
             let result = response.json();
             return result;

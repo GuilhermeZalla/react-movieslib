@@ -6,7 +6,6 @@ import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import Genres from './genres/genres';
 
-const accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZTVhYmNiMDQ5YzY0YzY2MTQyYThjOTlhMDRkN2U2YyIsInN1YiI6IjYyYzUwNTcwMjIzYThiMDBiODIxYmU5MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.wKjRI_GKf8zJjtqWyRrgavhGIpA7VlOr3zom2OrupPk';
 
 const Aside = () => {
     const [genres, setGenres] = useState();
@@ -16,11 +15,8 @@ const Aside = () => {
 
     useEffect(() => {
         async function getGenres() {
-            let response = await fetch(`https://api.themoviedb.org/3/genre/movie/list`, {
-                method: "GET",
-                headers: {
-                    "Authorization": 'Bearer ' + accessToken
-                }
+            let response = await fetch(`/api/tmdb/genre/movie/list`, {
+                method: "GET"
             });
             let result = response.json();
             return result;

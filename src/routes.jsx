@@ -5,6 +5,7 @@ import MovieDetailsScreen from "./screens/movie-detailsScreen";
 import MoviesCatalogScreen from "./screens/moviesCatalogScreen";
 import CastDetailsScreen from "./screens/castDetailsScreen";
 import CastCatalogScreen from "./screens/castCatalogScreen";
+import NotFoundScreen from "./screens/notFoundScreen";
 
 const LayoutRoutes = () => {
     return (
@@ -18,6 +19,7 @@ const LayoutRoutes = () => {
                 <Route exact path={'/genres/:id/:genre'} element={<GenresCatalogScreen />} />
                 <Route exact path={'/cast/:id'} element={<CastDetailsScreen />} />
                 <Route exact path={'/cast'} element={<CastCatalogScreen />} />
+                <Route path="*" element={<NotFoundScreen />} />
             </Routes>
         </BrowserRouter>
     )

@@ -3,7 +3,7 @@ import { BiCameraMovie, BiSearchAlt2 } from 'react-icons/bi';
 import { IoClose } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
 
-const Header = (props, { handleSearchMovies }) => {
+const Header = (props) => {
     let input = useRef(null);
     let btClose = useRef(null);
 

@@ -9,27 +9,23 @@ import Cast from "./cast/cast";
 import Aside from "../common/aside/aside";
 import AsideMobile from "../common/asideMobile/asideMobile";
 
-const accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZTVhYmNiMDQ5YzY0YzY2MTQyYThjOTlhMDRkN2U2YyIsInN1YiI6IjYyYzUwNTcwMjIzYThiMDBiODIxYmU5MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.wKjRI_GKf8zJjtqWyRrgavhGIpA7VlOr3zom2OrupPk';
 
 let dollarUSLocale = Intl.NumberFormat('en-US');
 
-const MovieDetails = (props) => {
+const MovieDetails = () => {
     const [details, setDetails] = useState([]);
     let { id } = useParams();
 
     useEffect(() => {
         async function getDetails() {
-            let response = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=fe5abcb049c64c66142a8c99a04d7e6c&append_to_response=credits`, {
-                method: 'GET',
-                headers: {
-                    "Authorization": 'Bearer ' + accessToken
-                }
+            let response = await fetch(`/api/tmdb/movie/${id}?append_to_response=credits`, {
+                method: 'GET'
             });
             let result = response.json();
             return result;
         }
         getDetails().then(details => setDetails(details)).catch((err) => console.log(err));
-    }, []);
+    }, [id]);
 
     return (
         <Fragment>

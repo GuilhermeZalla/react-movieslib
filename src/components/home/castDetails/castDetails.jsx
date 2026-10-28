@@ -5,7 +5,6 @@ import AsideMobile from "../../common/asideMobile/asideMobile";
 import Header from "../../common/header/header";
 import FilmCard from "../filmCard/filmCard";
 
-const accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZTVhYmNiMDQ5YzY0YzY2MTQyYThjOTlhMDRkN2U2YyIsInN1YiI6IjYyYzUwNTcwMjIzYThiMDBiODIxYmU5MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.wKjRI_GKf8zJjtqWyRrgavhGIpA7VlOr3zom2OrupPk';
 
 const CastDetails = () => {
     const [cast, setCast] = useState([]);
@@ -14,28 +13,22 @@ const CastDetails = () => {
 
     useEffect(() => {
         async function getCast() {
-            let response = await fetch(`https://api.themoviedb.org/3/person/${id}?api_key=fe5abcb049c64c66142a8c99a04d7e6c`, {
-                method: 'GET',
-                headers: {
-                    "Authorization": 'Bearer ' + accessToken
-                }
+            let response = await fetch(`/api/tmdb/person/${id}`, {
+                method: 'GET'
             });
             let result = response.json();
             return result;
         }
         async function getCredits() {
-            let response = await fetch(`https://api.themoviedb.org/3/person/${id}/movie_credits?api_key=fe5abcb049c64c66142a8c99a04d7e6c`, {
-                method: 'GET',
-                headers: {
-                    "Authorization": 'Bearer ' + accessToken
-                }
+            let response = await fetch(`/api/tmdb/person/${id}/movie_credits`, {
+                method: 'GET'
             });
             let result = response.json();
             return result;
         }
         getCast().then(cast => setCast([cast])).catch((err) => console.log(err));
         getCredits().then(cast => setCredits([cast])).catch((err) => console.log(err));
-    }, [cast, credits]);
+    }, [id]);
 
     return (
         <Fragment>

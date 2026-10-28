@@ -1,75 +1,116 @@
-<<<<<<< HEAD
-# Getting Started with Create React App
+# MoviesLib
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Catálogo de filmes e pessoas com dados do The Movie Database (TMDB). Projeto de estudo e portfólio, sem vínculo com TMDB ou estúdios.
 
-## Available Scripts
+MoviesLib is a React single-page application for browsing movies and people.
+It now builds with Vite and has a TypeScript entry point and automated checks.
+Legacy screens remain in JavaScript and keep their existing styles.
+Live data awaits the server-only TMDB proxy planned for Phase 3.
 
-In the project directory, you can run:
+Deploy: [LINK DO DEPLOY]
 
-### `yarn start`
+## Funcionalidades e limites atuais
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Home com estrutura de tendências, populares, em cartaz e faixa de imagens.
+- Catálogo por categoria, páginas 1–5, busca de filmes e recorte por gênero.
+- Estrutura de detalhe com sinopse, orçamento, receita, duração, gêneros e elenco.
+- Catálogo/busca de pessoas, biografia e filmografia.
+- Menus desktop/mobile e acesso a em breve/bem avaliados.
+- 404 mínima com retorno ao início e os estilos existentes.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+**O catálogo real depende do proxy da Fase 3.** Estrutura e navegação foram verificadas com dados fictícios em testes e no navegador. Fixtures não são um modo de demonstração publicado. Sem o proxy, as telas podem ficar vazias/incompletas e registrar falhas de resposta no console. Não coloque uma chave no cliente para preencher esses dados.
 
-### `yarn test`
+Dois loops de requisição foram corrigidos para validar a migração; outras limitações do legado estão na [análise](docs/ANALYSIS.md). Minha lista, filtros completos, recomendações, galeria e equipe ainda não estão implementados. Os [previews de design](docs/design-previews/index.html) são estudos estáticos separados do app; não há GIF de demonstração do aplicativo.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Stack e decisões
 
-### `yarn build`
+React/DOM 18.2.0, Router DOM 6.3.0 e React Icons 4.4.0 foram mantidos para separar a troca do build da atualização do runtime. Fundação: Vite 8.3.5, TypeScript 6.0.3, ESLint 10.13.0, Prettier 3.9.10 e Vitest 4.1.12. Removidos CRA/react-scripts, Web Vitals, ferramentas Jest do template e seus transitivos exclusivos. Somente package-lock.json permanece.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Entrada, configuração e testes usam TypeScript. Telas legadas seguem JS/JSX com allowJs e checkJs:false provisórios: o typecheck **ainda não verifica internamente todo o legado JS**. A conversão estrita completa é o próximo lote. CSS/Sass existentes foram preservados byte a byte; não há novo tema ou Preflight aplicado.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+O [STATUS.md](docs/STATUS.md) é a fonte da verdade. Direção **Caderno**, escuro padrão; PXN Games é referência apenas de clima. A paleta terá hexadecimais próprios, descritos como “paleta inspirada em” no DESIGN.md, com contraste AA recalculado nos dois temas antes da Fase 4. Não copiar cores exatas, logo, textos ou layout; os previews não precisam ser refeitos.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Tailwind e fontes locais serão instalados/configurados em lote próprio da Fase 2, sem mudar a aparência; o novo visual entra nas Fases 4 e 5. Estilo aprovado: Tailwind CSS 4.3.3, tokens em @theme, sem DaisyUI ou biblioteca de componentes visuais. TanStack Query e proxy entram na Fase 3. [Inventário de dependências](docs/DEPENDENCIES.md).
 
-### `yarn eject`
+Tema claro/escuro e trailer youtube-nocookie aprovados; preservar pessoa/filmografia e em cartaz/em breve. pt-BR/en, atalhos e comparação ficam como **futuro**. Sem login/cadastro, analytics, rastreamento ou coleta de dados pessoais pelo aplicativo; documentar comunicação com provedores terceiros.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Cache aprovado: apenas memória no TanStack Query e borda curta no proxy. Minha lista guardará somente IDs validados, sem metadados/respostas TMDB em localStorage. **Pendência: o proprietário conferirá os termos**; essa política provisória não comprova conformidade contratual.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Como rodar
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+1. Use Node.js **24.15.0** e npm **11.12.1**, ambiente validado. .node-version, engines e packageManager registram a configuração.
+2. Abra o PowerShell na raiz e instale pelo lockfile:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+   ```powershell
+   npm.cmd ci
+   ```
 
-## Learn More
+3. Este lote não requer .env ou chave TMDB. Inicie:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+   ```powershell
+   npm.cmd run dev
+   ```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+4. Acesse `http://127.0.0.1:5173`. Encerre com Ctrl+C. npm start é um alias para o Vite.
+5. Para produção local:
 
-### Code Splitting
+   ```powershell
+   npm.cmd run build
+   npm.cmd run preview
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+6. Abra `http://127.0.0.1:4173`. As portas são fixas; encerre servidores anteriores se estiverem ocupadas.
 
-### Analyzing the Bundle Size
+No macOS/Linux, use npm no lugar de npm.cmd. /api/tmdb é o contrato relativo preparado para o proxy futuro, ainda sem implementação neste lote. Imagens, reset e fontes externos do legado continuam dependentes de rede até os lotes correspondentes.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Credenciais
 
-### Making a Progressive Web App
+Revogação da API key e do Bearer e geração de substitutos **informadas como concluídas pelo proprietário**, sem verificação do painel pelo agente. Os literais antigos foram retirados do código neste lote; permanecem no histórico antigo. Reescrita de histórico: **não realizada, por decisão do proprietário**.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+.env e variantes estão ignorados; .env.example contém apenas comentários. Não há credencial no cliente ou em VITE_. Não coloque valores reais no código, logs ou chat. Guarde substitutos em gerenciador de senhas e, na Fase 3, no ambiente do servidor Vercel.
 
-### Advanced Configuration
+Proxy aprovado: função mínima em /api na Vercel, validação de parâmetros, caminhos permitidos, cache curto e limite de requisições. Nomes efetivos das variáveis, configuração Vercel e execução local por vercel dev ou equivalente serão documentados com a implementação na Fase 3. Não existe comando de proxy funcional nesta etapa.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Verificações
 
-### Deployment
+```powershell
+npm.cmd run lint
+npm.cmd run typecheck
+npm.cmd run test -- --run
+npm.cmd run build
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Lote 1: lint e tipos passaram; **11 testes passaram**, cobrindo rotas diretas, card → filme → voltar, mudança de ID, 404 e ausência de loop em pessoa. Testes bloqueiam requisições sem fixture. Dev e build servido também foram verificados no Chromium com interceptação de dados fictícios, sem API real. Vitest 4.1.12 foi escolhido por compatibilidade de tipos com Testing Library; não foi usado skipLibCheck para ocultar a incompatibilidade com Vitest 5.
 
-### `yarn build` fails to minify
+format:check está preparado; a formatação global do legado/documentos pertence ao lote ESLint/Prettier e não é apresentada como concluída. CI, E2E completo, acessibilidade e Lighthouse seguem nas fases previstas.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-=======
-# react-movieslib
-A movie library using the TMDB API where you can read about movies, casts and much more
->>>>>>> 5bcd37720c3d67641402bb728401a51a698ec8fc
+Auditoria do novo lockfile em 28/10/2026: **2 entradas moderadas no Router, 0 críticas e 0 altas**. A fotografia anterior tinha 96 entradas afetadas. Atualização do Router e riscos restantes no lote de dependências, antes da publicação; sem audit fix --force. Detalhes em [DEPENDENCIES.md](docs/DEPENDENCIES.md).
+
+## Roteiro manual do lote 1
+
+1. Com npm run dev, abra cada caminho diretamente após `http://127.0.0.1:5173` e recarregue com F5:
+
+   | Caminho | Conferência |
+   | --- | --- |
+   | / | Cabeçalho, menus e estrutura da home |
+   | /catalog/popular/1 | Catálogo e paginação |
+   | /upcoming_&_just_released/upcoming/1 | Categoria em breve |
+   | /top_rated/top_rated/1 | Categoria bem avaliados |
+   | /genres/18/Drama | Estrutura por gênero |
+   | /movie-details/1 | Estrutura do detalhe; dados dependem do proxy |
+   | /cast | Busca e estrutura de pessoas |
+   | /cast/2 | Estrutura de biografia/filmografia; dados dependem do proxy |
+   | /endereco-inexistente | 404 com link Voltar ao início |
+
+2. Na home, use MORE, abra página 2 no catálogo, volte pelo navegador e recarregue. Confira links de categorias no menu. Gêneros/cards dependem de dados e serão conferidos manualmente após o proxy; os testes com fixtures já exercitam card → filme → voltar.
+3. Na 404, clique Voltar ao início. A rota da SPA usa fallback HTML com HTTP 200 no dev/preview; não é uma resposta HTTP 404 do servidor.
+4. Encerre o dev, execute build/preview e repita os caminhos na porta 4173. O fallback da hospedagem Vercel ainda não foi configurado.
+5. Confira o visual legado e ausência de chave no código/Network. Não espere dados reais nem insira credenciais para completar essa conferência.
+
+## Créditos e licença
+
+Dados e imagens futuros: [TMDB](https://www.themoviedb.org). A interface ainda precisa de logo aprovado e atribuição em Sobre/Créditos, conforme a [documentação oficial](https://developer.themoviedb.org/docs/faq). Aviso: “This product uses the TMDB API but is not endorsed or certified by TMDB.” README não substitui atribuição na interface.
+
+Ícones: React Icons. Fontes legadas: PT Sans e Source Sans Pro via Google Fonts. Reset: Meyer Reset via cdnjs. Licenças específicas serão registradas em CREDITS.md ao incorporar/substituir recursos; créditos dos estudos estão em [LICENSES.md](docs/design-previews/LICENSES.md).
+
+Código sob [MIT](LICENSE), sem transferir direitos sobre dados, imagens e marcas de terceiros. Não há autenticação, lista persistente ou tratamento completo de erros. Interface legada em inglês; nova 404 em pt-BR. Sem configuração de deploy/headers ou Lighthouse medido; não publicar esta etapa como catálogo completo.
