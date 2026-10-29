@@ -1,11 +1,19 @@
 # Status do MoviesLib
 
-Atualizado em 28/10/2026. Fase atual: **Fase 4 (b), componentes base com testes e página /design (dev-only), entregue para revisão/commit**. Fase 4a aprovado e commitado. Executar um grupo por vez e aguardar OK antes do seguinte. Git somente leitura. **Mensagens de commit sempre em português**.
+Atualizado em 29/10/2026. HEAD `be63c0c` já contém o grupo 3 da Fase 3 e trabalhos posteriores até componentes base da Fase 4 (b). A árvore estava limpa antes desta revisão. Os blocos abaixo que descrevem grupos anteriores são histórico; esta abertura registra o estado vigente. Executar um grupo por vez e aguardar OK antes do seguinte. Git somente leitura. **Mensagens de commit sempre em português**.
 
 ## Pendências de pré-publicação — vigentes
 
 - [ ] **Ativar e testar a regra WAF no painel da Vercel.** Não há confirmação de ativação; conferir bloqueio/429 e observabilidade no projeto publicado.
 - [ ] **Revisar a limitação do contador em memória antes de publicar:** a quota é compartilhada por todos os visitantes da mesma instância. README deve explicitar essa divisão, cold starts e ausência de coordenação entre instâncias; é melhor esforço, por instância, não limite por visitante. A documentação já explica a limitação; a mitigação/publicação continua pendente.
+
+## Revisão do grupo 3 após a retomada
+
+- O grupo 3 foi commitado em `7d73363` antes desta retomada. Cliente, consultas, QueryClient, debounce e testes de contrato das fixtures estavam presentes. A árvore avançou também para integração parcial das telas e componentes base. Esta revisão acrescenta apenas cobertura das consultas e corrige a documentação; não altera as telas.
+- Contrato das fixtures: os 16 casos existentes validam as respostas fictícias dos componentes pelos schemas. Não foi preciso alterar fixture nem schema. O cliente chama apenas caminhos relativos do proxy, valida respostas Zod, repassa AbortSignal e tem timeout próprio. `TmdbError` distingue rede, formato inválido, vazio, 404, 429/Retry-After, pedido inválido, timeout e indisponibilidade.
+- As chaves de consulta incluem domínio, categoria ou operação, ID, página e termo conforme o caso. QueryClient usa `staleTime` de 60 s, `gcTime` de 5 min e cache apenas em memória. Só falha de rede recebe até um retry; 400/404/429 não são repetidos. O hook publica a busca após 300 ms. O novo teste cobre separação de chaves, normalização, cache/expiração com relógio controlado, ausência de localStorage, retry e cancelamento ao mudar o termo.
+- Integração atual: home, filmes, menus de gêneros e detalhes usam consultas; catálogo de pessoas e parte do filtro por gênero ainda usam `fetch` direto ao proxy. A busca de filmes consulta páginas 1–5 e o antigo `it.fails` já é teste comum. README corrigido para refletir esses fatos. Completar os trechos restantes exige autorização de grupo próprio. O escopo desta revisão não altera comportamento, estilos ou URLs.
+- `npm run check` passou: lint **0 erros/avisos**, TypeScript estrito, **216 testes em 17 arquivos** (207 antes; 9 casos novos), build e Prettier. Os 9 testes novos passaram também isoladamente. Nenhuma chamada real à rede, alteração de tela, estilo, URL, pacote ou script nesta revisão.
 
 ## Fase 3 — grupo 2: proxy TMDB protegido
 
@@ -210,7 +218,7 @@ Sobre o item 12: ele repete a ação já declarada como concluída no item 5. Re
 
 ## Próximo passo concreto
 
-Revisar e commitar o grupo 3 da Fase 3: cliente centralizado com cancelamento distinto de falha de rede, consultas TanStack Query com repetição automática limitada a uma tentativa nas falhas de rede, debounce de busca e QueryClient. Sem conexão às telas. Após OK, implementar o grupo 4 (integração às telas), sem visual. Fontes/paleta ficam na Fase 4; não publicar como catálogo completo. Git segue somente leitura.
+Texto histórico da retomada da Fase 2: o grupo 3 foi commitado em `7d73363` e a integração de telas avançou em commits posteriores. O próximo grupo deve ser definido a partir do estado vigente no início deste documento e depende de novo OK. Não publicar como catálogo completo antes de concluir as pendências atuais. Git segue somente leitura.
 
 ## Fase 2 — lote 5 entregue
 
