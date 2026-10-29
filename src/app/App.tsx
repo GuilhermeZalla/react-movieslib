@@ -1,7 +1,6 @@
 import { QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import { createQueryClient } from './queryClient';
-import '../style/style.css';
 import LayoutRoutes from './LayoutRoutes';
 
 function App() {

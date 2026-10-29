@@ -1,5 +1,8 @@
-﻿@import 'tailwindcss/theme' layer(theme);
-@import 'tailwindcss/utilities' layer(utilities);
+﻿@layer theme, legacy, base, components, utilities;
+
+@import 'tailwindcss/theme' layer(theme);
+@import url('/meyer-reset.css') layer(legacy);
+@import './style/style.css' layer(legacy);
 @import './app/styles/theme.css';
 @import './fonts/fonts.css';
 
