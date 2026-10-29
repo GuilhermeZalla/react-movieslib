@@ -1,3 +1,4 @@
+import { tmdbImageUrl } from '../../api/tmdb/client';
 // Legacy JSON is trusted only at these explicit boundaries; schema validation is Phase 3.
 import Header from '../../components/layout/Header';
 import { Navigate, useParams } from 'react-router-dom';
@@ -82,7 +83,7 @@ const MovieDetails = () => {
             <img
               src={
                 details?.poster_path
-                  ? `https://image.tmdb.org/t/p/w500/${details.poster_path}`
+                  ? (tmdbImageUrl(details.poster_path) ?? undefined)
                   : undefined
               }
               alt={details?.title ?? ''}
@@ -148,7 +149,7 @@ const MovieDetails = () => {
                 <Cast
                   key={index}
                   id={cast.id}
-                  photo={`https://image.tmdb.org/t/p/w500${cast.profile_path}`}
+                  photo={tmdbImageUrl(cast.profile_path)}
                   name={cast.name}
                   character={cast.character}
                 />

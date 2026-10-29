@@ -18,7 +18,7 @@ Deploy: [LINK DO DEPLOY]
 - Menus desktop/mobile e acesso a em breve/bem avaliados.
 - 404 mínima com retorno ao início e os estilos existentes.
 
-**O catálogo real depende da configuração do segredo no servidor.** O proxy está implementado; o cliente centralizado e TanStack Query já são usados na home e em parte dos catálogos e detalhes. O catálogo de pessoas e parte do filtro por gênero ainda usam fetch direto ao proxy, pendência da integração. Estrutura e navegação foram verificadas com dados fictícios; fixtures não são um modo de demonstração publicado. Sem configuração, o proxy retorna erro genérico e as telas podem ficar vazias/incompletas. Não coloque uma chave no cliente.
+**O catálogo real depende da configuração do segredo no servidor.** Todos os fluxos de dados usam o cliente centralizado e TanStack Query; pôsteres, fotos e banners também usam caminhos da mesma origem servidos pelo proxy. Estrutura e navegação foram verificadas com dados fictícios; fixtures não são um modo de demonstração publicado. Sem configuração, o proxy retorna erro genérico e as telas podem ficar vazias/incompletas. Não coloque uma chave no cliente.
 
 Dois loops de requisição foram corrigidos para validar a migração; outras limitações do legado estão na [análise](docs/ANALYSIS.md). Minha lista, filtros completos, recomendações, galeria e equipe ainda não estão implementados. Os [previews de design](docs/design-previews/index.html) são estudos estáticos separados do app; não há GIF de demonstração do aplicativo.
 
@@ -26,11 +26,11 @@ Dois loops de requisição foram corrigidos para validar a migração; outras li
 
 React/DOM 18.3.1, Router DOM 7.18.5 e React Icons 4.4.0. Fundação: Vite 8.3.5, TypeScript 6.0.3, ESLint 9.39.5, Prettier 3.9.10 e Vitest 4.1.12. Router atualizado para corrigir os advisories da linha 6, mantendo BrowserRouter, imports e URLs. Removidos CRA/react-scripts e seus transitivos exclusivos; somente package-lock.json permanece. React 19 requer migração própria, não realizada nesta atualização. ESLint 9 atende aos peers dos plugins React/a11y, mas está fora de suporte; risco em [DEPENDENCIES.md](docs/DEPENDENCIES.md).
 
-TypeScript estrito cobre src, api, server, shared, e2e e configurações Vite/Playwright, com allowJs:false, noUncheckedIndexedAccess e exactOptionalPropertyTypes, sem exclusões de fontes ou skipLibCheck. Os contratos são derivados de schemas **Zod 4.6.7** em [schemas.ts](src/api/tmdb/schemas.ts); [src/types/tmdb.ts](src/types/tmdb.ts) preserva os exports anteriores. Há validação de IDs, páginas, categorias e busca em shared/tmdbRequest.ts. O cliente centralizado aplica os schemas às respostas do proxy, com timeout, cancelamento e erros tipados. **TanStack Query 5.105.0** usa cache apenas em memória por 60 s, até 1 retry para falhas de rede e sem retry para 400/404/429; o debounce de busca é de 300 ms. A integração às telas é parcial: fetches legados persistem no catálogo de pessoas e em parte do filtro por gênero. Tailwind CSS 4.3.3 usa o plugin Vite; tokens @theme ficam em src/app/styles/theme.css. As telas combinam classes Tailwind e CSS legado, inclusive valores arbitrários que precisam ser substituídos por tokens. Componentes base ainda não integrados; preservação visual das mudanças anteriores não comprovada.
+TypeScript estrito cobre src, api, server, shared, e2e e configurações Vite/Playwright, com allowJs:false, noUncheckedIndexedAccess e exactOptionalPropertyTypes, sem exclusões de fontes ou skipLibCheck. Os contratos são derivados de schemas **Zod 4.6.7** em [schemas.ts](src/api/tmdb/schemas.ts); [src/types/tmdb.ts](src/types/tmdb.ts) preserva os exports anteriores. Há validação de IDs, páginas, categorias e busca em shared/tmdbRequest.ts. O cliente centralizado aplica os schemas às respostas do proxy, com timeout, cancelamento e erros tipados. **TanStack Query 5.105.0** usa cache apenas em memória por 60 s, até 1 retry para falhas de rede e sem retry para 400/404/429; o debounce de busca é de 300 ms. A integração de dados às telas está concluída: não há fetch direto fora do cliente em src. Tailwind CSS 4.3.3 usa o plugin Vite; tokens @theme ficam em src/app/styles/theme.css. As telas combinam classes Tailwind e CSS legado, inclusive valores arbitrários que precisam ser substituídos por tokens. Componentes base ainda não integrados; preservação visual das mudanças anteriores não comprovada.
 
 O [STATUS.md](docs/STATUS.md) é a fonte da verdade. Direção **Caderno**, escuro padrão; PXN Games é referência apenas de clima. A paleta terá hexadecimais próprios, descritos como “paleta inspirada em” no DESIGN.md, com contraste AA recalculado nos dois temas antes da Fase 4. Não copiar cores exatas, logo, textos ou layout; os previews não precisam ser refeitos.
 
-Estilo aprovado: Tailwind CSS 4.3.3, tokens em @theme, sem DaisyUI ou biblioteca de componentes visuais. As fontes Caderno Source Serif 4/Source Sans 3 estão instaladas localmente; as TTF legadas PT Sans/Source Sans Pro ainda entram no build. A revisão das licenças completas permanece pendente. Proxy implementado e consultas parcialmente integradas às telas (Fase 3). Fase 4 (b): componentes base (Button, IconButton, PosterImage, MovieCard, Skeleton, EmptyState, ErrorState, Badge, ThemeToggle) com testes e página /design (dev-only). [Inventário de dependências](docs/DEPENDENCIES.md).
+Estilo aprovado: Tailwind CSS 4.3.3, tokens em @theme, sem DaisyUI ou biblioteca de componentes visuais. As fontes Caderno Source Serif 4/Source Sans 3 estão instaladas localmente; as TTF legadas PT Sans/Source Sans Pro ainda entram no build. A revisão das licenças completas permanece pendente. Proxy e consultas integrados às telas (Fase 3). Fase 4 (b): componentes base (Button, IconButton, PosterImage, MovieCard, Skeleton, EmptyState, ErrorState, Badge, ThemeToggle) com testes e página /design (dev-only). [Inventário de dependências](docs/DEPENDENCIES.md).
 
 Tema claro/escuro e trailer youtube-nocookie aprovados; preservar pessoa/filmografia e em cartaz/em breve. pt-BR/en, atalhos e comparação ficam como **futuro**. Sem login/cadastro, analytics, rastreamento ou coleta de dados pessoais pelo aplicativo; documentar comunicação com provedores terceiros.
 
@@ -104,7 +104,7 @@ src/sass e src/style continuam no lugar durante a transição. O app consome o C
 
 6. Abra `http://127.0.0.1:4173`. As portas são fixas; encerre servidores anteriores se estiverem ocupadas.
 
-No macOS/Linux, use npm no lugar de npm.cmd. O dev Vite tem adaptador local do proxy, importado somente em serve/development. O preview serve apenas arquivos estáticos e não executa /api; para testar as funções/regras Vercel use vercel dev. Fontes locais; imagens TMDB e reset CDN dependem de rede.
+No macOS/Linux, use npm no lugar de npm.cmd. O dev Vite tem adaptador local do proxy, importado somente em serve/development. O preview serve apenas arquivos estáticos e não executa /api; para testar as funções/regras Vercel use vercel dev. Fontes e reset são locais; imagens TMDB passam pelo proxy e exigem acesso à rede no servidor.
 
 ## Credenciais
 
@@ -133,22 +133,22 @@ Configuração local e execução com a CLI Vercel:
 
 ### Política do proxy
 
-Somente GET em /api/tmdb/...; outros métodos retornam 405/Allow: GET. Endpoints permitidos: movie/popular, movie/top_rated, movie/now_playing, movie/upcoming, trending/movie/day, person/popular, search/movie, search/person, genre/movie/list, movie/:id, movie/:id/credits, person/:id e person/:id/movie_credits. page (1–500) somente em listas/buscas; query (até 200 caracteres normalizados) somente nas buscas; append_to_response=credits somente em movie/:id. IDs positivos seguros. path é apenas o transporte do rewrite, sujeito à mesma lista; URLs externas, traversal, barras ambíguas, codificação dupla, parâmetros desconhecidos/duplicados são rejeitados.
+Somente GET em /api/tmdb/...; outros métodos retornam 405/Allow: GET. Endpoints JSON permitidos: movie/popular, movie/top_rated, movie/now_playing, movie/upcoming, trending/movie/day, person/popular, search/movie, search/person, genre/movie/list, movie/:id, movie/:id/credits, person/:id e person/:id/movie_credits. page (1–500) somente em listas/buscas; query (até 200 caracteres normalizados) somente nas buscas; append_to_response=credits somente em movie/:id. IDs positivos seguros. Para imagens, apenas image/w500/:arquivo com nome simples e extensão jpg/jpeg/png/webp; origem fixa image.tmdb.org, sem repassar o token, sem URLs ou tamanhos escolhidos pelo cliente. path é apenas o transporte do rewrite, sujeito às mesmas listas; URLs externas, traversal, barras ambíguas, codificação dupla, parâmetros desconhecidos/duplicados são rejeitados.
 
 O servidor impõe **language=en-US** (default do legado) e **include_adult=false**, ignorando esses dois parâmetros do cliente, inclusive duplicados. Entradas explicitamente adult=true são removidas das listas/créditos; detalhes com esse sinalizador retornam 404. Isso depende da classificação fornecida pelo TMDB e não é moderação de conteúdo.
 
-Timeout de 8 s inclui o corpo; resposta máxima de 2 MB, JSON validado pelos schemas. Erros públicos padronizados, sem corpo/mensagem/stack upstream e sem logs do proxy. Redirects upstream são bloqueados. Content-Type JSON e nosniff em todas as respostas; nenhum CORS aberto. Ausência de CORS não autentica o endpoint público nem impede clientes fora do navegador.
+Timeout de 8 s inclui o corpo; resposta JSON máxima de 2 MB, validada pelos schemas. Imagens têm limite de 5 MB e Content-Type permitido (JPEG/PNG/WebP/AVIF); o proxy devolve os bytes sem transformar o arquivo. Erros públicos padronizados em JSON, sem corpo/mensagem/stack upstream e sem logs do proxy. Redirects upstream são bloqueados. Respostas JSON e imagem têm Content-Type adequado e nosniff; nenhum CORS aberto. Ausência de CORS não autentica o endpoint público nem impede clientes fora do navegador.
 
 Somente 200 recebe Vercel-CDN-Cache-Control: public, s-maxage=60, stale-while-revalidate=15. Cache-Control: no-store para o navegador em todas as respostas; erros não recebem cache de borda. Não aumentar os 60 s antes de confirmar os termos. Headers globais anteriores em vercel.json foram preservados; rewrites excluem /api do fallback da SPA. Comportamento efetivo de CDN/roteamento em hospedagem ainda requer conferência após deploy.
 
 ### Limite de requisições
 
-**Plano B no código: melhor esforço, por instância.** Contador global anônimo de 60 requisições válidas/minuto por processo, compartilhado entre visitantes; sem armazenar ou registrar IP, sem mapa crescente de clientes. Excesso retorna 429/Retry-After e no-store. Reinícios/cold starts e instâncias diferentes renovam a quota; não garante limite distribuído. Só conta chamadas que chegam à função, não hits já servidos pela CDN.
+**Plano B no código: melhor esforço, por instância.** Contadores globais anônimos separados: 60 requisições JSON e 300 imagens válidas/minuto por processo, compartilhados entre todos os visitantes da instância; sem armazenar ou registrar IP, sem mapa crescente de clientes. Excesso retorna 429/Retry-After e no-store. Reinícios/cold starts e instâncias diferentes renovam a quota; não garante limite distribuído ou por visitante. Só conta chamadas que chegam à função, não hits já servidos pela CDN.
 
 **Plano A no painel: WAF Vercel, ativação não confirmada.** Está disponível no Hobby: uma regra por projeto, dentro de três regras customizadas; janela fixa de 10 s a 10 min, chaves IP/JA4, 1 milhão de requisições permitidas incluídas. Contadores regionais. Confira disponibilidade/uso atual da conta antes de ativar. [Limites oficiais](https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting).
 
 1. Abra projeto → Firewall → Configure → New Rule.
-2. Nomeie a regra e defina a condição de caminho: começa com /api/tmdb.
+2. Nomeie a regra e defina a condição de caminho: começa com /api/tmdb **e não começa com /api/tmdb/image/**. O tráfego de imagem tem quota separada no código; incluir imagens nesta regra de 60/min pode bloquear a montagem de catálogos.
 3. Ação Rate Limit, algoritmo Fixed Window, chave IP, janela 60 s e limite 60 solicitações.
 4. Use bloqueio 429, não somente Log/Challenge. Confira a revisão de uso/custos mostrada pela conta.
 5. Salve, revise e publique a regra no painel; confira depois em Firewall Observability e registre a ativação no STATUS. O agente não acessou nem alterou o painel. O aplicativo não grava IPs; o tratamento pelo provedor segue suas políticas.
@@ -199,6 +199,15 @@ Há botões semânticos nos menus de gêneros, labels em controles e lazy loadin
 
 ## Conferência rápida de rotas
 
+Com um token válido configurado somente no servidor, use `npm.cmd run dev` ou `vercel dev` e confira os dados reais:
+
+1. Abra `/cast`, confirme fotos e cards, busque uma pessoa, depois um termo sem resultados. A busca deve esperar cerca de 300 ms após o clique; o caso vazio deve mostrar mensagem sem botão de retry. Limpe a entrada para voltar ao catálogo.
+2. Abra `/catalog/popular/1`, avance para a página 2 e use Voltar do navegador. Confira `/genres/18/Drama` e troque rapidamente para outro gênero pelo menu; só o gênero atual deve permanecer. Abra `/genres/abc/Drama` diretamente: deve aparecer a 404 sem chamada de catálogo.
+3. Na aba Network, confira que dados e imagens usam somente `/api/tmdb/...` da mesma origem e que não há chamadas do navegador ao TMDB ou cdnjs. Abra um card, visite o detalhe e volte.
+4. No DevTools, ative Offline e faça uma busca **nova** (fora do cache de 60 s): deve aparecer erro com “Tentar novamente”. Volte a Online e use esse botão; os resultados devem se recuperar. Repita a troca rápida de termos e confirme que o resultado antigo não substitui o novo.
+
+O preview puro do Vite não executa `/api`; para conferir funções com o build de produção, use `vercel dev` ou um ambiente Vercel configurado. Os testes automatizados não acessam o TMDB real; esta conferência depende do token e da rede do proprietário.
+
 1. Execute npm run dev e, em http://127.0.0.1:5173, abra diretamente /, /catalog/popular/1, /movie-details/1, /cast/2 e /endereco-inexistente. Recarregue cada URL. As demais categorias/gêneros mantêm os caminhos da tabela completa abaixo.
 2. Com o segredo configurado e o proxy rodando, abra um card, confira o detalhe e use Voltar do navegador. Na 404, use Voltar ao início. Sem essa configuração, dados preenchidos ficam restritos às fixtures dos testes; não coloque credenciais no frontend.
 3. Execute npm run build e npm run preview. Repita as mesmas URLs e a navegação em http://127.0.0.1:4173.
@@ -236,8 +245,8 @@ Sem configurar e executar o proxy, a conferência preenchida e dos campos nulos 
 
 ## Créditos e licença
 
-Dados e imagens futuros: [TMDB](https://www.themoviedb.org). A interface ainda precisa de logo aprovado e atribuição em Sobre/Créditos, conforme a [documentação oficial](https://developer.themoviedb.org/docs/faq). Aviso: “This product uses the TMDB API but is not endorsed or certified by TMDB.” README não substitui atribuição na interface.
+Dados e imagens: [TMDB](https://www.themoviedb.org). A interface ainda precisa de logo aprovado e atribuição em Sobre/Créditos, conforme a [documentação oficial](https://developer.themoviedb.org/docs/faq). Aviso: “This product uses the TMDB API but is not endorsed or certified by TMDB.” README não substitui atribuição na interface.
 
-Ícones: React Icons. Fontes: PT Sans e Source Sans Pro, locais em src/fonts/. Reset: Meyer Reset via cdnjs. Licenças detalhadas em [CREDITS.md](CREDITS.md). Licenças específicas serão registradas em CREDITS.md ao incorporar/substituir recursos; créditos dos estudos estão em [LICENSES.md](docs/design-previews/LICENSES.md).
+Ícones: React Icons. Fontes: PT Sans e Source Sans Pro, locais em src/fonts/. Reset: Meyer Reset 2.0 local em public/meyer-reset.css. Licenças detalhadas em [CREDITS.md](CREDITS.md). Licenças específicas serão registradas em CREDITS.md ao incorporar/substituir recursos; créditos dos estudos estão em [LICENSES.md](docs/design-previews/LICENSES.md).
 
 Código sob [MIT](LICENSE), sem transferir direitos sobre dados, imagens e marcas de terceiros. Não há autenticação, lista persistente ou tratamento completo de erros. Interface legada em inglês; 404 em pt-BR. Há configuração parcial de headers, sem publicação validada ou Lighthouse reproduzível. Não publicar esta etapa como catálogo completo.

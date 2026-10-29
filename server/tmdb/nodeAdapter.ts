@@ -9,5 +9,5 @@ export async function sendNodeResponse(
   const result = await handler(request.url ?? '', request.method ?? 'GET');
   response.statusCode = result.status;
   result.headers.forEach((value, key) => response.setHeader(key, value));
-  response.end(await result.text());
+  response.end(Buffer.from(await result.arrayBuffer()));
 }

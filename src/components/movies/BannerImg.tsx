@@ -1,3 +1,4 @@
+import { tmdbImageUrl } from '../../api/tmdb/client';
 import { Link } from 'react-router-dom';
 
 interface BannerImgProps {
@@ -7,14 +8,11 @@ interface BannerImgProps {
 }
 
 const BannerImg = (props: BannerImgProps) => {
-  if (!props.url) return null;
+  const src = tmdbImageUrl(props.url);
+  if (!src) return null;
   return (
     <Link to={`/movie-details/${props.movieId}`}>
-      <img
-        src={`https://image.tmdb.org/t/p/w500/${props.url}`}
-        alt={props.title}
-        className="w-full h-full object-cover"
-      />
+      <img src={src} alt={props.title} className="w-full h-full object-cover" />
     </Link>
   );
 };

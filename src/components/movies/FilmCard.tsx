@@ -14,10 +14,7 @@ const FilmCard = (props: FilmCardProps) => {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
   };
-  if (
-    !props.poster ||
-    props.poster === 'https://image.tmdb.org/t/p/w500/null'
-  ) {
+  if (!props.poster || props.poster.endsWith('/null')) {
     return null;
   } else {
     return (

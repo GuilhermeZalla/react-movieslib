@@ -1,4 +1,5 @@
-﻿import Header from '../../components/layout/Header';
+import { tmdbImageUrl } from '../../api/tmdb/client';
+import Header from '../../components/layout/Header';
 import FilmCard from '../../components/movies/FilmCard';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
@@ -53,7 +54,7 @@ const Home = () => {
             {trendingResults.map((movie, index) => (
               <FilmCard
                 key={index}
-                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                poster={tmdbImageUrl(movie.poster_path)}
                 title={movie.title}
                 vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                 movieId={movie.id}
@@ -70,7 +71,7 @@ const Home = () => {
             {popularResults.map((movie, index) => (
               <FilmCard
                 key={index}
-                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                poster={tmdbImageUrl(movie.poster_path)}
                 title={movie.title}
                 vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                 movieId={movie.id}
@@ -87,7 +88,7 @@ const Home = () => {
             {nowPlayingResults.map((movie, index) => (
               <FilmCard
                 key={index}
-                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                poster={tmdbImageUrl(movie.poster_path)}
                 title={movie.title}
                 vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                 movieId={movie.id}

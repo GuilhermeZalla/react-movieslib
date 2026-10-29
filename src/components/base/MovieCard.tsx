@@ -1,4 +1,5 @@
-﻿import PosterImage from './PosterImage';
+import { tmdbImageUrl } from '../../api/tmdb/client';
+import PosterImage from './PosterImage';
 import Badge from './Badge';
 
 interface MovieCardProps {
@@ -25,9 +26,7 @@ const MovieCard = ({
         aria-label={title}
       >
         <PosterImage
-          src={
-            posterPath ? `https://image.tmdb.org/t/p/w500/${posterPath}` : null
-          }
+          src={posterPath ? tmdbImageUrl(posterPath) : null}
           alt={title}
           width={190}
           height={285}

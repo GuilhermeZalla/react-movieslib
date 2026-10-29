@@ -2,8 +2,8 @@
   "movie": {
     "id": 1,
     "title": "Filme de exemplo",
-    "poster_path": "/fixture.svg",
-    "backdrop_path": "/fixture.svg",
+    "poster_path": "/fixture.jpg",
+    "backdrop_path": "/fixture.jpg",
     "vote_average": 8.2,
     "genre_ids": [18],
     "genres": [{ "id": 18, "name": "Drama" }],
@@ -20,7 +20,7 @@
         {
           "id": 2,
           "name": "Pessoa de exemplo",
-          "profile_path": "/fixture.svg",
+          "profile_path": "/fixture.jpg",
           "character": "Personagem de teste"
         }
       ]
@@ -29,7 +29,7 @@
   "person": {
     "id": 2,
     "name": "Pessoa de exemplo",
-    "profile_path": "/fixture.svg",
+    "profile_path": "/fixture.jpg",
     "biography": "Biografia fictícia para o smoke test.",
     "birthday": "1990-01-01",
     "deathday": null,

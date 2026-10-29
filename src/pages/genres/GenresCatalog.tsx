@@ -1,250 +1,122 @@
-import type { MoviePage } from '../../types/tmdb';
-// Legacy JSON is trusted only at these explicit boundaries; schema validation is Phase 3.
+import { tmdbImageUrl } from '../../api/tmdb/client';
+import { Fragment, useState } from 'react';
+import { useQueries } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
 import Header from '../../components/layout/Header';
-import FilmCard from '../../components/movies/FilmCard';
 import Aside from '../../components/layout/Aside';
 import AsideMobile from '../../components/layout/AsideMobile';
-import { Fragment, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { movieListQuery } from '../../api/tmdb/queries';
-import { useParams } from 'react-router-dom';
+import FilmCard from '../../components/movies/FilmCard';
+import EmptyState from '../../components/base/EmptyState';
+import ErrorState from '../../components/base/ErrorState';
+import NotFoundScreen from '../not-found/NotFoundScreen';
+import { movieListQuery, movieSearchQuery } from '../../api/tmdb/queries';
+import { TmdbError } from '../../api/tmdb/client';
+import { useDebouncedValue } from '../../hooks/useDebouncedValue';
+import {
+  idParameterSchema,
+  searchInputSchema,
+} from '../../../shared/tmdbRequest';
+
+const pages = [1, 2, 3, 4, 5] as const;
+
+const isEmpty = (error: unknown) =>
+  error instanceof TmdbError && error.kind === 'empty';
 
 const GenresCatalog = () => {
-  const moviesQ = useQuery(movieListQuery('popular', 1));
-  const movies2Q = useQuery(movieListQuery('popular', 2));
-  const movies3Q = useQuery(movieListQuery('popular', 3));
-  const movies4Q = useQuery(movieListQuery('popular', 4));
-  const movies5Q = useQuery(movieListQuery('popular', 5));
-  const movies = moviesQ.data ?? null;
-  const movies2 = movies2Q.data ?? null;
-  const movies3 = movies3Q.data ?? null;
-  const movies4 = movies4Q.data ?? null;
-  const movies5 = movies5Q.data ?? null;
-  const [search, setSearch] = useState<MoviePage | null>(null);
-  const [search2, setSearch2] = useState<MoviePage | null>(null);
-  const [search3, setSearch3] = useState<MoviePage | null>(null);
-  const [search4, setSearch4] = useState<MoviePage | null>(null);
-  const [search5, setSearch5] = useState<MoviePage | null>(null);
+  const { id, genre = '' } = useParams<'id' | 'genre'>();
+  const parsedId = idParameterSchema.safeParse(id ?? '');
+  const parsedGenre = searchInputSchema.safeParse(genre);
+  const validRoute =
+    parsedId.success && parsedGenre.success && parsedGenre.data.length > 0;
+  const genreId = parsedId.success ? parsedId.data : null;
   const [searchContent, setSearchContent] = useState('');
-  const { genre = '' } = useParams<'genre'>();
-  const { id } = useParams<'id'>();
+  const debounced = useDebouncedValue(searchContent);
+  const parsedTerm = searchInputSchema.safeParse(debounced);
+  const term = parsedTerm.success ? parsedTerm.data : '';
+  const searching = term.length > 0;
 
-  const handleSearchMovies = (result: string) => {
-    let movie = result;
-    if (movie === '') {
-      setSearch(null);
-    } else {
-      movie = movie.replace(/\s/g, '+');
-      setSearchContent(movie);
-      async function searchMovie(): Promise<MoviePage> {
-        const response = await fetch(
-          `/api/tmdb/search/movie?query=${movie}&page=1`,
-          {
-            method: 'GET',
-          },
-        );
-        const result: unknown = await response.json();
-        return result as MoviePage;
-      }
-      async function searchMovie2(): Promise<MoviePage> {
-        const response = await fetch(
-          `/api/tmdb/search/movie?query=${movie}&page=2`,
-          {
-            method: 'GET',
-          },
-        );
-        const result: unknown = await response.json();
-        return result as MoviePage;
-      }
-      async function searchMovie3(): Promise<MoviePage> {
-        const response = await fetch(
-          `/api/tmdb/search/movie?query=${movie}&page=3`,
-          {
-            method: 'GET',
-          },
-        );
-        const result: unknown = await response.json();
-        return result as MoviePage;
-      }
-      async function searchMovie4(): Promise<MoviePage> {
-        const response = await fetch(
-          `/api/tmdb/search/movie?query=${movie}&page=4`,
-          {
-            method: 'GET',
-          },
-        );
-        const result: unknown = await response.json();
-        return result as MoviePage;
-      }
-      async function searchMovie5(): Promise<MoviePage> {
-        const response = await fetch(
-          `/api/tmdb/search/movie?query=${movie}&page=5`,
-          {
-            method: 'GET',
-          },
-        );
-        const result: unknown = await response.json();
-        return result as MoviePage;
-      }
-      searchMovie()
-        .then((data) => setSearch(data))
-        .catch((error: unknown) => console.error(error));
-      searchMovie2()
-        .then((data) => setSearch2(data))
-        .catch((error: unknown) => console.error(error));
-      searchMovie3()
-        .then((data) => setSearch3(data))
-        .catch((error: unknown) => console.error(error));
-      searchMovie4()
-        .then((data) => setSearch4(data))
-        .catch((error: unknown) => console.error(error));
-      searchMovie5()
-        .then((data) => setSearch5(data))
-        .catch((error: unknown) => console.error(error));
+  const browse = useQueries({
+    queries: pages.map((page) => ({
+      ...movieListQuery('popular', page),
+      enabled: validRoute && !searching,
+    })),
+  });
+  const search = useQueries({
+    queries: pages.map((page) => ({
+      ...movieSearchQuery(term, page),
+      enabled: validRoute && searching,
+    })),
+  });
+  const active = searching ? search : browse;
+  const failed = active.some(
+    (result) => result.isError && !isEmpty(result.error),
+  );
+  const settled = active.every(
+    (result) => result.isSuccess || isEmpty(result.error),
+  );
+  const movies = active
+    .flatMap((result, pageIndex) =>
+      (result.data?.results ?? []).map((movie, index) => ({
+        movie,
+        key: `${pageIndex}-${index}-${movie.id}`,
+      })),
+    )
+    .filter(
+      ({ movie }) => searching || movie.genre_ids.includes(genreId ?? -1),
+    );
+
+  const retry = () => {
+    for (const result of active) {
+      if (result.isError && !isEmpty(result.error)) void result.refetch();
     }
   };
 
-  if (search === null) {
-    return (
-      <Fragment>
-        <Header handleSearchMovies={handleSearchMovies} />
-        <Aside />
-        <AsideMobile />
-        <main className="home__main relative mb-[5%] mt-[7%] pl-[100px] pr-[30px] pt-[20px] pb-[20px] text-ink">
-          <div className="home__container container__films catalog relative border-t line/40 mt-[5%] pt-[10px] grid grid-cols-[repeat(auto-fill,minmax(150px,2fr))] gap-10">
-            <h1 className="home__title movies-catalog text-[1.4rem] font-normal absolute top-[-35px]">
-              Overviewing <span>{genre}</span> movies
-            </h1>
-            {movies?.results?.map((movie, index) =>
-              movie.genre_ids?.map((ids) =>
-                ids === Number(id) ? (
-                  <FilmCard
-                    key={index}
-                    poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                    title={movie.title}
-                    vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
-                    movieId={movie.id}
-                  />
-                ) : null,
-              ),
+  if (!validRoute) return <NotFoundScreen />;
+
+  return (
+    <Fragment>
+      <Header
+        handleSearchMovies={(value) => setSearchContent(value.slice(0, 200))}
+      />
+      <Aside />
+      <AsideMobile />
+      <main className="home__main relative mb-[5%] mt-[7%] pl-[100px] pr-[30px] pt-[20px] pb-[20px] text-ink">
+        <div className="home__container container__films catalog relative border-t line/40 mt-[5%] pt-[10px] grid grid-cols-[repeat(auto-fill,minmax(150px,2fr))] gap-10">
+          <h1 className="home__title movies-catalog text-[1.4rem] font-normal absolute top-[-35px]">
+            {searching ? (
+              <>
+                Movies by the name <span>{term}</span>
+              </>
+            ) : (
+              <>
+                Overviewing <span>{genre}</span> movies
+              </>
             )}
-            {movies2?.results?.map((movie, index) =>
-              movie.genre_ids.map((ids) =>
-                ids === Number(id) ? (
-                  <FilmCard
-                    key={index}
-                    poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                    title={movie.title}
-                    vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
-                    movieId={movie.id}
-                  />
-                ) : null,
-              ),
-            )}
-            {movies3?.results?.map((movie, index) =>
-              movie.genre_ids.map((ids) =>
-                ids === Number(id) ? (
-                  <FilmCard
-                    key={index}
-                    poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                    title={movie.title}
-                    vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
-                    movieId={movie.id}
-                  />
-                ) : null,
-              ),
-            )}
-            {movies4?.results?.map((movie, index) =>
-              movie.genre_ids.map((ids) =>
-                ids === Number(id) ? (
-                  <FilmCard
-                    key={index}
-                    poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                    title={movie.title}
-                    vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
-                    movieId={movie.id}
-                  />
-                ) : null,
-              ),
-            )}
-            {movies5?.results?.map((movie, index) =>
-              movie.genre_ids.map((ids) =>
-                ids === Number(id) ? (
-                  <FilmCard
-                    key={index}
-                    poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                    title={movie.title}
-                    vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
-                    movieId={movie.id}
-                  />
-                ) : null,
-              ),
-            )}
-          </div>
-        </main>
-      </Fragment>
-    );
-  } else {
-    return (
-      <Fragment>
-        <Header handleSearchMovies={handleSearchMovies} />
-        <Aside />
-        <AsideMobile />
-        <main className="home__main relative mb-[5%] mt-[7%] pl-[100px] pr-[30px] pt-[20px] pb-[20px] text-ink">
-          <div className="home__container container__films catalog relative border-t line/40 mt-[5%] pt-[10px] grid grid-cols-[repeat(auto-fill,minmax(150px,2fr))] gap-10">
-            <h1 className="home__title movies-catalog text-[1.4rem] font-normal absolute top-[-35px]">
-              Movies by the name <span>{searchContent.replace('+', ' ')}</span>
-            </h1>
-            {search?.results?.map((movie, index) => (
+          </h1>
+          {failed ? (
+            <ErrorState
+              message="Não foi possível carregar os filmes."
+              onRetry={retry}
+            />
+          ) : settled && movies.length === 0 ? (
+            <EmptyState title="Nenhum filme encontrado" />
+          ) : (
+            movies.map(({ movie, key }) => (
               <FilmCard
-                key={index}
-                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                key={key}
+                poster={
+                  movie.poster_path ? tmdbImageUrl(movie.poster_path) : null
+                }
                 title={movie.title}
                 vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                 movieId={movie.id}
               />
-            ))}
-            {search2?.results?.map((movie, index) => (
-              <FilmCard
-                key={index}
-                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                title={movie.title}
-                vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
-                movieId={movie.id}
-              />
-            ))}
-            {search3?.results?.map((movie, index) => (
-              <FilmCard
-                key={index}
-                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                title={movie.title}
-                vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
-                movieId={movie.id}
-              />
-            ))}
-            {search4?.results?.map((movie, index) => (
-              <FilmCard
-                key={index}
-                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                title={movie.title}
-                vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
-                movieId={movie.id}
-              />
-            ))}
-            {search5?.results?.map((movie, index) => (
-              <FilmCard
-                key={index}
-                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                title={movie.title}
-                vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
-                movieId={movie.id}
-              />
-            ))}
-          </div>
-        </main>
-      </Fragment>
-    );
-  }
+            ))
+          )}
+        </div>
+      </main>
+    </Fragment>
+  );
 };
 
 export default GenresCatalog;

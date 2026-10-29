@@ -1,4 +1,9 @@
-import { PolicyError, removeAdultEntries, resolveRequest } from './policy.ts';
+import {
+  PolicyError,
+  removeAdultEntries,
+  resolveImageRequest,
+  resolveRequest,
+} from './policy.ts';
 import { createRateLimiter } from './rateLimit.ts';
 
 type ErrorStatus = 400 | 404 | 405 | 429 | 502 | 504;
@@ -40,10 +45,46 @@ function failure(status: ErrorStatus, headers: Record<string, string> = {}) {
   return json({ error: errors[status] }, status, headers);
 }
 
+const edgeCache = 'public, s-maxage=60, stale-while-revalidate=15';
+const imageTypes = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/avif',
+]);
+
+async function readBody(
+  response: Response,
+  limit: number,
+): Promise<Buffer | null> {
+  const reader = response.body?.getReader();
+  if (!reader) return null;
+  const chunks: Uint8Array[] = [];
+  let length = 0;
+  try {
+    for (
+      let chunk = await reader.read();
+      !chunk.done;
+      chunk = await reader.read()
+    ) {
+      length += chunk.value.byteLength;
+      if (length > limit) {
+        await reader.cancel();
+        return null;
+      }
+      chunks.push(chunk.value);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+  return Buffer.concat(chunks);
+}
+
 interface Options {
   fetcher?: typeof fetch;
   getToken?: () => string | undefined;
   allowRequest?: ReturnType<typeof createRateLimiter>;
+  allowImageRequest?: ReturnType<typeof createRateLimiter>;
   timeoutMs?: number;
 }
 
@@ -51,15 +92,19 @@ export function createTmdbHandler({
   fetcher = (...args) => fetch(...args),
   getToken = () => process.env.TMDB_READ_ACCESS_TOKEN,
   allowRequest = createRateLimiter(),
+  allowImageRequest = createRateLimiter(300),
   timeoutMs = 8_000,
 }: Options = {}) {
   return async (target: string, method = 'GET'): Promise<Response> => {
     if (method !== 'GET') return failure(405, { Allow: 'GET' });
     try {
-      const { url, schema } = resolveRequest(target);
+      const imageUrl = resolveImageRequest(target);
+      const { url, schema } = imageUrl
+        ? { url: imageUrl, schema: null }
+        : resolveRequest(target);
       const token = getToken()?.trim();
       if (!token || /[\r\n]/.test(token)) return failure(502);
-      const admission = allowRequest();
+      const admission = imageUrl ? allowImageRequest() : allowRequest();
       if (!admission.allowed)
         return failure(429, { 'Retry-After': String(admission.retryAfter) });
 
@@ -78,10 +123,12 @@ export function createTmdbHandler({
             method: 'GET',
             redirect: 'error',
             signal: controller.signal,
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: 'application/json',
-            },
+            headers: imageUrl
+              ? { Accept: 'image/avif,image/webp,image/png,image/jpeg' }
+              : {
+                  Authorization: `Bearer ${token}`,
+                  Accept: 'application/json',
+                },
           });
           if (response.status !== 200) {
             // Never read/forward upstream errors, headers, stack traces or messages.
@@ -91,6 +138,26 @@ export function createTmdbHandler({
               status === 429 ? { 'Retry-After': '60' } : {},
             );
           }
+          if (imageUrl) {
+            const type = response.headers
+              .get('content-type')
+              ?.split(';', 1)[0]
+              ?.trim()
+              .toLowerCase();
+            if (!type || !imageTypes.has(type)) return failure(502);
+            const body = await readBody(response, 5_000_000);
+            if (!body) return failure(502);
+            return new Response(new Uint8Array(body), {
+              status: 200,
+              headers: {
+                'Content-Type': type,
+                'X-Content-Type-Options': 'nosniff',
+                'Cache-Control': 'no-store',
+                'Vercel-CDN-Cache-Control': edgeCache,
+              },
+            });
+          }
+          if (!schema) return failure(502);
           if (
             !response.headers
               .get('content-type')
@@ -99,34 +166,13 @@ export function createTmdbHandler({
           )
             return failure(502);
           // Cap the untrusted body before JSON parsing (also covers streamed responses).
-          const reader = response.body?.getReader();
-          if (!reader) return failure(502);
-          const chunks: Uint8Array[] = [];
-          let length = 0;
-          try {
-            for (
-              let chunk = await reader.read();
-              !chunk.done;
-              chunk = await reader.read()
-            ) {
-              length += chunk.value.byteLength;
-              if (length > 2_000_000) {
-                await reader.cancel();
-                return failure(502);
-              }
-              chunks.push(chunk.value);
-            }
-          } finally {
-            reader.releaseLock();
-          }
-          const body: unknown = JSON.parse(
-            Buffer.concat(chunks).toString('utf8'),
-          );
+          const bytes = await readBody(response, 2_000_000);
+          if (!bytes) return failure(502);
+          const body: unknown = JSON.parse(bytes.toString('utf8'));
           const parsed = schema.safeParse(removeAdultEntries(body));
           if (!parsed.success) return failure(502);
           return json(parsed.data, 200, {
-            'Vercel-CDN-Cache-Control':
-              'public, s-maxage=60, stale-while-revalidate=15',
+            'Vercel-CDN-Cache-Control': edgeCache,
           });
         };
         return await Promise.race([request(), timeout]);

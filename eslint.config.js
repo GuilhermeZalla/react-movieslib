@@ -51,6 +51,59 @@ export default tseslint.config(
   {
     files: ['src/**/*.{ts,tsx}'],
     languageOptions: { globals: globals.browser },
+    rules: {
+      // All application data requests go through the validated TMDB client.
+      'no-restricted-globals': [
+        'error',
+        { name: 'fetch', message: 'Use src/api/tmdb/client.ts.' },
+        { name: 'XMLHttpRequest', message: 'Use src/api/tmdb/client.ts.' },
+      ],
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [{ name: 'axios', message: 'Use src/api/tmdb/client.ts.' }],
+          patterns: [
+            { group: ['axios/*'], message: 'Use src/api/tmdb/client.ts.' },
+          ],
+        },
+      ],
+      'no-restricted-properties': [
+        'error',
+        {
+          object: 'window',
+          property: 'fetch',
+          message: 'Use src/api/tmdb/client.ts.',
+        },
+        {
+          object: 'globalThis',
+          property: 'fetch',
+          message: 'Use src/api/tmdb/client.ts.',
+        },
+        {
+          object: 'window',
+          property: 'XMLHttpRequest',
+          message: 'Use src/api/tmdb/client.ts.',
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/api/tmdb/client.ts'],
+    rules: {
+      // This is the one production boundary that may call fetch.
+      'no-restricted-globals': [
+        'error',
+        { name: 'XMLHttpRequest', message: 'Use fetch in this client.' },
+      ],
+    },
+  },
+  {
+    files: ['src/**/*.{test,spec}.{ts,tsx}', 'src/test/**/*.{ts,tsx}'],
+    rules: {
+      // Tests mock and inspect fetch; their network guard blocks real requests.
+      'no-restricted-globals': 'off',
+      'no-restricted-properties': 'off',
+    },
   },
   {
     files: ['src/**/*.tsx'],

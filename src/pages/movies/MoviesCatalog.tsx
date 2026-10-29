@@ -1,3 +1,4 @@
+import { tmdbImageUrl } from '../../api/tmdb/client';
 // Legacy JSON is trusted only at these explicit boundaries; schema validation is Phase 3.
 import Header from '../../components/layout/Header';
 import FilmCard from '../../components/movies/FilmCard';
@@ -85,7 +86,7 @@ const MoviesCatalog = () => {
                 {search1.data?.results?.map((movie, index) => (
                   <FilmCard
                     key={`s1-${index}`}
-                    poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                    poster={tmdbImageUrl(movie.poster_path)}
                     title={movie.title}
                     vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                     movieId={movie.id}
@@ -94,7 +95,7 @@ const MoviesCatalog = () => {
                 {search2.data?.results?.map((movie, index) => (
                   <FilmCard
                     key={`s2-${index}`}
-                    poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                    poster={tmdbImageUrl(movie.poster_path)}
                     title={movie.title}
                     vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                     movieId={movie.id}
@@ -103,7 +104,7 @@ const MoviesCatalog = () => {
                 {search3.data?.results?.map((movie, index) => (
                   <FilmCard
                     key={`s3-${index}`}
-                    poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                    poster={tmdbImageUrl(movie.poster_path)}
                     title={movie.title}
                     vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                     movieId={movie.id}
@@ -112,7 +113,7 @@ const MoviesCatalog = () => {
                 {search4.data?.results?.map((movie, index) => (
                   <FilmCard
                     key={`s4-${index}`}
-                    poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                    poster={tmdbImageUrl(movie.poster_path)}
                     title={movie.title}
                     vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                     movieId={movie.id}
@@ -121,7 +122,7 @@ const MoviesCatalog = () => {
                 {search5.data?.results?.map((movie, index) => (
                   <FilmCard
                     key={`s5-${index}`}
-                    poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                    poster={tmdbImageUrl(movie.poster_path)}
                     title={movie.title}
                     vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                     movieId={movie.id}
@@ -146,7 +147,7 @@ const MoviesCatalog = () => {
             {catalog.data?.results?.map((movie, index) => (
               <FilmCard
                 key={index}
-                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                poster={tmdbImageUrl(movie.poster_path)}
                 title={movie.title}
                 vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                 movieId={movie.id}

@@ -53,6 +53,13 @@ export interface RequestOptions {
   signal?: AbortSignal;
 }
 
+/** Browser images use the same-origin, fixed-path proxy and never a CDN URL. */
+export function tmdbImageUrl(path: string | null | undefined): string | null {
+  if (!path || !/^\/[A-Za-z0-9_-]{1,160}\.(?:jpg|jpeg|png|webp)$/i.test(path))
+    return null;
+  return `/api/tmdb/image/w500${path}`;
+}
+
 export function validateRequest<T extends z.ZodType>(
   schema: T,
   value: unknown,

@@ -9,7 +9,7 @@ Ambas são carregadas localmente (sem CDN), com `font-display: swap` e fallback 
 
 ## Reset CSS
 
-- meyer-reset 2.0 (domínio público / Eric Meyer).
+- meyer-reset 2.0 (domínio público / Eric Meyer), hospedado em `public/meyer-reset.css`.
 
 ## Ícones
 

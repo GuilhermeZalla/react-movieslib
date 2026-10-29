@@ -26,8 +26,32 @@ describe('entrada Node e roteamento do proxy', () => {
     expect(response.getHeader('content-type')).toBe(
       'application/json; charset=utf-8',
     );
-    expect(end).toHaveBeenCalledWith('{"genres":[]}');
+    expect(end).toHaveBeenCalledWith(Buffer.from('{"genres":[]}'));
     expect(fetcher).toHaveBeenCalledTimes(1);
+    socket.destroy();
+  });
+
+  it('a entrada Node preserva os bytes de uma imagem', async () => {
+    vi.stubEnv('TMDB_READ_ACCESS_TOKEN', 'fixture-only');
+    const bytes = new Uint8Array([0xff, 0xd8, 0xff, 0xd9]);
+    vi.stubGlobal(
+      'fetch',
+      vi
+        .fn<typeof fetch>()
+        .mockResolvedValue(
+          new Response(bytes, { headers: { 'Content-Type': 'image/jpeg' } }),
+        ),
+    );
+    const socket = new Socket();
+    const request = new IncomingMessage(socket);
+    request.method = 'GET';
+    request.url = '/api/tmdb?path=image/w500/cartaz.jpg';
+    const response = new ServerResponse(request);
+    const end = vi.spyOn(response, 'end').mockImplementation(() => response);
+    await tmdb(request, response);
+    expect(response.statusCode).toBe(200);
+    expect(response.getHeader('content-type')).toBe('image/jpeg');
+    expect(end).toHaveBeenCalledWith(Buffer.from(bytes));
     socket.destroy();
   });
 

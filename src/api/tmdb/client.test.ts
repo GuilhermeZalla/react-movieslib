@@ -12,6 +12,7 @@ import {
   getTrending,
   searchMovies,
   searchPeople,
+  tmdbImageUrl,
 } from './client';
 import { fixtureFetch } from '../../test/fixtures/fetch';
 
@@ -26,6 +27,16 @@ afterEach(() => {
 });
 
 describe('cliente TMDB', () => {
+  it('constrói apenas URLs relativas para imagens permitidas', () => {
+    expect(tmdbImageUrl('/cartaz.jpg')).toBe('/api/tmdb/image/w500/cartaz.jpg');
+    for (const path of [
+      null,
+      '/../../../secret.jpg',
+      '/file.svg',
+      'https://image.tmdb.org/t/p/w500/cartaz.jpg',
+    ])
+      expect(tmdbImageUrl(path)).toBeNull();
+  });
   it('usa só o proxy, valida schemas e não encaminha opções de servidor', async () => {
     const fetcher = vi.fn(fixtureFetch);
     vi.stubGlobal('fetch', fetcher);

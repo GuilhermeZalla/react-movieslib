@@ -12,7 +12,7 @@ const Cast = ({ character = null, ...props }: CastProps) => {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
   };
-  if (!props.photo || props.photo === 'https://image.tmdb.org/t/p/w500null') {
+  if (!props.photo || props.photo.endsWith('w500null')) {
     return null;
   } else {
     return (

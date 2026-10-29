@@ -1,3 +1,4 @@
+import { tmdbImageUrl } from '../../api/tmdb/client';
 import type { PersonGender } from '../../types/tmdb';
 // Legacy JSON is trusted only at these explicit boundaries; schema validation is Phase 3.
 import { Navigate, useParams } from 'react-router-dom';
@@ -83,7 +84,7 @@ const CastDetails = () => {
           <img
             src={
               person?.profile_path
-                ? `https://image.tmdb.org/t/p/w500${person.profile_path}`
+                ? (tmdbImageUrl(person.profile_path) ?? undefined)
                 : undefined
             }
             alt={person?.name ?? ''}
@@ -139,7 +140,7 @@ const CastDetails = () => {
             credits.cast.map((movie, index) => (
               <FilmCard
                 key={index}
-                poster={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                poster={tmdbImageUrl(movie.poster_path)}
                 title={movie.title}
                 vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
                 movieId={movie.id}

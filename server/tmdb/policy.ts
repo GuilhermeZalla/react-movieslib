@@ -15,6 +15,9 @@ import {
 } from '../../src/api/tmdb/schemas.ts';
 
 const ORIGIN = 'https://api.themoviedb.org/3/';
+const IMAGE_ORIGIN = 'https://image.tmdb.org/t/p/';
+const IMAGE_PATH =
+  /^image\/w500\/([A-Za-z0-9_-]{1,160}\.(?:jpg|jpeg|png|webp))$/i;
 const paged = z.strictObject({ page: pageParameterSchema.default(1) });
 const searched = paged.extend({ query: searchQuerySchema });
 const detail = z.strictObject({
@@ -33,6 +36,35 @@ export class PolicyError extends Error {
   constructor(readonly status: 400 | 404) {
     super('Invalid proxy request');
   }
+}
+
+/** A separate fixed-origin allowlist for binary images; no arbitrary URLs or sizes. */
+export function resolveImageRequest(target: string): URL | null {
+  const [rawPath = '', query = ''] = target.split('?');
+  if (
+    target.length > 4096 ||
+    target.includes('#') ||
+    target.split('?').length > 2
+  )
+    throw new PolicyError(400);
+  if (rawPath !== '/api/tmdb' && !rawPath.startsWith('/api/tmdb/')) return null;
+  const params = new URLSearchParams(query);
+  const paths = params.getAll('path');
+  const suffix = rawPath.startsWith('/api/tmdb/')
+    ? rawPath.slice('/api/tmdb/'.length)
+    : '';
+  const candidate = suffix || paths[0] || '';
+  if (!candidate.startsWith('image/')) return null;
+  if (
+    /[%\\]/.test(rawPath) ||
+    paths.length > 1 ||
+    (suffix && paths.length === 1 && paths[0] !== suffix) ||
+    [...params.keys()].some((key) => key !== 'path')
+  )
+    throw new PolicyError(400);
+  const match = IMAGE_PATH.exec(candidate);
+  if (!match) throw new PolicyError(400);
+  return new URL(`w500/${match[1]}`, IMAGE_ORIGIN);
 }
 
 /** Parse the raw target BEFORE URL normalization can remove traversal segments. */
