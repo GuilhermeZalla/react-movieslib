@@ -1,10 +1,23 @@
 ﻿@layer theme, legacy, base, components, utilities;
 
 @import 'tailwindcss/theme' layer(theme);
-@import url('/meyer-reset.css') layer(legacy);
+@import '../public/meyer-reset.css' layer(legacy);
 @import './style/style.css' layer(legacy);
+@import 'tailwindcss/utilities' layer(utilities);
 @import './app/styles/theme.css';
 @import './fonts/fonts.css';
+
+/* Scoped normalization: native button defaults must not override Pulso colors.
+   Production screens outside the new shell keep their legacy defaults. */
+@layer base {
+  [data-design-preview] button {
+    background-color: transparent;
+    color: inherit;
+    font: inherit;
+    border: 0 solid;
+    cursor: pointer;
+  }
+}
 
 body {
   margin: 0;

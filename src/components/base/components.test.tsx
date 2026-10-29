@@ -32,6 +32,21 @@ describe('IconButton', () => {
 });
 
 describe('PosterImage', () => {
+  it('limita o fallback ao contêiner e tenta novamente quando o src muda', () => {
+    const view = render(
+      <PosterImage fill className="size-full" src="/a.jpg" alt="Pôster" />,
+    );
+    fireEvent.error(screen.getByRole('img', { name: 'Pôster' }));
+    const fallback = screen.getByRole('img', { name: 'Pôster' });
+    expect(fallback.style.width).toBe('');
+    view.rerender(
+      <PosterImage fill className="size-full" src="/b.jpg" alt="Pôster" />,
+    );
+    expect(screen.getByRole('img', { name: 'Pôster' })).toHaveAttribute(
+      'src',
+      '/b.jpg',
+    );
+  });
   it('renderiza imagem com lazy loading', () => {
     render(<PosterImage src="/p.jpg" alt="Filme" />);
     const img = screen.getByRole('img', { name: 'Filme' });

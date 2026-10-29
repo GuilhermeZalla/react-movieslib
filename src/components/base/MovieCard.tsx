@@ -26,7 +26,7 @@ const MovieCard = ({
       <a
         href={`/movie-details/${movieId}`}
         onClick={onClick}
-        className="block rounded-preview-control focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-preview-accent-text"
+        className="relative block rounded-preview-control focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-preview-accent-text"
       >
         <div className="flex items-end gap-1">
           {rank !== undefined && (
@@ -49,13 +49,14 @@ const MovieCard = ({
               <PosterImage
                 src={posterPath ? tmdbImageUrl(posterPath) : null}
                 alt={title}
+                fill
                 className="size-full"
               />
             )}
           </div>
         </div>
         <div className="mt-2 flex items-start justify-between gap-2">
-          <h3 className="font-display text-preview-card font-bold leading-tight text-preview-ink group-hover:text-preview-accent-text group-focus-within:text-preview-accent-text">
+          <h3 className="min-w-0 wrap-break-word font-display text-preview-card font-bold leading-tight text-preview-ink group-hover:text-preview-accent-text group-focus-within:text-preview-accent-text">
             {title}
           </h3>
           {vote && (

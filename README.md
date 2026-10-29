@@ -11,7 +11,7 @@ Deploy: [LINK DO DEPLOY]
 
 ## Funcionalidades e limites atuais
 
-- Home com estrutura de tendências, populares, em cartaz e faixa de imagens.
+- Home com visual Pulso: abertura assimétrica com pôster protagonista, em cartaz, populares com ranking/carrossel, bem avaliados e gêneros. Tema escuro padrão, alternância clara/escura e estados de carregamento, vazio e erro por seção. As demais telas ainda usam a composição legada.
 - Catálogo por categoria, páginas 1–5, busca de filmes e recorte por gênero.
 - Estrutura de detalhe com sinopse, orçamento, receita, duração, gêneros e elenco.
 - Catálogo/busca de pessoas, biografia e filmografia.
@@ -26,11 +26,11 @@ Dois loops de requisição foram corrigidos para validar a migração; outras li
 
 React/DOM 18.3.1, Router DOM 7.18.5 e React Icons 4.4.0. Fundação: Vite 8.3.5, TypeScript 6.0.3, ESLint 9.39.5, Prettier 3.9.10 e Vitest 4.1.12. Router atualizado para corrigir os advisories da linha 6, mantendo BrowserRouter, imports e URLs. Removidos CRA/react-scripts e seus transitivos exclusivos; somente package-lock.json permanece. React 19 requer migração própria, não realizada nesta atualização. ESLint 9 atende aos peers dos plugins React/a11y, mas está fora de suporte; risco em [DEPENDENCIES.md](docs/DEPENDENCIES.md).
 
-TypeScript estrito cobre src, api, server, shared, e2e e configurações Vite/Playwright, com allowJs:false, noUncheckedIndexedAccess e exactOptionalPropertyTypes, sem exclusões de fontes ou skipLibCheck. Os contratos são derivados de schemas **Zod 4.6.7** em [schemas.ts](src/api/tmdb/schemas.ts); [src/types/tmdb.ts](src/types/tmdb.ts) preserva os exports anteriores. Há validação de IDs, páginas, categorias e busca em shared/tmdbRequest.ts. O cliente centralizado aplica os schemas às respostas do proxy, com timeout, cancelamento e erros tipados. **TanStack Query 5.105.0** usa cache apenas em memória por 60 s, até 1 retry para falhas de rede e sem retry para 400/404/429; o debounce de busca é de 300 ms. A integração de dados às telas está concluída: não há fetch direto fora do cliente em src. Tailwind CSS 4.3.3 usa o plugin Vite; tokens @theme ficam em src/app/styles/theme.css. As telas combinam classes Tailwind e CSS legado, inclusive valores arbitrários que precisam ser substituídos por tokens. Componentes base ainda não integrados; preservação visual das mudanças anteriores não comprovada.
+TypeScript estrito cobre src, api, server, shared, e2e e configurações Vite/Playwright, com allowJs:false, noUncheckedIndexedAccess e exactOptionalPropertyTypes, sem exclusões de fontes ou skipLibCheck. Os contratos são derivados de schemas **Zod 4.6.7** em [schemas.ts](src/api/tmdb/schemas.ts); [src/types/tmdb.ts](src/types/tmdb.ts) preserva os exports anteriores. Há validação de IDs, páginas, categorias e busca em shared/tmdbRequest.ts. O cliente centralizado aplica os schemas às respostas do proxy, com timeout, cancelamento e erros tipados. **TanStack Query 5.105.0** usa cache apenas em memória por 60 s, até 1 retry para falhas de rede e sem retry para 400/404/429; o debounce de busca é de 300 ms. A integração de dados às telas está concluída: não há fetch direto fora do cliente em src. Tailwind CSS 4.3.3 usa o plugin Vite; tokens @theme ficam em src/app/styles/theme.css. As telas combinam classes Tailwind e CSS legado, inclusive valores arbitrários que precisam ser substituídos por tokens. Componentes base integrados apenas à home; revisão visual das demais rotas ainda pendente.
 
 O [STATUS.md](docs/STATUS.md) é a fonte da verdade. A direção vigente é **Pulso**, desvio decidido pelo proprietário após Caderno: visual moderno e jovem de streaming, escuro padrão, carvão/cinzas e vermelho #C62828, com o pôster protagonista. PXN Games continua apenas como referência de clima, sem cópia de cores exatas, logo, textos ou layout. A paleta, a escala vermelha e o contraste AA dos dois temas estão no [DESIGN.md](docs/DESIGN.md). Os previews estáticos da Fase 1 são históricos; a amostra vigente está em `/design` no servidor de desenvolvimento.
 
-Estilo aprovado: Tailwind CSS 4.3.3, tokens em @theme, sem DaisyUI ou biblioteca de componentes visuais. A amostra Pulso em `/design` oferece Plus Jakarta Sans, Bricolage Grotesque + Figtree ou Figtree, via WOFF2 local Fontsource 5.3.0; a escolha final da fonte está pendente. As fontes antigas permanecem instaladas, inclusive as TTF legadas; a revisão das licenças completas destas permanece pendente. Proxy e consultas integrados às telas (Fase 3). Componentes base e página /design são testados; aparência nova isolada na amostra, sem redesenho das telas existentes. [Inventário de dependências](docs/DEPENDENCIES.md).
+Estilo aprovado: Tailwind CSS 4.3.3, tokens em @theme, sem DaisyUI ou biblioteca de componentes visuais. Tipografia escolhida: **Bricolage Grotesque nos títulos + Figtree no corpo/números**, WOFF2 local Fontsource Variable 5.3.0, com font-display: swap. A home importa as fontes em produção; `/design` mostra a amostra somente em desenvolvimento, sem seletor. Fontes antigas permanecem instaladas, inclusive TTF legadas; a revisão das licenças completas destas permanece pendente. Componentes base integrados à home; demais páginas aguardam a migração visual. [Inventário de dependências](docs/DEPENDENCIES.md).
 
 Tema claro/escuro e trailer youtube-nocookie aprovados; preservar pessoa/filmografia e em cartaz/em breve. pt-BR/en, atalhos e comparação ficam como **futuro**. Sem login/cadastro, analytics, rastreamento ou coleta de dados pessoais pelo aplicativo; documentar comunicação com provedores terceiros.
 
@@ -77,7 +77,7 @@ src/
 
 app contém App e LayoutRoutes; pages preserva as telas e seus wrappers existentes. components agrupa layout, filmes, pessoas e componentes base (Button, Link, Input, Card, Container, PosterPlaceholder, EmptyState, ErrorState, Skeleton); test guarda os testes e dados fictícios. Componentes usam PascalCase; utilitários/testes, camelCase; pastas, minúsculas/kebab-case. Imports relativos simples, sem alias. Os exports e as URLs existentes permanecem iguais.
 
-src/sass e src/style continuam no lugar durante a transição. O app consome o CSS legado compilado e seu mapa junto com Tailwind. A retirada do legado, a paleta própria e a validação visual permanecem pendentes.
+src/sass e src/style continuam no lugar durante a transição. O app incorpora o reset local e o CSS legado na camada legacy, abaixo dos utilitários Tailwind. A paleta própria já está na home e na amostra; retirada do legado e validação visual das demais rotas continuam pendentes.
 
 ## Como rodar
 
@@ -195,6 +195,15 @@ Auditoria do lockfile em 28/10/2026 após atualizar React/Router: **zero vulnera
 
 ## Acessibilidade e Lighthouse
 
+### Conferência da home com dados reais
+
+1. Configure **TMDB_READ_ACCESS_TOKEN** somente no `.env.local` ignorado, conforme Credenciais, e rode `npm.cmd run dev`. Não use `TMDB_API_KEY` nem prefixo VITE_. Os testes automatizados usam fixtures, sem token ou acesso real ao TMDB.
+2. Abra `/` em 360/768/1024/1440 px, nos temas escuro e claro. Confira destaque, pôster/fallback, título, sinopse, nota e o link para o detalhe. Confirme quatro itens nas grades quando houver dados suficientes.
+3. Use Tab e Enter nos botões Anterior/Próximo e toque no carrossel. Confira gêneros e navegue para detalhe, catálogo e pessoas; volte à home pelo histórico. As outras páginas ainda usam o layout legado.
+4. No navegador, simule rede offline e use retry da seção. Reative a rede e confirme recuperação. Respostas vazias são verificadas por fixtures; não dependem de existir uma categoria vazia no provedor.
+
+O teste `e2e/home.spec.ts` cobre larguras/temas e carrossel por teclado com 20 filmes fictícios, sem rede externa. Os testes unitários cobrem vazio, falhas/retry isolado, imagens quebradas, dados ausentes e chamadas após rerender. Isso não substitui a conferência com dados reais, do logo e da hospedagem.
+
 Há botões semânticos nos menus de gêneros, labels em controles e lazy loading em imagens. vercel.json declara cabeçalhos, mas seu comportamento em deploy, CSP com dados/embeds e fallback SPA ainda não foram verificados. Meta tags não substituem cabeçalhos HTTP. Os resultados Lighthouse registrados anteriormente não têm relatório reproduzível disponível e não são apresentados como medição confirmada. Auditoria de teclado, contraste, responsividade e baseline antes/depois continuam pendentes.
 
 ## Conferência rápida de rotas
@@ -245,7 +254,7 @@ Sem configurar e executar o proxy, a conferência preenchida e dos campos nulos 
 
 ## Créditos e licença
 
-Dados e imagens: [TMDB](https://www.themoviedb.org). A interface ainda precisa de logo aprovado e atribuição em Sobre/Créditos, conforme a [documentação oficial](https://developer.themoviedb.org/docs/faq). Aviso: “This product uses the TMDB API but is not endorsed or certified by TMDB.” README não substitui atribuição na interface.
+Dados e imagens: [TMDB](https://www.themoviedb.org). O rodapé da home contém uma seção Créditos e o aviso exato em inglês, conforme a [documentação oficial](https://developer.themoviedb.org/docs/faq). **Antes de publicar, falta adicionar o logo aprovado em public/tmdb-logo.svg** e conferir tamanho/proporção. Enquanto ausente, há fallback textual TMDB; isso não completa a atribuição obrigatória. README não substitui atribuição na interface.
 
 Ícones: React Icons. Fontes: PT Sans e Source Sans Pro, locais em src/fonts/. Reset: Meyer Reset 2.0 local em public/meyer-reset.css. Licenças detalhadas em [CREDITS.md](CREDITS.md). Licenças específicas serão registradas em CREDITS.md ao incorporar/substituir recursos; créditos dos estudos estão em [LICENSES.md](docs/design-previews/LICENSES.md).
 

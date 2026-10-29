@@ -2,7 +2,7 @@
 
 ## Direção vigente — Pulso (desvio decidido pelo proprietário em 29/10/2026)
 
-O proprietário substituiu **Caderno**, editorial e com serifas, por um visual moderno e jovem de streaming. A direção agora se chama **Pulso**: carvão/cinzas, vermelho principal **#C62828** e pôster protagonista, com tema escuro padrão. As telas de produção ainda conservam a aparência anterior; a amostra nova está em `/design`, somente no servidor de desenvolvimento. As três propostas da Fase 1 abaixo permanecem como registro histórico, não como especificação ativa.
+O proprietário substituiu **Caderno**, editorial e com serifas, por um visual moderno e jovem de streaming. A direção agora se chama **Pulso**: carvão/cinzas, vermelho principal **#C62828** e pôster protagonista, com tema escuro padrão. A home aplica Pulso com a tipografia B escolhida; as demais páginas conservam a composição legada. A amostra está em `/design`, somente em desenvolvimento. As três propostas da Fase 1 abaixo permanecem como registro histórico, não como especificação ativa.
 
 ### Paleta e uso
 
@@ -42,7 +42,7 @@ Contrastes recalculados pela fórmula WCAG sRGB indicada na seção histórica d
 
 ### Tipografia, escala e amostra
 
-As três opções usam WOFF2 locais de `@fontsource-variable` versão 5.3.0, `font-display: swap` e fallback do sistema, sem CDN. Licenças confirmadas como **SIL OFL 1.1** nas páginas oficiais [Plus Jakarta Sans](https://fontsource.org/fonts/plus-jakarta-sans/about), [Bricolage Grotesque](https://fontsource.org/fonts/bricolage-grotesque/about) e [Figtree](https://fontsource.org/fonts/figtree/about). A importação fica na rota de desenvolvimento; fontes antigas permanecem até a escolha.
+As opções avaliadas usaram WOFF2 locais de `@fontsource-variable` versão 5.3.0, `font-display: swap` e fallback do sistema, sem CDN. Licenças confirmadas como **SIL OFL 1.1** nas páginas oficiais [Plus Jakarta Sans](https://fontsource.org/fonts/plus-jakarta-sans/about), [Bricolage Grotesque](https://fontsource.org/fonts/bricolage-grotesque/about) e [Figtree](https://fontsource.org/fonts/figtree/about). Bricolage e Figtree foram escolhidas e são importadas pelo shell da home e por `/design`; Plus Jakarta foi removida. Fontes legadas permanecem durante a transição. A tabela abaixo registra as opções apresentadas antes da escolha.
 
 | Opção | Títulos                        | Corpo / números   | Leitura                       |
 | ----- | ------------------------------ | ----------------- | ----------------------------- |
@@ -61,15 +61,15 @@ As três opções usam WOFF2 locais de `@fontsource-variable` versão 5.3.0, `fo
 | número  |  28 px |   36 px |  800 |
 | ranking |  56 px |   84 px |  800 |
 
-Em `/design`, os radios A/B/C alteram simultaneamente quatro amostras: 360 e 1440 px, em claro e escuro. Elas mostram títulos, corpo, números, cabeçalho, pôsteres fictícios, card com ranking, skeleton 2:3, EmptyState e ErrorState. O pôster usa raio de 3 px, sem moldura nem sombra pesada. No hover/foco, sobe discretamente durante 160 ms; `prefers-reduced-motion` remove a transição e o deslocamento. A nota é um pequeno anel com equivalente textual para leitor de tela. Ilustrações SVG de tira de filme, ingresso e poltrona vazia são próprias; textos curtos em pt-BR. Conteúdo de filme real continua vindo da API.
+Em `/design`, quatro amostras fixas exibem a opção B em 360 e 1440 px, em claro e escuro, sem seletor. Elas mostram títulos, corpo, números, cabeçalho, pôsteres fictícios, card com ranking, skeleton 2:3, EmptyState e ErrorState. O pôster usa raio de 3 px, sem moldura nem sombra pesada. No hover/foco, sobe discretamente durante 160 ms; `prefers-reduced-motion` remove a transição e o deslocamento. A nota é um pequeno anel com equivalente textual para leitor de tela. Ilustrações SVG de tira de filme, ingresso e poltrona vazia são próprias; textos curtos em pt-BR. Conteúdo de filme real continua vindo da API.
 
-**Recomendo C — Figtree**: uma família WOFF2 simplifica o carregamento futuro, mantém boa leitura em 360 px e permite títulos com ritmo sem depender de serifas. A escolha final da tipografia aguarda o proprietário abrir `/design`. A opção B tem mais caráter nos títulos, mas exige duas famílias; A é clara, porém menos marcante.
+**Recomendação anterior, superada pela escolha B:** C reduzia o número de famílias; B foi escolhida pelo proprietário para dar mais caráter aos títulos, preservando Figtree no corpo e números. A escolha final já foi registrada e aplicada à home.
 
 **Decisão do proprietário (29/10/2026): tipografia B.** Títulos em Bricolage Grotesque, corpo e números em Figtree. As opções A (Plus Jakarta Sans) e C (Figtree-only) foram removidas da amostra `/design`; o seletor de fonte foi removido. Fontes antigas (Source Serif 4, Source Sans 3) mantidas na árvore — saem com o Sass no fim da Fase 5, pois `src/app/styles/theme.css` ainda as referencia nos tokens legados.
 
 ### Tokens Tailwind 4
 
-O arquivo `src/app/styles/theme.css` define os tokens no `@theme static`; a amostra isola suas cores e fontes por `[data-design-preview]`, preservando as telas existentes. Exemplo do tema implementado:
+O arquivo `src/app/styles/theme.css` define os tokens no `@theme static`; a amostra e o shell da home isolam suas cores e fontes por `[data-design-preview]`, sem substituir os tokens legados nas demais páginas. Exemplo do tema implementado:
 
 ```css
 @theme static {

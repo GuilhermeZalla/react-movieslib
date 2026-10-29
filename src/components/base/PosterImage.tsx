@@ -8,6 +8,7 @@ interface PosterImageProps extends Omit<
   alt: string;
   width?: number;
   height?: number;
+  fill?: boolean;
 }
 
 const PosterImage = ({
@@ -16,10 +17,12 @@ const PosterImage = ({
   width = 190,
   height = 285,
   className,
+  fill = false,
+  fetchPriority,
   ...props
 }: PosterImageProps) => {
-  const [failed, setFailed] = useState(false);
-  const showImage = Boolean(src) && !failed;
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const showImage = Boolean(src) && failedSrc !== src;
 
   if (!showImage) {
     return (
@@ -32,7 +35,11 @@ const PosterImage = ({
         ]
           .filter(Boolean)
           .join(' ')}
-        style={{ width, height, aspectRatio: `${width}/${height}` }}
+        style={
+          fill
+            ? undefined
+            : { width, height, aspectRatio: `${width}/${height}` }
+        }
       >
         Sem pôster
       </div>
@@ -50,7 +57,9 @@ const PosterImage = ({
       className={['rounded-poster object-cover', className]
         .filter(Boolean)
         .join(' ')}
-      onError={() => setFailed(true)}
+      onError={() => setFailedSrc(src ?? null)}
+      // React 18 accepts this native attribute in lowercase, without a DOM warning.
+      {...(fetchPriority ? { fetchpriority: fetchPriority } : {})}
       {...props}
     />
   );

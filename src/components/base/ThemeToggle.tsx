@@ -44,7 +44,11 @@ const MoonIcon = () => (
 const ThemeToggle = ({ theme, onToggle }: ThemeToggleProps) => {
   const next = theme === 'dark' ? 'light' : 'dark';
   return (
-    <IconButton label={`Alternar para tema ${next}`} onClick={onToggle}>
+    <IconButton
+      className="min-h-11 min-w-11 border border-line bg-surface text-ink"
+      label={`Alternar para tema ${next}`}
+      onClick={onToggle}
+    >
       {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
     </IconButton>
   );
