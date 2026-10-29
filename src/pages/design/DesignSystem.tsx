@@ -1,34 +1,13 @@
-import '@fontsource-variable/plus-jakarta-sans/wght.css';
 import '@fontsource-variable/bricolage-grotesque/wght.css';
 import '@fontsource-variable/figtree/wght.css';
-import { useState } from 'react';
 import Button from '../../components/base/Button';
 import MovieCard from '../../components/base/MovieCard';
 import Skeleton from '../../components/base/Skeleton';
 import EmptyState from '../../components/base/EmptyState';
 import ErrorState from '../../components/base/ErrorState';
 
-type FontOption = 'a' | 'b' | 'c';
 type PreviewTheme = 'dark' | 'light';
 type PreviewSize = 'mobile' | 'wide';
-
-const fontOptions: { value: FontOption; label: string; note: string }[] = [
-  {
-    value: 'a',
-    label: 'A · Plus Jakarta Sans',
-    note: 'Uma família, números calmos e leitura nítida.',
-  },
-  {
-    value: 'b',
-    label: 'B · Bricolage + Figtree',
-    note: 'Título expressivo, corpo leve.',
-  },
-  {
-    value: 'c',
-    label: 'C · Figtree',
-    note: 'Uma família, títulos em 800 e entreletras justas.',
-  },
-];
 
 const FilmStrip = () => (
   <svg viewBox="0 0 180 270" className="size-full" aria-hidden="true">
@@ -145,16 +124,14 @@ const TypeScale = () => (
 );
 
 interface PreviewFrameProps {
-  font: FontOption;
   theme: PreviewTheme;
   size: PreviewSize;
 }
 
-const PreviewFrame = ({ font, theme, size }: PreviewFrameProps) => (
+const PreviewFrame = ({ theme, size }: PreviewFrameProps) => (
   <section
     data-design-preview
     data-design-theme={theme}
-    data-font-option={font}
     data-preview-size={size}
     aria-label={
       'Amostra ' +
@@ -267,46 +244,20 @@ const PreviewFrame = ({ font, theme, size }: PreviewFrameProps) => (
 );
 
 const DesignSystem = () => {
-  const [font, setFont] = useState<FontOption>('c');
   return (
     <main className="min-h-screen bg-preview-canvas p-5 font-preview-figtree text-preview-ink">
       <div className="mx-auto max-w-preview-wide">
         <p className="text-preview-caption font-bold uppercase tracking-wide text-preview-accent-text">
           Laboratório visual · apenas desenvolvimento
         </p>
-        <h1 className="mt-2 font-preview-figtree text-preview-title font-extrabold text-preview-ink">
-          Pulso: escolha a voz dos títulos
+        <h1 className="mt-2 font-preview-bricolage text-preview-title font-extrabold text-preview-ink">
+          Pulso: tipografia B (Bricolage + Figtree)
         </h1>
         <p className="mt-2 max-w-prose text-preview-body text-preview-muted">
-          O pôster abre a conversa. Troque a fonte e compare os dois temas em
-          360 e 1440 px. Os filmes desta página são fictícios.
+          Tipografia escolhida: Bricolage Grotesque nos títulos e Figtree no
+          corpo. Compare os dois temas em 360 e 1440 px. Os filmes desta página
+          são fictícios.
         </p>
-        <fieldset className="my-8 grid gap-3 border-t border-preview-line pt-5">
-          <legend className="text-preview-section font-bold">Tipografia</legend>
-          {fontOptions.map((option) => (
-            <label
-              key={option.value}
-              htmlFor={'font-' + option.value}
-              className="flex cursor-pointer items-start gap-3 rounded-preview-control border border-preview-line bg-preview-surface p-3 text-preview-body"
-            >
-              <span className="sr-only">Selecionar </span>
-              <input
-                id={'font-' + option.value}
-                type="radio"
-                name="font"
-                value={option.value}
-                checked={font === option.value}
-                onChange={() => setFont(option.value)}
-                className="mt-1 accent-preview-accent"
-              />
-              <span>
-                <strong>{option.label}</strong>
-                <br />
-                <span className="text-preview-muted">{option.note}</span>
-              </span>
-            </label>
-          ))}
-        </fieldset>
         {(['dark', 'light'] as const).flatMap((theme) =>
           (['mobile', 'wide'] as const).map((size) => (
             <div key={theme + '-' + size} className="mb-10">
@@ -315,7 +266,7 @@ const DesignSystem = () => {
                 {size === 'mobile' ? '360 px' : '1440 px'}
               </h2>
               <div className="overflow-x-auto rounded-preview-control border border-preview-line">
-                <PreviewFrame font={font} theme={theme} size={size} />
+                <PreviewFrame theme={theme} size={size} />
               </div>
             </div>
           )),

@@ -65,6 +65,8 @@ Em `/design`, os radios A/B/C alteram simultaneamente quatro amostras: 360 e 144
 
 **Recomendo C — Figtree**: uma família WOFF2 simplifica o carregamento futuro, mantém boa leitura em 360 px e permite títulos com ritmo sem depender de serifas. A escolha final da tipografia aguarda o proprietário abrir `/design`. A opção B tem mais caráter nos títulos, mas exige duas famílias; A é clara, porém menos marcante.
 
+**Decisão do proprietário (29/10/2026): tipografia B.** Títulos em Bricolage Grotesque, corpo e números em Figtree. As opções A (Plus Jakarta Sans) e C (Figtree-only) foram removidas da amostra `/design`; o seletor de fonte foi removido. Fontes antigas (Source Serif 4, Source Sans 3) mantidas na árvore — saem com o Sass no fim da Fase 5, pois `src/app/styles/theme.css` ainda as referencia nos tokens legados.
+
 ### Tokens Tailwind 4
 
 O arquivo `src/app/styles/theme.css` define os tokens no `@theme static`; a amostra isola suas cores e fontes por `[data-design-preview]`, preservando as telas existentes. Exemplo do tema implementado:

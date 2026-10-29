@@ -1,17 +1,13 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import DesignSystem from './DesignSystem';
 
 describe('laboratório visual', () => {
-  it('oferece três fontes e mostra os dois temas nas duas larguras', () => {
+  it('mostra a tipografia B e os dois temas nas duas larguras', () => {
     render(<DesignSystem />);
     expect(
-      screen.getByRole('radio', { name: /A · Plus Jakarta Sans/ }),
+      screen.getByRole('heading', { name: /Pulso: tipografia B/ }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByRole('radio', { name: /B · Bricolage/ }),
-    ).toBeInTheDocument();
-    expect(screen.getByRole('radio', { name: /C · Figtree/ })).toBeChecked();
     for (const label of [
       'Amostra escura em 360 pixels',
       'Amostra escura em 1440 pixels',
@@ -28,14 +24,12 @@ describe('laboratório visual', () => {
     }
   });
 
-  it('troca todas as amostras para a fonte escolhida', () => {
+  it('renderiza quatro amostras sem seletor de fonte', () => {
     render(<DesignSystem />);
-    fireEvent.click(screen.getByRole('radio', { name: /B · Bricolage/ }));
-    expect(screen.getByRole('radio', { name: /B · Bricolage/ })).toBeChecked();
     const frames = document.querySelectorAll('[data-design-preview]');
     expect(frames).toHaveLength(4);
-    frames.forEach((frame) =>
-      expect(frame).toHaveAttribute('data-font-option', 'b'),
-    );
+    frames.forEach((frame) => {
+      expect(frame).not.toHaveAttribute('data-font-option');
+    });
   });
 });

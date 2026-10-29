@@ -54,7 +54,6 @@
   --color-preview-on-accent: #ffffff;
   --color-preview-skeleton: #33363c;
 
-  --font-preview-jakarta: 'Plus Jakarta Sans Variable', 'Segoe UI', sans-serif;
   --font-preview-bricolage: 'Bricolage Grotesque Variable', Arial, sans-serif;
   --font-preview-figtree: 'Figtree Variable', 'Segoe UI', sans-serif;
   --text-preview-display: 2.75rem;
@@ -113,7 +112,7 @@
   --color-line: var(--color-preview-line);
   --color-accent: var(--color-preview-accent);
   --color-on-accent: var(--color-preview-on-accent);
-  --font-display: var(--font-preview-figtree);
+  --font-display: var(--font-preview-bricolage);
   --font-body: var(--font-preview-figtree);
   --radius-poster: var(--radius-preview-poster);
   --radius-control: var(--radius-preview-control);
@@ -130,19 +129,9 @@
   --color-preview-skeleton: #e0e2e6;
 }
 
-[data-design-preview][data-font-option='a'] {
-  --font-display: var(--font-preview-jakarta);
-  --font-body: var(--font-preview-jakarta);
-}
-
-[data-design-preview][data-font-option='b'] {
-  --font-display: var(--font-preview-bricolage);
-  --font-body: var(--font-preview-figtree);
-}
-
-[data-design-preview][data-font-option='c'] {
-  --font-display: var(--font-preview-figtree);
-  --font-body: var(--font-preview-figtree);
+[data-design-preview] .preview-headline {
+  letter-spacing: var(--tracking-preview-tight);
+  font-weight: 800;
 }
 
 [data-design-preview][data-preview-size='mobile'] {
@@ -157,9 +146,4 @@
   --text-preview-card: var(--text-preview-card-wide);
   --text-preview-number: var(--text-preview-number-wide);
   --text-preview-rank: var(--text-preview-rank-wide);
-}
-
-[data-design-preview][data-font-option='c'] .preview-headline {
-  letter-spacing: var(--tracking-preview-tight);
-  font-weight: 800;
 }
