@@ -16,6 +16,8 @@ Atualizado em 29/10/2026. HEAD inicial `5bd98b0`; a árvore estava limpa antes d
 
 - [ ] **Ativar e testar a regra WAF no painel da Vercel.** Não há confirmação de ativação; conferir bloqueio/429 e observabilidade no projeto publicado.
 - [ ] **Revisar a limitação do contador em memória antes de publicar:** a quota é compartilhada por todos os visitantes da mesma instância. README deve explicitar essa divisão, cold starts e ausência de coordenação entre instâncias; é melhor esforço, por instância, não limite por visitante. A documentação já explica a limitação; a mitigação/publicação continua pendente.
+- [ ] **Conferir os termos do TMDB para imagens:** confirmar expressamente se o proxy de imagens e o cache de borda de 60 s com stale-while-revalidate de 15 s são permitidos, além das regras de atribuição e redistribuição. Não ampliar o cache nem tratar a política provisória como autorização contratual até essa revisão.
+- [ ] **Medir o consumo do proxy de imagens na Vercel antes de publicar:** cada imagem servida pela função pode consumir recursos da plataforma, e o tráfego simultâneo também disputa a quota anônima de 300 imagens/min por instância. Verificar no painel limites, métricas, custo e comportamento do cache de borda em tráfego real; o WAF de 60/min para dados deve excluir `/api/tmdb/image/` e ainda não foi ativado/testado.
 
 ## Revisão do grupo 3 após a retomada
 
