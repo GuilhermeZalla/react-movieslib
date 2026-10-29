@@ -21,7 +21,7 @@ function openRoute(path: string) {
 
 describe('contratos de navegação preservados na migração', () => {
   it.each([
-    ['/', 'Welcome to the Movie Library'],
+    ['/', /A tela acende/],
     ['/catalog/popular/1', 'Overviewing popular movies'],
     ['/upcoming_&_just_released/upcoming/1', 'Overviewing upcoming movies'],
     ['/top_rated/top_rated/1', 'Overviewing top rated movies'],
@@ -124,7 +124,7 @@ describe('contratos de navegação preservados na migração', () => {
     expect(
       await screen.findByRole('heading', {
         level: 1,
-        name: 'Welcome to the Movie Library',
+        name: /A tela acende/,
       }),
     ).toBeInTheDocument();
   });

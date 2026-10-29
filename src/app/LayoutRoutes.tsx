@@ -7,6 +7,7 @@ import CastDetailsScreen from '../pages/person-details/CastDetailsScreen';
 import CastCatalogScreen from '../pages/people/CastCatalogScreen';
 import NotFoundScreen from '../pages/not-found/NotFoundScreen';
 import React from 'react';
+import PulsoShell from '../components/layout/PulsoShell';
 const DesignSystemScreen = import.meta.env.DEV
   ? React.lazy(() => import('../pages/design/DesignSystem'))
   : null;
@@ -15,7 +16,14 @@ const LayoutRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path={'/'} element={<HomeScreen />} />
+        <Route
+          path="/"
+          element={
+            <PulsoShell>
+              <HomeScreen />
+            </PulsoShell>
+          }
+        />
         <Route path={'/movie-details/:id'} element={<MovieDetailsScreen />} />
         <Route
           path={'/catalog/:category/:page'}
