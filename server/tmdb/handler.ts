@@ -46,12 +46,7 @@ function failure(status: ErrorStatus, headers: Record<string, string> = {}) {
 }
 
 const edgeCache = 'public, s-maxage=60, stale-while-revalidate=15';
-const imageTypes = new Set([
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-  'image/avif',
-]);
+const imageTypes = new Set(['image/jpeg', 'image/png', 'image/webp']);
 
 async function readBody(
   response: Response,
@@ -124,7 +119,7 @@ export function createTmdbHandler({
             redirect: 'error',
             signal: controller.signal,
             headers: imageUrl
-              ? { Accept: 'image/avif,image/webp,image/png,image/jpeg' }
+              ? { Accept: 'image/webp,image/png,image/jpeg' }
               : {
                   Authorization: `Bearer ${token}`,
                   Accept: 'application/json',

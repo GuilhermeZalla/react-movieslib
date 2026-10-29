@@ -80,6 +80,11 @@ export default tseslint.config(
           message: 'Use src/api/tmdb/client.ts.',
         },
         {
+          object: 'self',
+          property: 'fetch',
+          message: 'Use src/api/tmdb/client.ts.',
+        },
+        {
           object: 'window',
           property: 'XMLHttpRequest',
           message: 'Use src/api/tmdb/client.ts.',

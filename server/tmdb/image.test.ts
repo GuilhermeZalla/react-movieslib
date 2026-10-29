@@ -42,7 +42,7 @@ describe('imagens TMDB via proxy', () => {
       if (!(url instanceof URL)) throw new Error('Origem da imagem inválida.');
       expect(url.href).toBe('https://image.tmdb.org/t/p/w500/cartaz.jpg');
       expect(options?.headers).toEqual({
-        Accept: 'image/avif,image/webp,image/png,image/jpeg',
+        Accept: 'image/webp,image/png,image/jpeg',
       });
       expect(JSON.stringify(options)).not.toContain('fixture-only');
     },
@@ -100,6 +100,12 @@ describe('imagens TMDB via proxy', () => {
     expect(sensitive.bodyUsed).toBe(false);
     fetcher.mockResolvedValueOnce(
       new Response('<svg/>', { headers: { 'Content-Type': 'image/svg+xml' } }),
+    );
+    expect((await handler('/api/tmdb/image/w500/cartaz.jpg')).status).toBe(502);
+    fetcher.mockResolvedValueOnce(
+      new Response(new Uint8Array([0, 0, 0, 0]), {
+        headers: { 'Content-Type': 'image/avif' },
+      }),
     );
     expect((await handler('/api/tmdb/image/w500/cartaz.jpg')).status).toBe(502);
     fetcher.mockResolvedValueOnce(
