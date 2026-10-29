@@ -1,6 +1,18 @@
 # Status do MoviesLib
 
-Atualizado em 29/10/2026. HEAD inicial `5bd98b0`; a árvore estava limpa antes deste grupo. Os blocos antigos abaixo são registros históricos, inclusive referências a fetch legado, CDN de imagens e à configuração anterior do WAF; a abertura e o README descrevem o estado vigente. Executar um grupo por vez e aguardar OK antes do seguinte. Git somente leitura. **Mensagens de commit sempre em português**.
+Atualizado em 29/10/2026. HEAD inicial `c9d1e8c`, árvore limpa antes destes dois blocos. Os blocos antigos abaixo são registros históricos, inclusive referências a fetch legado, CDN de imagens e à configuração anterior do WAF; a abertura e o README descrevem o estado vigente. Git somente leitura. **Mensagens de commit em inglês, conforme decisão mais recente do proprietário.**
+
+## Bloco 2 — direção Pulso e amostra de tipografia
+
+- **Desvio decidido pelo proprietário:** Caderno editorial, com serifas, deixa de ser a direção vigente. A direção agora se chama **Pulso**: visual moderno e jovem de streaming, carvão/cinzas, pôster protagonista, tema escuro padrão e vermelho principal #C62828. O PXN Games segue apenas como referência de clima; sem copiar cores exatas, marca, textos ou layout. DESIGN.md contém a escala vermelha e os contrastes AA dos dois temas. As seções antigas abaixo sobre Caderno e paletas anteriores são histórico, não decisão atual.
+- `/design` (somente desenvolvimento) oferece A Plus Jakarta Sans, B Bricolage Grotesque + Figtree, C Figtree. WOFF2 local via Fontsource Variable 5.3.0, `font-display: swap`, SIL OFL 1.1 e fallback do sistema; fontes antigas permanecem até a escolha. Recomendação provisória C, pendente de avaliação do proprietário. Quatro amostras exibem claro/escuro em 360/1440 px, tipografia, cards, ranking, skeleton e estados. SVGs próprios e dados fictícios.
+- Tokens novos e aparência dos componentes novos ficam isolados na amostra `/design`; páginas existentes continuam com os tokens legados e não recebem redesenho neste bloco. Testes de componentes cobrem a marcação acessível e a seleção tipográfica.
+
+## Bloco 1 — correções menores antes da mudança visual
+
+- ESLint mantém `no-restricted-globals` para `fetch` e `XMLHttpRequest`, `no-restricted-imports` para axios e bloqueia também `window.fetch`, `globalThis.fetch` e `self.fetch` via `no-restricted-properties`. O cliente centralizado é a única exceção de produção para fetch; testes que usam mocks têm exceção comentada. Prova: arquivo temporário `src/lintProof.ts` com `window.fetch` recebeu erro `no-restricted-properties` (exit 1) e foi removido; o arquivo não entra no commit.
+- Proxy de imagens: MIME aceitos agora JPEG/PNG/WebP, alinhados às extensões `.jpg`/`.jpeg`/`.png`/`.webp`; AVIF deixou de ser solicitado ou aceito. A rota continua limitada a `w500`, sem ampliar a superfície do proxy.
+- Demonstração com tráfego alto pode exceder **300 imagens/min por instância**, quota anônima compartilhada entre todos os visitantes, e mostrar imagens quebradas (HTTP 429). Antes de publicar, medir tráfego/custos e verificar os termos TMDB; após essa checagem, o proprietário reavaliará manter o proxy de imagens ou carregar diretamente de `image.tmdb.org`, com CSP restrita exclusivamente a esse host para imagens. Nenhuma mudança de arquitetura de imagens foi autorizada agora.
 
 ## Fase 3 — conclusão da integração de dados e imagens (grupo atual)
 
@@ -1228,4 +1240,4 @@ Todos os temas desses quatro arquivos entram nesse commit. Não há mudança de 
 Não commitar: .env e variantes, credenciais, cache/logs npm, relatórios temporários brutos com caminhos locais, node_modules, build, coverage, artefatos de navegador, screenshots/GIFs não revisados. Arquivos legados com segredos ficam fora deste commit documental e exigem saneamento em fase aprovada; revogação já informada pelo proprietário.
 Nota Fase 4 (a): hash CSP do script inline do index.html (sha256-cE7N6gNicf4X7ETopK2nUiAdJR0qlnFWtvKhoNvM2/4=), para uso com `script-src 'sha256-...'` (sem nonce).
 Nota Fase 4: CDN no legado para Fase 6 — apenas `https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css` em index.html (integridade SRI presente). Demais recursos são locais.
-Alternativa de vermelho para tema escuro (mais saturado): #e85a4f (contraste 5,11:1 contra canvas, 4,58:1 contra surface, AA). Opção atual: #ff9b85 (coral). Decisão pendente do usuário.
+Nota histórica: a comparação anterior de tonalidades foi encerrada pela decisão Pulso e pelo vermelho principal #C62828.

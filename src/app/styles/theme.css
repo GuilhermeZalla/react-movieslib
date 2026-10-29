@@ -1,5 +1,5 @@
 ﻿@theme static {
-  /* Cores (Caderno) */
+  /* Tokens legados: mantidos até a migração visual das telas de produção. */
   --color-canvas: #191715;
   --color-surface: #24211e;
   --color-ink: #f5ede0;
@@ -39,6 +39,47 @@
   --z-sticky: 20;
   --z-modal: 50;
   --z-toast: 60;
+
+  /* Direção Pulso: nomes próprios para isolar a amostra /design. */
+  --color-preview-canvas: #121315;
+  --color-preview-surface: #1e2024;
+  --color-preview-ink: #f5f5f6;
+  --color-preview-muted: #b7bbc2;
+  --color-preview-line: #777e87;
+  --color-preview-accent: #c62828;
+  --color-preview-accent-hover: #ad2222;
+  --color-preview-accent-pressed: #8f1d1d;
+  --color-preview-accent-text: #ff8585;
+  --color-preview-accent-soft: #3a1d20;
+  --color-preview-on-accent: #ffffff;
+  --color-preview-skeleton: #33363c;
+
+  --font-preview-jakarta: 'Plus Jakarta Sans Variable', 'Segoe UI', sans-serif;
+  --font-preview-bricolage: 'Bricolage Grotesque Variable', Arial, sans-serif;
+  --font-preview-figtree: 'Figtree Variable', 'Segoe UI', sans-serif;
+  --text-preview-display: 2.75rem;
+  --text-preview-display-wide: 4.5rem;
+  --text-preview-title: 2rem;
+  --text-preview-title-wide: 3rem;
+  --text-preview-section: 1.5rem;
+  --text-preview-section-wide: 2rem;
+  --text-preview-card: 1.125rem;
+  --text-preview-card-wide: 1.25rem;
+  --text-preview-body: 1rem;
+  --text-preview-caption: 0.8125rem;
+  --text-preview-number: 1.75rem;
+  --text-preview-number-wide: 2.25rem;
+  --text-preview-rank: 3.5rem;
+  --text-preview-rank-wide: 5.25rem;
+  --tracking-preview-tight: -0.035em;
+  --container-preview-mobile: 22.5rem;
+  --container-preview-wide: 90rem;
+  --container-preview-card: 13rem;
+  --radius-preview-poster: 3px;
+  --radius-preview-control: 4px;
+  --aspect-preview-poster: 2 / 3;
+  --duration-preview: 160ms;
+  --ease-preview: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 [data-theme='light'] {
@@ -61,4 +102,64 @@
     --color-on-accent: #ffffff;
     --color-line: #827365;
   }
+}
+
+/* Preview-only aliases: production pages continue using the legacy palette. */
+[data-design-preview] {
+  --color-canvas: var(--color-preview-canvas);
+  --color-surface: var(--color-preview-surface);
+  --color-ink: var(--color-preview-ink);
+  --color-muted: var(--color-preview-muted);
+  --color-line: var(--color-preview-line);
+  --color-accent: var(--color-preview-accent);
+  --color-on-accent: var(--color-preview-on-accent);
+  --font-display: var(--font-preview-figtree);
+  --font-body: var(--font-preview-figtree);
+  --radius-poster: var(--radius-preview-poster);
+  --radius-control: var(--radius-preview-control);
+}
+
+[data-design-preview][data-design-theme='light'] {
+  --color-preview-canvas: #f3f4f6;
+  --color-preview-surface: #ffffff;
+  --color-preview-ink: #1a1c20;
+  --color-preview-muted: #4e535b;
+  --color-preview-line: #737b86;
+  --color-preview-accent-text: #a71f1f;
+  --color-preview-accent-soft: #fce8e8;
+  --color-preview-skeleton: #e0e2e6;
+}
+
+[data-design-preview][data-font-option='a'] {
+  --font-display: var(--font-preview-jakarta);
+  --font-body: var(--font-preview-jakarta);
+}
+
+[data-design-preview][data-font-option='b'] {
+  --font-display: var(--font-preview-bricolage);
+  --font-body: var(--font-preview-figtree);
+}
+
+[data-design-preview][data-font-option='c'] {
+  --font-display: var(--font-preview-figtree);
+  --font-body: var(--font-preview-figtree);
+}
+
+[data-design-preview][data-preview-size='mobile'] {
+  width: var(--container-preview-mobile);
+}
+
+[data-design-preview][data-preview-size='wide'] {
+  width: var(--container-preview-wide);
+  --text-preview-display: var(--text-preview-display-wide);
+  --text-preview-title: var(--text-preview-title-wide);
+  --text-preview-section: var(--text-preview-section-wide);
+  --text-preview-card: var(--text-preview-card-wide);
+  --text-preview-number: var(--text-preview-number-wide);
+  --text-preview-rank: var(--text-preview-rank-wide);
+}
+
+[data-design-preview][data-font-option='c'] .preview-headline {
+  letter-spacing: var(--tracking-preview-tight);
+  font-weight: 800;
 }

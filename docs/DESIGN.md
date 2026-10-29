@@ -1,6 +1,94 @@
 # MoviesLib — direções visuais
 
-Fase 1 · 28/10/2026 · **aguardando escolha do usuário**. O [STATUS.md](STATUS.md) é a fonte da verdade das decisões. Não há direção aprovada, alteração no aplicativo ou dependência instalada nesta fase.
+## Direção vigente — Pulso (desvio decidido pelo proprietário em 29/10/2026)
+
+O proprietário substituiu **Caderno**, editorial e com serifas, por um visual moderno e jovem de streaming. A direção agora se chama **Pulso**: carvão/cinzas, vermelho principal **#C62828** e pôster protagonista, com tema escuro padrão. As telas de produção ainda conservam a aparência anterior; a amostra nova está em `/design`, somente no servidor de desenvolvimento. As três propostas da Fase 1 abaixo permanecem como registro histórico, não como especificação ativa.
+
+### Paleta e uso
+
+O PXN Games foi referência de clima, sem cópia de cores exatas, marca, texto ou composição. O vermelho de interface tem uma única família funcional: botão normal #C62828, hover #AD2222, pressionado #8F1D1D; para texto/ícones pequenos, #FF8585 no escuro e #A71F1F no claro; fundos suaves #3A1D20 e #FCE8E8. **Texto branco sobre #C62828** nos botões. Nunca usar #C62828 para texto pequeno no escuro. Pôsteres não recebem filtro; os exemplos usam SVGs locais próprios.
+
+| Token                   | Escuro  | Claro   |
+| ----------------------- | ------- | ------- |
+| canvas                  | #121315 | #F3F4F6 |
+| surface                 | #1E2024 | #FFFFFF |
+| ink                     | #F5F5F6 | #1A1C20 |
+| muted                   | #B7BBC2 | #4E535B |
+| line / foco não textual | #777E87 | #737B86 |
+| accent / botão          | #C62828 | #C62828 |
+| accent-hover            | #AD2222 | #AD2222 |
+| accent-pressed          | #8F1D1D | #8F1D1D |
+| accent-text / ícones    | #FF8585 | #A71F1F |
+| accent-soft             | #3A1D20 | #FCE8E8 |
+| on-accent               | #FFFFFF | #FFFFFF |
+| skeleton                | #33363C | #E0E2E6 |
+
+Contrastes recalculados pela fórmula WCAG sRGB indicada na seção histórica de contraste. A tabela cobre cada par de **texto/fundo usado na amostra**, inclusive estados do botão; o menor valor de texto comum é 6,24:1, acima de AA 4,5:1. Bordas/controles são não textuais e passam 3:1.
+
+| Uso (texto/fundo)            |  Escuro |   Claro |
+| ---------------------------- | ------: | ------: |
+| ink / canvas                 | 17,06:1 | 15,50:1 |
+| ink / surface                | 14,97:1 | 17,06:1 |
+| muted / canvas               |  9,65:1 |  7,04:1 |
+| muted / surface              |  8,47:1 |  7,74:1 |
+| accent-text / canvas         |  7,92:1 |  6,67:1 |
+| accent-text / surface        |  6,95:1 |  7,35:1 |
+| accent-text / accent-soft    |  6,50:1 |  6,24:1 |
+| branco / botão #C62828       |  5,62:1 |  5,62:1 |
+| branco / hover #AD2222       |  6,93:1 |  6,93:1 |
+| branco / pressionado #8F1D1D |  8,89:1 |  8,89:1 |
+| line / canvas (controle)     |  4,53:1 |  3,89:1 |
+| line / surface (controle)    |  3,98:1 |  4,28:1 |
+
+### Tipografia, escala e amostra
+
+As três opções usam WOFF2 locais de `@fontsource-variable` versão 5.3.0, `font-display: swap` e fallback do sistema, sem CDN. Licenças confirmadas como **SIL OFL 1.1** nas páginas oficiais [Plus Jakarta Sans](https://fontsource.org/fonts/plus-jakarta-sans/about), [Bricolage Grotesque](https://fontsource.org/fonts/bricolage-grotesque/about) e [Figtree](https://fontsource.org/fonts/figtree/about). A importação fica na rota de desenvolvimento; fontes antigas permanecem até a escolha.
+
+| Opção | Títulos                        | Corpo / números   | Leitura                       |
+| ----- | ------------------------------ | ----------------- | ----------------------------- |
+| A     | Plus Jakarta Sans              | Plus Jakarta Sans | Coesa e neutra                |
+| B     | Bricolage Grotesque            | Figtree           | Expressiva sem pesar no corpo |
+| C     | Figtree 800, tracking -0,035em | Figtree           | Rápida, compacta e uniforme   |
+
+| Papel   | 360 px | 1440 px | Peso |
+| ------- | -----: | ------: | ---: |
+| display |  44 px |   72 px |  800 |
+| título  |  32 px |   48 px |  800 |
+| seção   |  24 px |   32 px |  700 |
+| card    |  18 px |   20 px |  700 |
+| corpo   |  16 px |   16 px |  400 |
+| legenda |  13 px |   13 px |  400 |
+| número  |  28 px |   36 px |  800 |
+| ranking |  56 px |   84 px |  800 |
+
+Em `/design`, os radios A/B/C alteram simultaneamente quatro amostras: 360 e 1440 px, em claro e escuro. Elas mostram títulos, corpo, números, cabeçalho, pôsteres fictícios, card com ranking, skeleton 2:3, EmptyState e ErrorState. O pôster usa raio de 3 px, sem moldura nem sombra pesada. No hover/foco, sobe discretamente durante 160 ms; `prefers-reduced-motion` remove a transição e o deslocamento. A nota é um pequeno anel com equivalente textual para leitor de tela. Ilustrações SVG de tira de filme, ingresso e poltrona vazia são próprias; textos curtos em pt-BR. Conteúdo de filme real continua vindo da API.
+
+**Recomendo C — Figtree**: uma família WOFF2 simplifica o carregamento futuro, mantém boa leitura em 360 px e permite títulos com ritmo sem depender de serifas. A escolha final da tipografia aguarda o proprietário abrir `/design`. A opção B tem mais caráter nos títulos, mas exige duas famílias; A é clara, porém menos marcante.
+
+### Tokens Tailwind 4
+
+O arquivo `src/app/styles/theme.css` define os tokens no `@theme static`; a amostra isola suas cores e fontes por `[data-design-preview]`, preservando as telas existentes. Exemplo do tema implementado:
+
+```css
+@theme static {
+  --color-preview-canvas: #121315;
+  --color-preview-surface: #1e2024;
+  --color-preview-accent: #c62828;
+  --color-preview-accent-text: #ff8585;
+  --font-preview-figtree: 'Figtree Variable', 'Segoe UI', sans-serif;
+  --radius-preview-poster: 3px;
+  --duration-preview: 160ms;
+}
+[data-design-preview][data-design-theme='light'] {
+  --color-preview-canvas: #f3f4f6;
+  --color-preview-surface: #ffffff;
+  --color-preview-accent-text: #a71f1f;
+}
+```
+
+## Arquivo histórico — estudos da Fase 1
+
+Fase 1 · 28/10/2026. A comparação abaixo retrata as alternativas antes da escolha de Caderno e do desvio posterior para Pulso. Cores, contrastes e recomendações a seguir não regem o visual vigente. O [STATUS.md](STATUS.md) é a fonte da verdade das decisões.
 
 Abra [o índice dos previews](design-previews/index.html) diretamente no navegador, inclusive sem rede. Cada direção mostra cabeçalho, home, linha de pôsteres/cards e topo do detalhe; os radios no início alternam claro/escuro sem JavaScript. Links são apenas âncoras de demonstração. Filmes e dados são fictícios; SVGs geométricos são originais e locais, sem imagens TMDB. Créditos, licenças e fallback tipográfico em [LICENSES.md](design-previews/LICENSES.md).
 
@@ -40,7 +128,7 @@ Todos os pares especificados passam seus limiares. Essa verificação das paleta
 
 ### Paleta
 
-Uma cor de destaque: **vermelho de tinta**, suavizado para coral no escuro; não usar ambos no mesmo tema.
+Uma cor de destaque: **vermelho de tinta**, com ajuste de luminosidade entre os temas do estudo original.
 
 | Token     | Escuro  | Claro   |
 | --------- | ------- | ------- |
@@ -319,7 +407,7 @@ Estimativas relativas para a implementação completa após escolha; desempenho 
 
 ## Recomendação
 
-**Recomendo 01 — Caderno.** A direção dá personalidade ao portfólio por composição e tipografia, sem depender de efeitos, uma imagem específica ou funcionalidades novas. Ela diferencia o projeto de catálogos de streaming comuns e mantém o pôster protagonista, com espaço para sinopse, elenco e descoberta.
+**Recomendação histórica: 01 — Caderno.** A direção dava personalidade ao portfólio por composição e tipografia, sem depender de efeitos, uma imagem específica ou funcionalidades novas. Essa recomendação foi substituída pela decisão Pulso acima.
 
 O custo adicional é o ajuste responsivo da abertura e do detalhe; pode ser controlado com uma grade pequena e reflow previsível. A linha de filmes mantém títulos e notas sempre visíveis, e os dois temas apresentam boa folga de contraste. A recomendação é uma proposta: **aguardar escolha do usuário entre Caderno, Sala 02 e Atlas**, sem iniciar a fundação ou escrever código do aplicativo.
 
