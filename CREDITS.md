@@ -23,4 +23,8 @@ O projeto mantém a licença MIT existente. Bibliotecas conservam suas licenças
 
 ## Demonstrações e marca MoviesLib
 
-As capturas em docs/screenshots e os GIFs em docs/demo mostram a interface real com nomes/sinopses fictícios e ilustrações SVG geométricas originais, criadas em scripts/demo/showcase.mjs. Não incluem pôsteres ou fotos do TMDB. Esses materiais e a marca/favicon próprios acompanham a licença MIT do projeto; não representam identidade, filmes ou pessoas reais. Fontes continuam com suas licenças OFL indicadas acima. O SVG único da marca gera as variantes ICO e Apple Touch Icon. Captura/regeneração: npm run build seguido de npm run docs:media.
+As capturas em docs/screenshots e os GIFs em docs/demo foram atualizados em **30/10/2026**, a partir do site funcionando com dados, pôsteres e fotos reais fornecidos pelo TMDB. Não usam substituições de conteúdo nem as artes fictícias de scripts/demo/showcase.mjs. O catálogo pode mudar depois da gravação.
+
+Pôsteres, backdrops, fotos de pessoas e demais materiais de terceiros continuam pertencendo aos respectivos titulares; sua presença nas capturas não os torna parte da licença MIT do código. O uso e a atribuição do TMDB e as pendências de conferência dos termos continuam registrados no STATUS. Não há pacote de imagens TMDB separado nestes documentos: as mídias mostram as telas completas da aplicação. Fontes conservam suas licenças OFL; a marca/favicon e as ilustrações próprias permanecem sob a licença do projeto.
+
+O script de captura usa perfis descartáveis e o proxy já configurado do aplicativo, sem ler o token ou o perfil do proprietário. Instruções de regeneração em [Configuração e operação](docs/OPERACAO.md#atualizar-fotos-e-gifs). Não há mudança da identidade do site ou dos ícones nesta entrega.

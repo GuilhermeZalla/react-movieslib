@@ -1,63 +1,84 @@
-import { chromium } from '@playwright/test';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { startFixtureServer } from '../fixtureServer.mjs';
-import { artwork, response } from './showcase.mjs';
+import { chromium, expect } from '@playwright/test';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { gif } from './gif.mjs';
 
-const origin = 'http://127.0.0.1:4182';
-const server = await startFixtureServer({ port: 4182 });
-let browser;
+// Use the running app's public proxy. Never read tokens, environment files or
+// the owner's browser profile, and never substitute TMDB responses or artwork.
+const target = new URL(
+  process.env.MOVIESLIB_DEMO_URL ?? 'http://127.0.0.1:5173',
+);
+if (
+  !['http:', 'https:'].includes(target.protocol) ||
+  target.username ||
+  target.password
+)
+  throw new Error('Use an HTTP(S) app address without credentials.');
+const origin = target.origin;
+const files = new Map();
+const browser = await chromium.launch();
+const pixelPage = await browser.newPage();
 try {
-  browser = await chromium.launch();
-  await mkdir('docs/screenshots', { recursive: true });
-  await mkdir('docs/demo', { recursive: true });
-  const context = await browser.newContext({ reducedMotion: 'reduce' });
-  await context.addInitScript(() => {
-    globalThis.localStorage.setItem(
-      'movieslib:saved-ids',
-      JSON.stringify([101, 102, 103]),
-    );
-  });
-  await context.route('**/*', async (route) => {
-    const url = new URL(route.request().url());
-    if (url.origin !== origin) return route.abort();
-    if (url.pathname.startsWith('/api/tmdb/image/')) {
-      return route.fulfill({
-        contentType: 'image/svg+xml',
-        body: artwork(url.pathname),
-      });
-    }
-    if (url.pathname.startsWith('/api/tmdb/'))
-      return route.fulfill({ json: response(url.pathname, url.searchParams) });
-    return route.continue();
-  });
-  const page = await context.newPage();
-  async function ready(path) {
-    await page.goto(origin + path);
-    await page.getByRole('heading', { level: 1 }).waitFor();
-    await page.evaluate(async () => {
-      await globalThis.document.fonts.ready;
-      await Promise.all(
-        [...globalThis.document.images].map((image) =>
-          image.decode().catch(() => {}),
-        ),
-      );
+  for (const [device, width, height, gifWidth, gifHeight] of [
+    ['desktop', 1440, 1000, 960, 667],
+    ['mobile', 390, 844, 300, 649],
+  ]) {
+    // Disposable profiles leave the owner's language, list and cookies alone.
+    const context = await browser.newContext({
+      viewport: { width, height },
+      locale: 'pt-BR',
+      reducedMotion: 'no-preference',
     });
-    await page.waitForTimeout(350);
-  }
-  const routes = [
-    ['home', '/'],
-    ['catalogo', '/catalog/popular/1'],
-    ['filme', '/movie-details/101'],
-    ['pessoas', '/cast'],
-    ['pessoa', '/cast/201'],
-    ['minha-lista', '/minha-lista'],
-  ];
-  const pixelPage = await browser.newPage();
-  async function frame(width, height) {
-    const png = await page.screenshot();
-    return Uint8Array.from(
-      await pixelPage.evaluate(
+    const page = await context.newPage();
+    const failures = [];
+    page.on('response', (response) => {
+      if (
+        new URL(response.url()).pathname.startsWith('/api/') &&
+        !response.ok()
+      )
+        failures.push(response.status());
+    });
+    async function settled() {
+      await page.waitForLoadState('networkidle', { timeout: 30000 });
+      await expect(page.locator('.animate-pulse')).toHaveCount(0, {
+        timeout: 15000,
+      });
+      await expect(
+        page.getByRole('button', { name: 'Tentar novamente' }),
+      ).toHaveCount(0);
+      await page.evaluate(async () => {
+        await globalThis.document.fonts.ready;
+        await Promise.all(
+          [...globalThis.document.images]
+            .filter((image) => {
+              const bounds = image.getBoundingClientRect();
+              return bounds.bottom > 0 && bounds.top < globalThis.innerHeight;
+            })
+            .map((image) => image.decode()),
+        );
+      });
+      if (failures.length)
+        throw new Error(
+          'The live API returned an error; captures were not published.',
+        );
+      const overflow = await page.evaluate(
+        () =>
+          globalThis.document.documentElement.scrollWidth >
+          globalThis.innerWidth,
+      );
+      if (overflow)
+        throw new Error('Horizontal overflow found in the capture.');
+    }
+    async function visit(path) {
+      await page.goto(origin + path);
+      await page.getByRole('heading', { level: 1 }).waitFor();
+      await settled();
+      process.stdout.write(`${device}: ready ${path}\n`);
+    }
+    const frames = [],
+      delays = [];
+    async function frame(delay = 150) {
+      const png = await page.screenshot();
+      const pixels = await pixelPage.evaluate(
         async ({ data, width, height }) => {
           const image = new globalThis.Image();
           image.src = 'data:image/png;base64,' + data;
@@ -67,72 +88,92 @@ try {
           canvas.height = height;
           const ctx = canvas.getContext('2d');
           ctx.drawImage(image, 0, 0, width, height);
-          const pixels = ctx.getImageData(0, 0, width, height).data;
-          const result = [];
-          for (let index = 0; index < pixels.length; index += 4)
-            result.push(
-              ((pixels[index] >> 5) << 5) |
-                ((pixels[index + 1] >> 5) << 2) |
-                (pixels[index + 2] >> 6),
-            );
-          return result;
+          return [...ctx.getImageData(0, 0, width, height).data];
         },
-        { data: png.toString('base64'), width, height },
-      ),
-    );
-  }
-  for (const [device, width, height, gifWidth, gifHeight] of [
-    ['desktop', 1440, 1000, 960, 667],
-    ['mobile', 390, 844, 300, 649],
-  ]) {
-    await page.setViewportSize({ width, height });
-    const frames = [];
-    for (const [name, path] of routes) {
-      await ready(path);
-      await page.screenshot({ path: `docs/screenshots/${name}-${device}.png` });
-      frames.push(await frame(gifWidth, gifHeight));
-      if (name === 'home') {
-        await page
-          .getByRole('button', { name: 'Próximo destaque', exact: true })
-          .click();
-        frames.push(await frame(gifWidth, gifHeight));
-        await page.evaluate(() => globalThis.scrollTo(0, 620));
-        await page.waitForTimeout(100);
-        frames.push(await frame(gifWidth, gifHeight));
-      }
+        { data: png.toString('base64'), width: gifWidth, height: gifHeight },
+      );
+      frames.push(Uint8Array.from(pixels));
+      delays.push(delay);
     }
-    await writeFile(
+    async function screenshot(name) {
+      files.set(
+        `docs/screenshots/${name}-${device}.png`,
+        await page.screenshot(),
+      );
+    }
+    await visit('/');
+    const hero = page.getByRole('region', { name: 'Destaque', exact: true });
+    const moviePath = await hero
+      .getByRole('link', { name: 'Ver detalhes' })
+      .getAttribute('href');
+    if (!moviePath) throw new Error('The live home has no featured movie.');
+    await screenshot('home');
+    await frame(240);
+    // Observe the real seven-second timer, without substituting a manual click.
+    const firstTitle = await hero
+      .getByRole('heading', { level: 1 })
+      .innerText();
+    await expect(hero.getByRole('heading', { level: 1 })).not.toHaveText(
+      firstTitle,
+      { timeout: 10000 },
+    );
+    await settled();
+    await frame(160);
+    await hero
+      .getByRole('button', { name: /^Guardar .* na minha lista$/ })
+      .click();
+    await frame(110);
+    await page
+      .getByRole('region', { name: 'Em cartaz', exact: true })
+      .scrollIntoViewIfNeeded();
+    await settled();
+    await frame(180);
+    if (device === 'desktop') {
+      await page.locator('.home-poster-grid .movie-card').first().hover();
+      await page.waitForTimeout(480);
+      await frame(110);
+    }
+    await visit('/catalog/popular/1');
+    await screenshot('catalogo');
+    await frame(180);
+    await page
+      .getByRole('button', { name: /^Guardar .* na minha lista$/ })
+      .first()
+      .click();
+    await visit(moviePath);
+    await screenshot('filme');
+    await frame(210);
+    await visit('/cast');
+    await screenshot('pessoas');
+    await frame(150);
+    const personPath = await page
+      .locator('a[href^="/cast/"]')
+      .first()
+      .getAttribute('href');
+    if (!personPath) throw new Error('The live people catalog is empty.');
+    await visit(personPath);
+    await screenshot('pessoa');
+    await frame(180);
+    await visit('/minha-lista');
+    await expect(page.locator('.movie-card').first()).toBeVisible();
+    await screenshot('minha-lista');
+    await frame(210);
+    files.set(
       `docs/demo/movieslib-${device}.gif`,
-      gif(gifWidth, gifHeight, frames, 180),
+      gif(gifWidth, gifHeight, frames, delays),
     );
     process.stdout.write(
-      `${device}: ${routes.length} screenshots, ${frames.length} GIF frames\n`,
+      `${device}: 6 real screenshots, ${frames.length} GIF frames; no API errors or overflow.\n`,
     );
+    await context.close();
   }
-  await pixelPage.setViewportSize({ width: 180, height: 180 });
-  const svg = await readFile('public/favicon.svg', 'utf8');
-  await pixelPage.setContent(
-    `<style>body{margin:0}svg{display:block;width:100vw;height:100vh}</style>${svg}`,
-  );
-  await pixelPage.screenshot({ path: 'public/apple-touch-icon.png' });
-  await pixelPage.setViewportSize({ width: 64, height: 64 });
-  const png = await pixelPage.screenshot();
-  const header = Buffer.alloc(22);
-  header.writeUInt16LE(1, 2);
-  header.writeUInt16LE(1, 4);
-  header[6] = 64;
-  header[7] = 64;
-  header.writeUInt16LE(1, 10);
-  header.writeUInt16LE(32, 12);
-  header.writeUInt32LE(png.length, 14);
-  header.writeUInt32LE(22, 18);
-  await writeFile('public/favicon.ico', Buffer.concat([header, png]));
+  // Replace reviewed assets only after both complete captures succeed.
+  await mkdir('docs/screenshots', { recursive: true });
+  await mkdir('docs/demo', { recursive: true });
+  for (const [path, data] of files) await writeFile(path, data);
   process.stdout.write(
-    'Local SVG, ICO and Apple icons aligned. No TMDB network or credentials used.\n',
+    'Saved 12 PNGs and 2 GIFs from the running app. No fixtures, token access or app changes.\n',
   );
 } finally {
-  await browser?.close();
-  await new Promise((resolveClose, reject) =>
-    server.close((error) => (error ? reject(error) : resolveClose())),
-  );
+  await browser.close();
 }

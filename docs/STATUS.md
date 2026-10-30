@@ -1,8 +1,19 @@
 # Status do MoviesLib
 
-Atualizado em 30/10/2026. Base desta entrega: **2ec9c70** (a entrega anterior foi commitada pelo proprietário). O proprietário autorizou concluir os itens 1 a 6 sem pausas intermediárias; pendências de pré-publicação ficam para a etapa seguinte. Git somente leitura; nenhuma operação de staging, commit, push ou reescrita de histórico. **Mensagens de commit em inglês**, conforme decisão vigente.
+Atualizado em 30/10/2026. Base desta entrega: **9877c4d** (a entrega anterior foi commitada pelo proprietário). Pendências de pré-publicação continuam para a etapa seguinte. Git somente leitura; nenhuma operação de staging, commit, push ou reescrita de histórico. **Mensagens de commit em inglês**, conforme decisão vigente.
 
-## Entrega vigente — rotação contínua sem pausa e links corrigidos
+## Entrega vigente — README de apresentação e mídias reais
+
+- Solicitação do proprietário: seguir o exemplo de README do Sneakers Store, com apresentação simples, demonstrações, screenshots, funcionalidades, stack resumida e execução local. Detalhes de proxy, Vercel, WAF, segurança e verificações foram preservados no novo [guia de operação](OPERACAO.md), sem recriar documentos apagados.
+- Base recebida limpa em **9877c4d**, confirmada com Git somente leitura. Sem alterações nas telas, estilos, rotas, dependências, variáveis privadas ou perfil pessoal do navegador; mensagens de commit em inglês.
+- Gerador de mídias passa a abrir a aplicação real já configurada, sem fixtures ou respostas interceptadas. Seleciona filmes/pessoas pelos links atuais e guarda filmes usando a interface em perfil descartável. Observa a troca automática do destaque e o hover, aguarda fontes/imagens e recusa erro de API, carregamento incompleto ou overflow. Arquivos de mídia só são substituídos após as duas capturas completas.
+- Nova paleta adaptativa do codificador GIF preserva melhor as fotografias; PNGs são capturas diretas, GIFs têm as limitações de resolução/cores do formato. Ícones e assets do aplicativo não são regenerados. CREDITS distingue os direitos das imagens reais dos materiais próprios e da licença MIT do código.
+- **Entrega concluída:** README com 111 linhas em vez de 196, mantendo os detalhes operacionais no documento de apoio. **12 PNGs reais**, desktop 1440×1000 e celular 390×844; **2 GIFs reais**, desktop 960×667 (10 quadros/17,3 s/1,65 MiB) e celular 300×649 (9 quadros/16,2 s/0,41 MiB). Todos os quadros decodificados no Chromium; capturas revisadas visualmente. Zero erros de API e zero overflow durante os percursos nas seis telas, em ambos os tamanhos.
+- Uma primeira tentativa foi descartada após recarga do Vite enquanto os documentos eram editados; nenhum arquivo parcial foi publicado. A repetição completa, com arquivos estáveis, gerou as mídias finais. GIFs resumem o percurso com duração de apresentação própria; a troca automática foi observada com o temporizador real do app, sem dispará-la por clique. Não são gravações contínuas em tempo real.
+- **npm run check aprovado:** lint 0 erros/avisos, tipos estritos, **341 testes em 32 arquivos**, build, verify:dist e Prettier. Bundle idêntico ao anterior: CSS 56,50 kB/9,47 gzip e JS 362,10 kB/111,95 gzip. A suíte Playwright de regressão não foi repetida nesta entrega documental; o gerador navegou no site real em ambos os tamanhos.
+- Auditoria dos oito documentos Markdown: **47 links/âncoras locais**, sem destino quebrado. Os 20 caminhos pendentes foram verificados sem padrões de credenciais ou caminhos locais, com diff sem problemas de whitespace; nenhum arquivo do app, dependência, ícone ou ambiente foi alterado. Dados reais acessados pelo proxy público local, sem leitura/exibição do token ou alteração do perfil pessoal. Pendências de termos e publicação continuam vigentes.
+
+## Entrega anterior — rotação contínua sem pausa e links corrigidos (histórico)
 
 - Decisão do proprietário em 30/10/2026: carrossel automático contínuo, sem botão de play/pausa nem seleção direta de slide. Restam somente avançar/voltar; traços de posição são decorativos. A cada 7 s avança, e o último retorna ao primeiro.
 - Removidos estado de pausa e condições de foco/visibilidade que interrompiam a rotação. Mouse e teclado nas setas reiniciam os 7 s sem desligá-la. Temporizador é limpo ao desmontar; um único filme não cria timer nem controles. Navegadores ainda podem limitar timers em abas de segundo plano.
@@ -960,7 +971,7 @@ Os dois efeitos já haviam sido corrigidos no **lote 1**, antes desta solicitaç
 
 Cada snapshot representa aplicar os commits anteriores mais aquele commit, na ordem abaixo. Nos dois primeiros, a cobertura de tipos permanece transicional como no lote 1; o terceiro encerra allowJs e exige strict sobre todo o src. Isso não representa exclusão ou tolerância na entrega final. README/STATUS completos entram no terceiro commit para descrever a conversão concluída. Dependências e estilos não entram em nenhum dos três.
 
-Roteiro manual consolidado no [README](../README.md#conferência-manual-com-dados-reais): busca/limpeza e menus, recarga de detalhe de filme/pessoa, card → detalhe → voltar e 404. Naquele lote, o roteiro preenchido dependia do proxy; regressões de nulidade foram exercitadas com fixtures. Sem mudança de URLs ou novo visual. Auditoria não repetida neste lote: o resultado do lote 1 permanece como fotografia (2 moderadas no Router, 0 críticas/altas); resolução no lote próprio. Lighthouse não medido.
+Roteiro manual consolidado no [guia de operação](OPERACAO.md#conferência-manual-com-dados-reais): busca/limpeza e menus, recarga de detalhe de filme/pessoa, card → detalhe → voltar e 404. Naquele lote, o roteiro preenchido dependia do proxy; regressões de nulidade foram exercitadas com fixtures. Sem mudança de URLs ou novo visual. Auditoria não repetida neste lote: o resultado do lote 1 permanece como fotografia (2 moderadas no Router, 0 críticas/altas); resolução no lote próprio. Lighthouse não medido.
 
 ### Plano de commits do lote 2
 
@@ -1064,7 +1075,7 @@ Os pares JSX/TSX incluem tanto o caminho removido quanto o novo. Arquivos compar
 - 404 mínima com retorno à home adicionada como rota curinga, sem novo CSS. As oito URLs anteriores permanecem. Nenhum redesign, fonte nova, Tailwind ou Preflight ativado neste lote; esses itens continuam nos lotes previstos da Fase 2 e nas Fases 4–5 para aplicação visual.
 - CSS global, CSS gerado, source map e Sass do legado preservados; hashes das três folhas/mapa de entrada conferidos sem alteração. Inspeção de renderização com dados fictícios; não há baseline pixel a pixel de um build CRA executado nesta sessão.
 - Os testes usam fixtures fictícias e bloqueiam fetch sem fixture. O navegador usou interceptação temporária de dados/imagens, não um modo demo do aplicativo. Sem proxy, dados reais não carregam e telas ficam vazias/incompletas; documentado no README. Não colocar chave no frontend para contornar essa limitação.
-- README atualizado com instalação/comandos reais, limites e [roteiro manual consolidado](../README.md#conferência-manual-com-dados-reais); DEPENDENCIES mantém a fotografia original e o novo resultado auditado. Formatação global, regras completas, CI e E2E permanecem para seus lotes.
+- README atualizado com instalação/comandos reais, limites e [roteiro manual consolidado](OPERACAO.md#conferência-manual-com-dados-reais); DEPENDENCIES mantém a fotografia original e o novo resultado auditado. Formatação global, regras completas, CI e E2E permanecem para seus lotes.
 
 ### Resultados obtidos
 
