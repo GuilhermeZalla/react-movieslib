@@ -5,7 +5,7 @@
 - [Bricolage Grotesque](https://fontsource.org/fonts/bricolage-grotesque/about): títulos. Pacote @fontsource-variable/bricolage-grotesque 5.3.0, SIL Open Font License 1.1.
 - [Figtree](https://fontsource.org/fonts/figtree/about): corpo e números. Pacote @fontsource-variable/figtree 5.3.0, SIL Open Font License 1.1.
 
-WOFF2 locais via Fontsource, font-display: swap e fallback do sistema. Licenças integrais distribuídas em [Bricolage Grotesque](public/licenses/bricolage-grotesque.txt) e [Figtree](public/licenses/figtree.txt), copiadas sem alteração do LICENSE de cada pacote. Não há requisição de fonte a CDN. Source Serif 4, Source Sans 3, PT Sans e Source Sans Pro não fazem mais parte do app/bundle; estudos históricos permanecem em docs/design-previews.
+WOFF2 locais via Fontsource, font-display: swap e fallback do sistema. Licenças integrais distribuídas em [Bricolage Grotesque](public/licenses/bricolage-grotesque.txt) e [Figtree](public/licenses/figtree.txt), copiadas sem alteração do LICENSE de cada pacote. Não há requisição de fonte a CDN. Source Serif 4, Source Sans 3, PT Sans e Source Sans Pro não fazem mais parte do app/bundle; os previews históricos foram removidos na limpeza da documentação.
 
 ## Imagens e ícones
 

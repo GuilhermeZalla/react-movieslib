@@ -1,3 +1,5 @@
+import { t } from '../../i18n/translate';
+import { useLocale } from '../../i18n/useLocale';
 import type { ReactNode } from 'react';
 import { TmdbError } from '../../api/tmdb/client';
 import EmptyState from './EmptyState';
@@ -17,11 +19,12 @@ export default function QueryContent({
   empty,
   retry,
   children,
-  emptyTitle = 'Nenhum filme encontrado',
+  emptyTitle = t('Nenhum filme encontrado'),
 }: Props) {
+  useLocale();
   if (pending)
     return (
-      <div className="poster-grid" aria-label="Carregando resultados">
+      <div className="poster-grid" aria-label={t('Carregando resultados')}>
         {[1, 2, 3, 4, 5].map((value) => (
           <Skeleton key={value} variant="poster" />
         ))}
@@ -35,7 +38,7 @@ export default function QueryContent({
       <EmptyState
         preview
         title={emptyTitle}
-        message="Outra escolha pode render uma boa sessão."
+        message={t('Outra escolha pode render uma boa sessão.')}
       />
     );
   if (error)
@@ -45,7 +48,7 @@ export default function QueryContent({
         message={
           error instanceof TmdbError
             ? error.message
-            : 'A sessão caiu. Tente novamente.'
+            : t('A sessão caiu. Tente novamente.')
         }
         onRetry={retry}
       />

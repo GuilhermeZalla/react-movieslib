@@ -152,7 +152,7 @@
   }
   .feature-hero {
     @apply relative isolate grid min-w-0 items-center overflow-hidden rounded-panel bg-chrome;
-    min-height: var(--spacing-feature);
+    height: var(--spacing-feature);
   }
   .feature-hero::after {
     content: '';
@@ -173,7 +173,8 @@
     @apply opacity-25;
   }
   .feature-hero__body {
-    @apply grid min-w-0 gap-4 px-8 pt-9 pb-20;
+    @apply grid min-w-0 content-center gap-3 px-8 pt-6 pb-20;
+    height: 100%;
     max-width: var(--container-feature-copy);
   }
   .feature-hero__eyebrow {
@@ -183,7 +184,7 @@
     @apply size-1.5 rounded-full bg-preview-accent-text;
   }
   .feature-hero__title {
-    @apply line-clamp-3 wrap-break-word font-display text-hero font-extrabold leading-tight tracking-preview-tight text-preview-ink;
+    @apply line-clamp-2 wrap-break-word font-display text-hero font-extrabold leading-tight tracking-preview-tight text-preview-ink;
   }
   .feature-hero__meta {
     @apply flex flex-wrap items-center gap-3 text-preview-caption font-semibold text-preview-ink;
@@ -212,7 +213,7 @@
   .feature-page span {
     @apply h-1 w-5 rounded-full bg-preview-line transition-colors duration-(--duration-preview) motion-reduce:transition-none;
   }
-  .feature-page[aria-current='true'] span {
+  .feature-page[data-active='true'] span {
     @apply bg-preview-accent-text;
   }
   .feature-hero__counter {
@@ -273,10 +274,10 @@
     @apply relative block rounded-preview-control;
   }
   .movie-card__poster {
-    @apply relative aspect-preview-poster overflow-hidden rounded-preview-poster bg-preview-surface transition-transform duration-(--duration-preview) ease-preview motion-reduce:transform-none motion-reduce:transition-none;
+    @apply relative aspect-preview-poster overflow-hidden rounded-preview-poster bg-preview-surface transition-transform duration-(--duration-card-hover) ease-preview;
   }
   .movie-card__poster img {
-    @apply absolute inset-0 size-full object-cover transition-transform duration-(--duration-scene) motion-reduce:transform-none motion-reduce:transition-none;
+    @apply absolute inset-0 size-full object-cover transition-transform duration-(--duration-card-image) ease-preview;
   }
   .movie-card__poster > div {
     @apply absolute inset-0 size-full;
@@ -297,8 +298,7 @@
     @apply absolute top-2 right-2;
   }
   .movie-card__rank {
-    @apply absolute bottom-2 left-2 font-display text-preview-rank font-extrabold leading-none text-preview-ink;
-    text-shadow: var(--shadow-rank);
+    @apply absolute bottom-2 left-2 rounded-preview-control bg-chrome px-1.5 py-1 font-display text-rank-label font-extrabold leading-none text-ranking;
   }
   .save-movie-icon {
     @apply grid size-11 place-items-center rounded-preview-control border border-preview-line bg-floating text-preview-ink transition-colors duration-(--duration-preview) hover:bg-preview-accent-soft motion-reduce:transition-none;
@@ -350,7 +350,7 @@
   .catalog-genre-link {
     @apply inline-flex min-h-11 items-center rounded-preview-control px-3 py-2 text-preview-caption text-preview-muted hover:bg-preview-surface hover:text-preview-ink;
   }
-  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  @media (hover: hover) {
     .movie-card:hover .movie-card__poster,
     .movie-card:focus-within .movie-card__poster {
       transform: translateY(var(--spacing-card-lift));
@@ -434,7 +434,7 @@
       flex: 1;
     }
     .cinema-menu__link span {
-      white-space: nowrap;
+      @apply grid min-h-8 max-w-full place-items-center text-center leading-tight whitespace-normal;
     }
     .cinema-menu__link svg {
       @apply size-4;
@@ -446,14 +446,14 @@
       @apply gap-7;
     }
     .feature-hero {
-      min-height: var(--spacing-feature-mobile);
+      height: var(--spacing-feature-mobile);
       align-items: end;
     }
     .feature-hero::after {
       background-image: var(--background-image-feature-shade-mobile);
     }
     .feature-hero__body {
-      @apply gap-3 px-5 pt-36 pb-24;
+      @apply content-end gap-3 px-5 pt-6 pb-24;
       max-width: none;
     }
     .feature-hero__controls {
@@ -488,10 +488,11 @@
     .feature-hero__image {
       animation: none;
     }
-    .movie-card .movie-card__poster,
-    .movie-card .movie-card__poster img {
-      transform: none;
-      transition: none;
+    .movie-card {
+      --spacing-card-lift: var(--spacing-card-lift-reduced);
+      --scale-card-hover: var(--scale-card-hover-reduced);
+      --duration-card-hover: var(--duration-card-reduced);
+      --duration-card-image: var(--duration-card-reduced);
     }
   }
 }

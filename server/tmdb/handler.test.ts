@@ -140,7 +140,7 @@ describe('proxy TMDB protegido', () => {
     expect(Object.fromEntries(parsed.searchParams)).toEqual({
       query: 'Filme & teste',
       page: '2',
-      language: 'en-US',
+      language: 'pt-BR',
       include_adult: 'false',
     });
     expect(parsed.toString()).not.toContain('fixture-only');

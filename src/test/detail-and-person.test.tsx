@@ -118,7 +118,13 @@ describe('fichas completas com falhas independentes', () => {
       'src',
       'https://www.youtube-nocookie.com/embed/abcdefghijk?autoplay=0&rel=0',
     );
-    expect(player).toHaveAttribute('referrerpolicy', 'no-referrer');
+    expect(player).toHaveAttribute(
+      'referrerpolicy',
+      'strict-origin-when-cross-origin',
+    );
+    expect(
+      screen.getByRole('link', { name: 'Assistir no YouTube' }),
+    ).toHaveAttribute('rel', 'noopener noreferrer');
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(document.querySelector('iframe')).toBeNull();
   });

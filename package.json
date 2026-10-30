@@ -33,7 +33,8 @@
     "test:coverage": "vitest run --coverage",
     "audit:lighthouse": "node scripts/audit.mjs after",
     "verify:dist": "node scripts/verifyDistribution.mjs",
-    "docs:media": "node scripts/demo/record.mjs"
+    "docs:media": "node scripts/demo/record.mjs",
+    "docs:guide": "node scripts/interviewGuide.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",

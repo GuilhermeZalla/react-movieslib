@@ -1,3 +1,5 @@
+import { t } from '../../i18n/translate';
+import { useLocale } from '../../i18n/useLocale';
 import Button from './Button';
 import type { ReactNode } from 'react';
 
@@ -12,10 +14,11 @@ interface ErrorStateProps {
 const ErrorState = ({
   message,
   onRetry,
-  retryLabel = 'Tentar novamente',
+  retryLabel = t('Tentar novamente'),
   preview = false,
   illustration,
 }: ErrorStateProps) => {
+  useLocale();
   return (
     <div
       role="alert"
@@ -33,11 +36,11 @@ const ErrorState = ({
             : 'font-body text-body text-ink'
         }
       >
-        {message}
+        {t(message)}
       </p>
       {onRetry && (
         <Button variant="primary" preview={preview} onClick={onRetry}>
-          {retryLabel}
+          {t(retryLabel)}
         </Button>
       )}
     </div>

@@ -1,3 +1,7 @@
+import { getLocale } from '../../i18n/locale';
+import { genreName } from '../../i18n/metadata';
+import { t } from '../../i18n/translate';
+import { useLocale } from '../../i18n/useLocale';
 import { useQuery } from '@tanstack/react-query';
 import { useParams, Link } from 'react-router-dom';
 import {
@@ -26,6 +30,7 @@ const labels = {
   top_rated: 'Mais bem avaliados',
 };
 export default function MoviesCatalog({ genre }: Props) {
+  useLocale();
   const route = useParams<'category' | 'page'>();
   const parsedCategory = movieCategorySchema.safeParse(
     route.category ?? 'popular',
@@ -46,12 +51,12 @@ export default function MoviesCatalog({ genre }: Props) {
         : movieListQuery(category, state.page),
   );
   const title = state.term
-    ? 'Busca por “' + state.term + '”'
+    ? t('Busca por “{term}”', { term: state.term })
     : genre
-      ? 'Filmes de ' + genre.name
+      ? t('Filmes de {genre}', { genre: genreName(genre) })
       : hasFilters
-        ? 'Filmes para a sua sessão'
-        : labels[category];
+        ? t('Filmes para a sua sessão')
+        : t(labels[category]);
   usePageTitle(title);
   let movies = result.data?.results ?? [];
   if (state.term) {
@@ -66,7 +71,7 @@ export default function MoviesCatalog({ genre }: Props) {
     );
     if (filters.sort_by === 'title.asc')
       movies = [...movies].sort((a, b) =>
-        a.title.localeCompare(b.title, 'pt-BR'),
+        a.title.localeCompare(b.title, getLocale()),
       );
     if (filters.sort_by === 'vote_average.desc')
       movies = [...movies].sort(
@@ -83,12 +88,15 @@ export default function MoviesCatalog({ genre }: Props) {
         <h1>{title}</h1>
         <p role="status">
           {result.isPending
-            ? 'Preparando os pôsteres…'
-            : `${movies.length} filmes nesta página`}
+            ? t('Preparando os pôsteres…')
+            : t('{count} filmes nesta página', { count: movies.length })}
         </p>
       </header>
       <div className="catalog-layout">
-        <aside aria-label="Filtros de filmes" className="grid min-w-0 gap-5">
+        <aside
+          aria-label={t('Filtros de filmes')}
+          className="grid min-w-0 gap-5"
+        >
           <CatalogFilters
             params={state.params}
             update={state.update}
@@ -96,7 +104,10 @@ export default function MoviesCatalog({ genre }: Props) {
             {...(genre ? { lockedGenre: genre.id } : {})}
           />
           {genre && (
-            <nav aria-label="Outros gêneros" className="catalog-genre-links">
+            <nav
+              aria-label={t('Outros gêneros')}
+              className="catalog-genre-links"
+            >
               {genreList.data?.genres.map((item) => (
                 <Link
                   className="catalog-genre-link"
@@ -105,27 +116,31 @@ export default function MoviesCatalog({ genre }: Props) {
                     '/genres/' +
                     String(item.id) +
                     '/' +
-                    encodeURIComponent(item.name)
+                    encodeURIComponent(genreName(item))
                   }
                 >
-                  {item.name}
+                  {genreName(item)}
                 </Link>
               ))}
             </nav>
           )}
         </aside>
-        <section aria-label="Resultados de filmes" className="catalog-results">
+        <section
+          aria-label={t('Resultados de filmes')}
+          className="catalog-results"
+        >
           <SearchField
             value={state.input}
             onChange={(value) => state.update('q', value)}
           />
           {state.term && hasFilters && (
             <p className="text-preview-caption text-preview-muted">
-              Na busca por título, os filtros refinam os resultados desta
-              página. Sem termo, a seleção consulta o catálogo completo.
+              {t(
+                'Na busca por título, os filtros refinam os resultados desta página. Sem termo, a seleção consulta o catálogo completo.',
+              )}
             </p>
           )}
-          <h2 className="sr-only">Filmes desta página</h2>
+          <h2 className="sr-only">{t('Filmes desta página')}</h2>
           <QueryContent
             pending={result.isPending}
             error={result.error}

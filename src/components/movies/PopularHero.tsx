@@ -1,3 +1,5 @@
+import { t } from '../../i18n/translate';
+import { useLocale } from '../../i18n/useLocale';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { MovieSummary } from '../../api/tmdb/schemas';
@@ -11,28 +13,11 @@ interface Props {
 }
 
 export default function PopularHero({ movies, pending }: Props) {
+  useLocale();
   const slides = movies.slice(0, 6);
   const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const [hovered, setHovered] = useState(false);
-  const [focused, setFocused] = useState(false);
-  const [hidden, setHidden] = useState(document.hidden);
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    if (typeof window.matchMedia !== 'function') return;
-    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const change = () => setReduced(media.matches);
-    change();
-    media.addEventListener('change', change);
-    return () => media.removeEventListener('change', change);
-  }, []);
-  useEffect(() => {
-    const change = () => setHidden(document.hidden);
-    document.addEventListener('visibilitychange', change);
-    return () => document.removeEventListener('visibilitychange', change);
-  }, []);
-  const rotating =
-    slides.length > 1 && !paused && !hovered && !focused && !hidden && !reduced;
+  // Reduced motion changes the CSS transition, never the automatic start.
+  const rotating = slides.length > 1;
   useEffect(() => {
     if (!rotating) return;
     const timer = window.setInterval(
@@ -40,23 +25,17 @@ export default function PopularHero({ movies, pending }: Props) {
       7000,
     );
     return () => window.clearInterval(timer);
-  }, [rotating, slides.length]);
+  }, [rotating, slides.length, index]);
   const currentIndex = index % Math.max(1, slides.length);
   const movie = slides[currentIndex];
   const select = (next: number) => {
     setIndex((next + slides.length) % slides.length);
-    setPaused(true);
   };
   return (
     <section
-      aria-label="Destaque"
-      aria-roledescription="carrossel"
+      aria-label={t('Destaque')}
+      aria-roledescription={t('carrossel')}
       className="feature-hero"
-      onFocusCapture={() => setFocused(true)}
-      onBlurCapture={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget))
-          setFocused(false);
-      }}
     >
       {movie && (
         <div className="feature-hero__image" key={movie.id}>
@@ -78,7 +57,7 @@ export default function PopularHero({ movies, pending }: Props) {
       >
         <p className="feature-hero__eyebrow">
           <span aria-hidden="true" />
-          No radar · populares agora
+          {t('No radar · populares agora')}
         </p>
         <h1
           aria-label={movie?.title}
@@ -88,32 +67,32 @@ export default function PopularHero({ movies, pending }: Props) {
               : 'feature-hero__title'
           }
         >
-          {movie?.title ?? 'Seu próximo filme começa aqui.'}
+          {movie?.title ?? t('Seu próximo filme começa aqui.')}
         </h1>
         {movie && (
           <div className="feature-hero__meta">
             <span>
-              {movie.release_date?.slice(0, 4) || 'Ano não informado'}
+              {movie.release_date?.slice(0, 4) || t('Ano não informado')}
             </span>
             <span aria-hidden="true">/</span>
             <span>
               {movie.vote_average === null
-                ? 'Sem nota'
-                : `Nota ${movie.vote_average.toFixed(1)} de 10`}
+                ? t('Sem nota')
+                : t('Nota {score} de 10', {
+                    score: movie.vote_average.toFixed(1),
+                  })}
             </span>
-            <span className="feature-hero__tag">Cinema</span>
+            <span className="feature-hero__tag">{t('Cinema')}</span>
           </div>
         )}
         <p className="feature-hero__synopsis">
           {movie
-            ? movie.overview || 'Sinopse indisponível.'
-            : 'Grandes histórias, novos encontros. Explore o catálogo e encontre a sua próxima sessão.'}
+            ? movie.overview || t('Sinopse indisponível.')
+            : t(
+                'Grandes histórias, novos encontros. Explore o catálogo e encontre a sua próxima sessão.',
+              )}
         </p>
-        <div
-          className="feature-hero__actions"
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-        >
+        <div className="feature-hero__actions">
           <Link
             to={movie ? `/movie-details/${movie.id}` : '/catalog/popular/1'}
             className="button-primary"
@@ -123,11 +102,13 @@ export default function PopularHero({ movies, pending }: Props) {
               width="18"
               height="18"
               viewBox="0 0 24 24"
-              fill="currentColor"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
             >
-              <path d="m8 5 11 7-11 7V5Z" />
+              <path d="M4 12h16m-6-6 6 6-6 6" />
             </svg>
-            {movie ? 'Ver detalhes' : 'Explorar filmes'}
+            {movie ? t('Ver detalhes') : t('Explorar filmes')}
           </Link>
           {movie && (
             <SaveMovieButton
@@ -139,23 +120,21 @@ export default function PopularHero({ movies, pending }: Props) {
         </div>
       </div>
       {slides.length > 1 && (
-        <div
-          className="feature-hero__controls"
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-        >
-          <div className="feature-hero__pages" aria-label="Escolher destaque">
+        <p className="sr-only" role="status">
+          {t('Troca automática a cada 7 segundos.')}
+        </p>
+      )}
+      {slides.length > 1 && (
+        <div className="feature-hero__controls">
+          <div className="feature-hero__pages" aria-hidden="true">
             {slides.map((slide, position) => (
-              <button
+              <span
                 key={slide.id}
-                type="button"
                 className="feature-page"
-                aria-label={`Mostrar destaque ${position + 1}: ${slide.title}`}
-                aria-current={position === currentIndex ? 'true' : undefined}
-                onClick={() => select(position)}
+                data-active={position === currentIndex ? 'true' : undefined}
               >
                 <span />
-              </button>
+              </span>
             ))}
           </div>
           <div className="flex items-center gap-2">
@@ -163,48 +142,10 @@ export default function PopularHero({ movies, pending }: Props) {
               {String(currentIndex + 1).padStart(2, '0')} /{' '}
               {String(slides.length).padStart(2, '0')}
             </span>
-            {!reduced && (
-              <button
-                type="button"
-                className="cinema-icon-button"
-                aria-label={
-                  paused
-                    ? 'Retomar destaques automáticos'
-                    : 'Pausar destaques automáticos'
-                }
-                onClick={() => {
-                  setPaused((value) => !value);
-                  setFocused(false);
-                  setHovered(false);
-                }}
-              >
-                {paused ? (
-                  <svg
-                    aria-hidden="true"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="m8 5 11 7-11 7V5Z" />
-                  </svg>
-                ) : (
-                  <svg
-                    aria-hidden="true"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M6 5h4v14H6zm8 0h4v14h-4z" />
-                  </svg>
-                )}
-              </button>
-            )}
             <button
               type="button"
               className="cinema-icon-button"
-              aria-label="Destaque anterior"
+              aria-label={t('Destaque anterior')}
               onClick={() => select(currentIndex - 1)}
             >
               ←
@@ -212,7 +153,7 @@ export default function PopularHero({ movies, pending }: Props) {
             <button
               type="button"
               className="cinema-icon-button"
-              aria-label="Próximo destaque"
+              aria-label={t('Próximo destaque')}
               onClick={() => select(currentIndex + 1)}
             >
               →

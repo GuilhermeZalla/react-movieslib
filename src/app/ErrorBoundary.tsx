@@ -1,3 +1,4 @@
+import { t } from '../i18n/translate';
 import { Component, type ReactNode } from 'react';
 interface State {
   failed: boolean;
@@ -14,17 +15,18 @@ export default class ErrorBoundary extends Component<
     if (this.state.failed)
       return (
         <main className="empty-panel min-h-screen bg-preview-canvas text-preview-ink">
-          <h1 className="section-title">A sessão foi interrompida</h1>
+          <h1 className="section-title">{t('A sessão foi interrompida')}</h1>
           <p>
-            Recarregue a página para começar de novo. Sua lista continua neste
-            navegador.
+            {t(
+              'Recarregue a página para começar de novo. Sua lista continua neste navegador.',
+            )}
           </p>
           <button
             type="button"
             className="button-primary"
             onClick={() => window.location.reload()}
           >
-            Recarregar página
+            {t('Recarregar página')}
           </button>
         </main>
       );

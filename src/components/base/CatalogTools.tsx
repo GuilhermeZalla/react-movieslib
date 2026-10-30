@@ -1,3 +1,6 @@
+import { t } from '../../i18n/translate';
+import { useLocale } from '../../i18n/useLocale';
+import { genreName } from '../../i18n/metadata';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import type { Genre } from '../../api/tmdb/schemas';
@@ -11,16 +14,17 @@ export function SearchField({
   onChange,
   people = false,
 }: SearchFieldProps) {
-  const label = people ? 'Buscar pessoa' : 'Buscar filme';
+  useLocale();
+  const label = people ? t('Buscar pessoa') : t('Buscar filme');
   return (
     <form
       role="search"
-      aria-label={people ? 'Busca de pessoas' : 'Busca de filmes'}
+      aria-label={people ? t('Busca de pessoas') : t('Busca de filmes')}
       onSubmit={(event) => event.preventDefault()}
       className="flex flex-wrap items-end gap-3"
     >
       <label className="grid min-w-0 flex-1 gap-2 text-preview-body font-semibold">
-        {label}
+        {t(label)}
         <input
           type="search"
           name="q"
@@ -29,12 +33,12 @@ export function SearchField({
           onChange={(event) => onChange(event.target.value)}
           className="control w-full"
           placeholder={
-            people ? 'Nome de uma pessoa' : 'Qual filme ficou na cabeça?'
+            people ? t('Nome de uma pessoa') : t('Qual filme ficou na cabeça?')
           }
         />
       </label>
-      <button type="submit" className="button-primary" aria-label={label}>
-        Buscar
+      <button type="submit" className="button-primary" aria-label={t(label)}>
+        {t('Buscar')}
       </button>
       {value && (
         <button
@@ -42,7 +46,7 @@ export function SearchField({
           className="button-secondary"
           onClick={() => onChange('')}
         >
-          Limpar busca
+          {t('Limpar busca')}
         </button>
       )}
     </form>
@@ -59,6 +63,7 @@ export function CatalogFilters({
   genres: Genre[];
   lockedGenre?: number;
 }) {
+  useLocale();
   const [expanded, setExpanded] = useState(() =>
     typeof window.matchMedia === 'function'
       ? window.matchMedia('(min-width: 1024px)').matches
@@ -70,11 +75,11 @@ export function CatalogFilters({
       open={expanded}
       onToggle={(event) => setExpanded(event.currentTarget.open)}
     >
-      <summary>Filtrar catálogo</summary>
+      <summary>{t('Filtrar catálogo')}</summary>
       <fieldset>
-        <legend className="mb-3 font-semibold">Refinar filmes</legend>
+        <legend className="mb-3 font-semibold">{t('Refinar filmes')}</legend>
         <label className="grid gap-2">
-          Gênero
+          {t('Gênero')}
           <select
             className="control"
             disabled={lockedGenre !== undefined}
@@ -85,53 +90,55 @@ export function CatalogFilters({
             }
             onChange={(event) => update('genre', event.target.value)}
           >
-            <option value="">Todos</option>
+            <option value="">{t('Todos')}</option>
             {genres.map((genre) => (
               <option key={genre.id} value={genre.id}>
-                {genre.name}
+                {genreName(genre)}
               </option>
             ))}
           </select>
         </label>
         <label className="grid gap-2">
-          Ano
+          {t('Ano')}
           <input
             className="control"
             inputMode="numeric"
             type="number"
             min="1870"
             max="2100"
-            placeholder="Qualquer ano"
+            placeholder={t('Qualquer ano')}
             value={params.get('year') ?? ''}
             onChange={(event) => update('year', event.target.value)}
           />
         </label>
         <label className="grid gap-2">
-          Nota mínima
+          {t('Nota mínima')}
           <select
             className="control"
             value={params.get('rating') ?? ''}
             onChange={(event) => update('rating', event.target.value)}
           >
-            <option value="">Todas</option>
+            <option value="">{t('Todas')}</option>
             {[5, 6, 7, 8, 9].map((rating) => (
               <option key={rating} value={rating}>
-                {rating} de 10
+                {t('{score} de 10', { score: rating })}
               </option>
             ))}
           </select>
         </label>
         <label className="grid gap-2">
-          Ordenar
+          {t('Ordenar')}
           <select
             className="control"
             value={params.get('sort') ?? 'popularity.desc'}
             onChange={(event) => update('sort', event.target.value)}
           >
-            <option value="popularity.desc">Popularidade</option>
-            <option value="vote_average.desc">Melhor nota</option>
-            <option value="primary_release_date.desc">Mais recentes</option>
-            <option value="title.asc">Título A–Z</option>
+            <option value="popularity.desc">{t('Popularidade')}</option>
+            <option value="vote_average.desc">{t('Melhor nota')}</option>
+            <option value="primary_release_date.desc">
+              {t('Mais recentes')}
+            </option>
+            <option value="title.asc">{t('Título A–Z')}</option>
           </select>
         </label>
       </fieldset>
@@ -147,6 +154,7 @@ export function Pagination({
   total: number;
   href: (page: number) => string;
 }) {
+  useLocale();
   const limit = Math.min(500, Math.max(1, total));
   const pages = [
     ...new Set([
@@ -159,19 +167,19 @@ export function Pagination({
     .sort((a, b) => a - b);
   return (
     <nav
-      aria-label="Paginação"
+      aria-label={t('Paginação')}
       className="flex flex-wrap items-center gap-2 border-t border-preview-line pt-6"
     >
       {page > 1 && (
         <Link className="button-secondary" to={href(page - 1)}>
-          Anterior
+          {t('Anterior')}
         </Link>
       )}
       {pages.map((value) => (
         <Link
           key={value}
           to={href(value)}
-          aria-label={`Página ${value}`}
+          aria-label={t('Página {number}', { number: value })}
           aria-current={value === page ? 'page' : undefined}
           className={value === page ? 'button-primary' : 'button-secondary'}
         >
@@ -180,7 +188,7 @@ export function Pagination({
       ))}
       {page < limit && (
         <Link className="button-secondary" to={href(page + 1)}>
-          Próxima página
+          {t('Próxima página')}
         </Link>
       )}
     </nav>

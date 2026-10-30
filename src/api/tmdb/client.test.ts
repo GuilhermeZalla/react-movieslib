@@ -72,7 +72,7 @@ describe('cliente TMDB', () => {
     expect(url.searchParams.get('query')).toBe('Sessão & + cinema');
     expect(url.searchParams.get('page')).toBe('3');
     expect(fetcher.mock.calls[1]?.[0]).toBe(
-      '/api/tmdb/search/person?query=Pessoa&page=2',
+      '/api/tmdb/search/person?query=Pessoa&page=2&locale=pt-BR',
     );
   });
 

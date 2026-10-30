@@ -1,7 +1,10 @@
+import { t } from '../../i18n/translate';
+import { useLocale } from '../../i18n/useLocale';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { SavedMoviesContext } from '../../app/savedMoviesContext';
 import { searchInputSchema } from '../../../shared/tmdbRequest';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const links = [
   ['/catalog/popular/1', 'Filmes', 'M4 4h16v16H4zM4 9h16M9 4v5M15 4v5'],
@@ -24,6 +27,7 @@ export default function PulsoShell({
 }: {
   children: React.ReactNode;
 }) {
+  useLocale();
   const saved = useContext(SavedMoviesContext);
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -38,10 +42,14 @@ export default function PulsoShell({
   return (
     <div data-design-preview data-design-theme="dark" className="cinema-shell">
       <a href="#main" className="skip-link">
-        Pular para o conteúdo principal
+        {t('Pular para o conteúdo principal')}
       </a>
       <header className="cinema-header">
-        <Link to="/" aria-label="MoviesLib — início" className="cinema-brand">
+        <Link
+          to="/"
+          aria-label={t('MoviesLib — início')}
+          className="cinema-brand"
+        >
           <span aria-hidden="true" className="cinema-brand__mark">
             <img src="/favicon.svg" width="32" height="32" alt="" />
           </span>
@@ -49,7 +57,7 @@ export default function PulsoShell({
         </Link>
         <form
           role="search"
-          aria-label="Busca global"
+          aria-label={t('Busca global')}
           className="cinema-search"
           onSubmit={(event) => {
             event.preventDefault();
@@ -59,7 +67,7 @@ export default function PulsoShell({
           }}
         >
           <label className="sr-only" htmlFor="global-film-search">
-            Pesquisar catálogo
+            {t('Pesquisar catálogo')}
           </label>
           <input
             id="global-film-search"
@@ -67,9 +75,9 @@ export default function PulsoShell({
             value={search}
             maxLength={200}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Encontre seu próximo filme"
+            placeholder={t('Encontre seu próximo filme')}
           />
-          <button type="submit" aria-label="Pesquisar no catálogo">
+          <button type="submit" aria-label={t('Pesquisar no catálogo')}>
             <svg
               width="19"
               height="19"
@@ -88,11 +96,13 @@ export default function PulsoShell({
             </svg>
           </button>
         </form>
-        <span className="cinema-header__note">O cinema continua por aqui.</span>
+        <span className="cinema-header__note">
+          {t('O cinema continua por aqui.')}
+        </span>
       </header>
-      <aside aria-label="Exploração" className="cinema-sidebar">
-        <p className="cinema-sidebar__label">Explorar</p>
-        <nav aria-label="Navegação principal">
+      <aside aria-label={t('Exploração')} className="cinema-sidebar">
+        <p className="cinema-sidebar__label">{t('Explorar')}</p>
+        <nav aria-label={t('Navegação principal')}>
           <ul className="cinema-menu">
             {links.map(([path, label, icon]) => (
               <li key={path}>
@@ -116,7 +126,7 @@ export default function PulsoShell({
                   >
                     <path d={icon} />
                   </svg>
-                  <span>{label}</span>
+                  <span>{t(label)}</span>
                 </NavLink>
               </li>
             ))}
@@ -124,7 +134,7 @@ export default function PulsoShell({
         </nav>
         <div className="cinema-sidebar__end">
           <span aria-hidden="true" />
-          Uma boa história muda o dia.
+          {t('Uma boa história muda o dia.')}
         </div>
       </aside>
       <main id="main" tabIndex={-1} className="cinema-main">
@@ -132,14 +142,14 @@ export default function PulsoShell({
       </main>
       {saved?.error && (
         <p role="status" className="cinema-notice">
-          {saved.error}
+          {t(saved.error)}
         </p>
       )}
       <footer className="cinema-footer">
-        <section aria-label="Créditos">
-          <h2 className="sr-only">Créditos</h2>
+        <section aria-label={t('Créditos')}>
+          <h2 className="sr-only">{t('Créditos')}</h2>
           <p>
-            Feito por{' '}
+            {t('Feito por')}{' '}
             <strong className="font-semibold text-preview-ink">
               Guilherme Zalla
             </strong>{' '}
@@ -149,7 +159,7 @@ export default function PulsoShell({
               target="_blank"
               rel="noopener noreferrer"
             >
-              Código no GitHub ↗
+              {t('Código no GitHub ↗')}
             </a>
           </p>
           <p>
@@ -158,7 +168,7 @@ export default function PulsoShell({
               target="_blank"
               rel="noopener noreferrer"
             >
-              Dados e imagens: The Movie Database (TMDB)
+              {t('Dados e imagens: The Movie Database (TMDB)')}
             </a>
           </p>
           <p>
@@ -166,9 +176,14 @@ export default function PulsoShell({
             TMDB.
           </p>
         </section>
-        <Link to="/catalog/popular/1" className="cinema-footer__link">
-          A próxima sessão →
-        </Link>
+        <div className="grid gap-3">
+          <LanguageSwitcher />
+          {pathname === '/' && (
+            <Link to="/catalog/popular/1" className="cinema-footer__link">
+              {t('A próxima sessão →')}
+            </Link>
+          )}
+        </div>
       </footer>
     </div>
   );

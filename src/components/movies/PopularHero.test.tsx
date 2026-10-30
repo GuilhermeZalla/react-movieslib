@@ -30,40 +30,52 @@ function advance(ms: number) {
 beforeEach(() => vi.useFakeTimers());
 afterEach(() => vi.useRealTimers());
 describe('carrossel de populares', () => {
-  it('alterna a cada 7 segundos e volta ao primeiro, sem chamadas de rede', () => {
+  it.each([false, true])(
+    'inicia sozinho e alterna a cada 7 segundos, movimento reduzido: %s',
+    (reduced) => {
+      mount(reduced);
+      expect(
+        screen.queryByRole('button', {
+          name: /Pausar|Retomar|Reproduzir|Play/i,
+        }),
+      ).not.toBeInTheDocument();
+      advance(6999);
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+        'Filme de exemplo',
+      );
+      advance(1);
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+        'Outra história',
+      );
+      advance(7000);
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+        'Filme de exemplo',
+      );
+      expect(fetch).not.toHaveBeenCalled();
+    },
+  );
+  it('oferece somente voltar/avançar e mantém ciclos automáticos sucessivos', () => {
     mount();
-    advance(6999);
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
-      'Filme de exemplo',
-    );
-    advance(1);
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+    expect(screen.getAllByRole('button')).toHaveLength(2);
+    expect(
+      screen.getByRole('button', { name: 'Destaque anterior' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Próximo destaque' }),
+    ).toBeInTheDocument();
+    for (const title of [
       'Outra história',
-    );
-    advance(7000);
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
       'Filme de exemplo',
-    );
-    expect(fetch).not.toHaveBeenCalled();
-  });
-  it('pausa e retoma por decisão explícita', () => {
-    mount();
-    fireEvent.click(
-      screen.getByRole('button', { name: 'Pausar destaques automáticos' }),
-    );
-    advance(21000);
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
-      'Filme de exemplo',
-    );
-    fireEvent.click(
-      screen.getByRole('button', { name: 'Retomar destaques automáticos' }),
-    );
-    advance(7000);
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
       'Outra história',
-    );
+      'Filme de exemplo',
+    ]) {
+      advance(7000);
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+        title,
+      );
+    }
   });
-  it('pausa sobre ações, mas não congela com o cursor sobre a imagem', () => {
+  it('não congela quando o mouse permanece sobre imagem ou controles', () => {
     mount();
     const hero = screen.getByRole('region', { name: 'Destaque' });
     fireEvent.mouseEnter(hero);
@@ -72,63 +84,60 @@ describe('carrossel de populares', () => {
       'Outra história',
     );
     fireEvent.mouseEnter(screen.getByRole('link', { name: 'Ver detalhes' }));
-    advance(14000);
+    advance(7000);
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+      'Filme de exemplo',
+    );
+    fireEvent.mouseLeave(screen.getByRole('link', { name: 'Ver detalhes' }));
+    advance(7000);
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
       'Outra história',
     );
-    fireEvent.mouseLeave(screen.getByRole('link', { name: 'Ver detalhes' }));
+  });
+  it('continua automaticamente com foco de teclado no conteúdo', () => {
+    mount();
+    act(() => screen.getByRole('link', { name: 'Ver detalhes' }).focus());
+    advance(21000);
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+      'Outra história',
+    );
+  });
+  it('volta com wrap, avança e mantém a troca automática depois da seta', () => {
+    mount();
+    fireEvent.click(screen.getByRole('button', { name: 'Destaque anterior' }));
+    expect(screen.getByRole('link', { name: 'Ver detalhes' })).toHaveAttribute(
+      'href',
+      '/movie-details/2',
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Próximo destaque' }));
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+      'Filme de exemplo',
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Próximo destaque' }));
     advance(7000);
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
       'Filme de exemplo',
     );
   });
-  it('pausa quando o teclado entra no conteúdo', () => {
-    mount();
-    fireEvent.focus(screen.getByRole('link', { name: 'Ver detalhes' }));
-    advance(21000);
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
-      'Filme de exemplo',
-    );
-  });
-  it('seleção manual para a rotação e atualiza link/indicador', () => {
-    mount();
-    fireEvent.click(screen.getByRole('button', { name: 'Próximo destaque' }));
-    expect(screen.getByRole('link', { name: 'Ver detalhes' })).toHaveAttribute(
-      'href',
-      '/movie-details/2',
-    );
-    expect(
-      screen.getByRole('button', {
-        name: 'Mostrar destaque 2: Outra história',
-      }),
-    ).toHaveAttribute('aria-current', 'true');
-    advance(14000);
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
-      'Outra história',
-    );
-  });
-  it('não gira em movimento reduzido e mantém navegação manual', () => {
+  it('mantém avanço automático depois de seleção manual com movimento reduzido', () => {
     mount(true);
-    advance(21000);
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
-      'Filme de exemplo',
-    );
-    expect(
-      screen.queryByRole('button', { name: 'Pausar destaques automáticos' }),
-    ).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Próximo destaque' }));
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
       'Outra história',
     );
+    advance(7000);
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+      'Filme de exemplo',
+    );
   });
-  it('não gira com a aba oculta e limpa temporizador ao desmontar', () => {
+  it('não cria pausa por visibilidade e limpa temporizador ao desmontar', () => {
     const hidden = vi.spyOn(document, 'hidden', 'get').mockReturnValue(false);
     const view = mount();
     hidden.mockReturnValue(true);
     fireEvent(document, new Event('visibilitychange'));
     advance(21000);
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
-      'Filme de exemplo',
+      'Outra história',
     );
     view.unmount();
     expect(vi.getTimerCount()).toBe(0);

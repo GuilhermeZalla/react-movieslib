@@ -1,4 +1,5 @@
 import { z } from '../../shared/zod.ts';
+import { DEFAULT_LOCALE, isLocale } from '../../shared/locale.ts';
 import {
   discoverRequestSchema,
   idParameterSchema,
@@ -147,9 +148,17 @@ export function resolveRequest(target: string): {
   }
 
   const values: Record<string, string> = {};
+  const requestedLocale = params.get('locale') ?? DEFAULT_LOCALE;
+  if (params.getAll('locale').length > 1 || !isLocale(requestedLocale))
+    throw new PolicyError(400);
   for (const key of new Set(params.keys())) {
     // These values never reach upstream, even when repeated by an attacker.
-    if (key === 'path' || key === 'language' || key === 'include_adult')
+    if (
+      key === 'path' ||
+      key === 'language' ||
+      key === 'include_adult' ||
+      key === 'locale'
+    )
       continue;
     if (
       ![
@@ -179,7 +188,7 @@ export function resolveRequest(target: string): {
     );
   if ('query' in values)
     url.searchParams.set('query', searchQuerySchema.parse(values.query));
-  url.searchParams.set('language', 'en-US');
+  url.searchParams.set('language', requestedLocale);
   url.searchParams.set('include_adult', 'false');
   return { url, schema };
 }

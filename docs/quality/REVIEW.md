@@ -1,5 +1,26 @@
 # Revisão do Pulso Cinema
 
+## Ajuste vigente — rotação contínua e limpeza documental (30/10/2026)
+
+Por decisão do proprietário, o destaque não oferece play/pausa nem seleção direta; apenas avançar/voltar. Foco, hover e setas não interrompem a rotação de 7 s, que retorna ao primeiro slide continuamente. Indicadores são decorativos e o timer é limpo ao desmontar. Movimento reduzido remove a transição, preservando a troca. As descrições antigas de pausa abaixo são históricas. Axe não cobre integralmente os requisitos de atualização automática; sua aprovação não comprova conformidade dessa interação sem mecanismo de pausa.
+
+Links para previews, plano de commit e JSONs removidos foram retirados, sem recriar os arquivos. Links do guia ausente também foram substituídos por orientação existente no README. Resultados finais desta revisão no início do STATUS.
+
+## Correções posteriores — idiomas, reprodução e proporções
+
+Base 2ec9c70. O proprietário relatou problemas reais após a entrega anterior; os resultados antigos abaixo não bastavam para garantir a experiência desejada.
+
+| Gravidade | Achado                                                                                       | Correção e prova                                                                                                                                                                               |
+| --------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Média     | Seleção manual desativava definitivamente o automático; min-height mudava com textos longos. | Manual por mouse reinicia 7 s; altura fixa por breakpoint. Navegador confere src e dimensões com imagem vertical/horizontal e título/sinopse longos.                                           |
+| Média     | iframe no-referrer suprimia a identificação necessária ao YouTube.                           | strict-origin-when-cross-origin, Referer real com origem conferido no navegador, alternativa externa segura. Disponibilidade de vídeo real continua externa à prova.                           |
+| Média     | Idioma fixo en-US e textos de interface em português.                                        | Nova preferência enumerada no proxy, pt-BR padrão, traduções locais e cache por idioma com cancelamento. Entradas desconhecidas/duplicadas continuam rejeitadas; include_adult=false não muda. |
+| Baixa     | Ranking branco grande e CTA repetido em todas as telas.                                      | Dourado discreto, 36 px, fundo com contraste AA; link somente na home.                                                                                                                         |
+
+Erros guardados em estado mantêm a mensagem canônica e são traduzidos na renderização, permitindo também trocar um aviso já aberto de inglês para português. Nenhum novo pacote, autenticação, migração, segredo público, alteração de limite ou aumento de cache. Guia de entrevista em Markdown/PDF; medições Lighthouse anteriores não representam esta revisão. Resultados atuais no início do STATUS.
+
+## Registro da revisão anterior
+
 29/10/2026. Revisão do código recente e dos ajustes solicitados, sem escrita no Git, mudança de contrato da API ou dependência nova. As correções abaixo foram precedidas pelo relato de gravidade/impacto ao proprietário. Nenhum achado grave identificado no escopo examinado; isso não equivale a uma auditoria de segurança integral.
 
 | Gravidade | Problema e impacto                                                                                      | Correção / evidência                                                                                                                                                                                       |

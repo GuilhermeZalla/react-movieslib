@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
+import { t } from '../i18n/translate';
+import { useLocale } from '../i18n/useLocale';
 import { lazy, Suspense } from 'react';
 import GenresCatalogScreen from '../pages/genres/GenresCatalogScreen';
 import HomeScreen from '../pages/home/HomeScreen';
@@ -13,6 +15,7 @@ const DesignSystem = import.meta.env.DEV
   ? lazy(() => import('../pages/design/DesignSystem'))
   : null;
 export default function LayoutRoutes() {
+  useLocale();
   return (
     <BrowserRouter>
       <Routes>
@@ -47,7 +50,7 @@ export default function LayoutRoutes() {
           <Route
             path="/design"
             element={
-              <Suspense fallback={<p>Preparando a amostra…</p>}>
+              <Suspense fallback={<p>{t('Preparando a amostra…')}</p>}>
                 <DesignSystem />
               </Suspense>
             }

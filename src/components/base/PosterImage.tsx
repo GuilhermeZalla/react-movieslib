@@ -1,4 +1,6 @@
-﻿import { useState } from 'react';
+import { t } from '../../i18n/translate';
+import { useLocale } from '../../i18n/useLocale';
+import { useState } from 'react';
 
 interface PosterImageProps extends Omit<
   React.ImgHTMLAttributes<HTMLImageElement>,
@@ -20,9 +22,10 @@ const PosterImage = ({
   className,
   fill = false,
   fetchPriority,
-  placeholder = 'Sem pôster',
+  placeholder = t('Sem pôster'),
   ...props
 }: PosterImageProps) => {
+  useLocale();
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const showImage = Boolean(src) && failedSrc !== src;
 
@@ -40,7 +43,7 @@ const PosterImage = ({
           .filter(Boolean)
           .join(' ')}
       >
-        {placeholder}
+        {t(placeholder)}
       </div>
     );
   }

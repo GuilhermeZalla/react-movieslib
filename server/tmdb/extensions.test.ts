@@ -36,7 +36,7 @@ describe('lista de permissão dos detalhes e descoberta', () => {
     expect(result.headers.get('cache-control')).toBe('no-store');
     const called = calledUrl(fetcher);
     expect(called.origin).toBe('https://api.themoviedb.org');
-    expect(called.searchParams.get('language')).toBe('en-US');
+    expect(called.searchParams.get('language')).toBe('pt-BR');
     expect(called.searchParams.get('include_adult')).toBe('false');
   });
   it.each([
@@ -68,9 +68,9 @@ describe('lista de permissão dos detalhes e descoberta', () => {
     const result = await createTmdbHandler({
       fetcher,
       getToken: () => 'fixture-only',
-    })('/api/tmdb/discover/movie?language=pt-BR&include_adult=true');
+    })('/api/tmdb/discover/movie?language=xx-XX&include_adult=true');
     expect(result.status).toBe(200);
-    expect(calledUrl(fetcher).searchParams.get('language')).toBe('en-US');
+    expect(calledUrl(fetcher).searchParams.get('language')).toBe('pt-BR');
     expect(calledUrl(fetcher).searchParams.get('include_adult')).toBe('false');
   });
   it('não repassa corpo inválido das novas respostas', async () => {

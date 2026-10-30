@@ -1,3 +1,5 @@
+import { t } from '../../i18n/translate';
+import { useLocale } from '../../i18n/useLocale';
 import { useEffect, useState } from 'react';
 export default function Trailer({
   videoKey,
@@ -6,6 +8,7 @@ export default function Trailer({
   videoKey: string;
   title: string;
 }) {
+  useLocale();
   const [open, setOpen] = useState(false);
   useEffect(() => {
     if (!open) return;
@@ -26,11 +29,11 @@ export default function Trailer({
           aria-expanded={open}
           aria-controls="movie-trailer"
         >
-          {open ? 'Fechar trailer' : 'Abrir trailer'}
+          {open ? t('Fechar trailer') : t('Abrir trailer')}
         </button>
       </div>
       <p className="text-preview-caption text-preview-muted">
-        Ao abrir, você se conecta ao YouTube. O vídeo não começa sozinho.
+        {t('Ao abrir, você se conecta ao YouTube. O vídeo não começa sozinho.')}
       </p>
       {open && (
         <div
@@ -44,13 +47,26 @@ export default function Trailer({
               videoKey +
               '?autoplay=0&rel=0'
             }
-            title={'Trailer de ' + title}
+            title={t('Trailer de {title}', { title })}
             allow="encrypted-media; picture-in-picture; fullscreen"
-            referrerPolicy="no-referrer"
+            referrerPolicy="strict-origin-when-cross-origin"
             sandbox="allow-scripts allow-same-origin allow-presentation"
             allowFullScreen
           />
         </div>
+      )}
+      {open && (
+        <p className="text-preview-caption text-preview-muted">
+          {t('Se o player não abrir, assista diretamente no YouTube.')}{' '}
+          <a
+            className="text-preview-accent-text underline"
+            href={'https://www.youtube.com/watch?v=' + videoKey}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t('Assistir no YouTube')}
+          </a>
+        </p>
       )}
     </div>
   );

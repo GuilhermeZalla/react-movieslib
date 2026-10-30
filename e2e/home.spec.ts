@@ -81,10 +81,10 @@ for (const width of [360, 768, 1024, 1440]) {
   });
 }
 
-test('destaque automático conserva dimensões e permite pausa explícita', async ({
+test('destaque gira sem pausa/play, conserva dimensões e só oferece setas', async ({
   page,
 }) => {
-  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.clock.install();
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.route('**/api/tmdb/**', async (route) => {
@@ -127,6 +127,15 @@ test('destaque automático conserva dimensões e permite pausa explícita', asyn
   await expect(hero.getByRole('heading', { level: 1 })).toHaveText(
     'Primeiro destaque',
   );
+  await page.clock.pauseAt(
+    new Date((await page.evaluate(() => Date.now())) + 1000),
+  );
+  await expect(
+    hero.getByRole('button', { name: /Pausar|Retomar|Reproduzir|Play/i }),
+  ).toHaveCount(0);
+  await expect(
+    hero.locator('.feature-hero__controls').getByRole('button'),
+  ).toHaveCount(2);
   const firstSize = await hero.boundingBox();
   const posters = page
     .getByRole('region', { name: 'Em cartaz', exact: true })
@@ -148,21 +157,26 @@ test('destaque automático conserva dimensões e permite pausa explícita', asyn
   await expect(hero.getByRole('heading', { level: 1 })).toHaveText(
     'Segundo destaque',
   );
-  expect(await hero.boundingBox()).toEqual(firstSize);
-  await page
-    .getByRole('button', { name: 'Pausar destaques automáticos' })
-    .click();
-  await page.clock.fastForward(21000);
-  await expect(hero.getByRole('heading', { level: 1 })).toHaveText(
-    'Segundo destaque',
+  await expect(hero.locator('img')).toHaveAttribute('src', /tall/);
+  await expect(hero.locator('.feature-hero__image')).toHaveCSS(
+    'animation-name',
+    'none',
   );
-  await page
-    .getByRole('button', { name: 'Retomar destaques automáticos' })
-    .click();
-  await page.clock.fastForward(7000);
+  expect(await hero.boundingBox()).toEqual(firstSize);
+  const previous = hero.getByRole('button', { name: 'Destaque anterior' });
+  await previous.focus();
+  await page.keyboard.press('Enter');
   await expect(hero.getByRole('heading', { level: 1 })).toHaveText(
     'Primeiro destaque',
   );
+  for (const title of [
+    'Segundo destaque',
+    'Primeiro destaque',
+    'Segundo destaque',
+  ]) {
+    await page.clock.fastForward(7000);
+    await expect(hero.getByRole('heading', { level: 1 })).toHaveText(title);
+  }
 });
 
 test('créditos identificam o autor e a marca usa o mesmo SVG do favicon', async ({

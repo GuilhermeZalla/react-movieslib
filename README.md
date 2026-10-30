@@ -6,6 +6,16 @@ Catálogo de filmes e pessoas com React e um proxy serverless na Vercel. A inter
 
 [Repositório do projeto](https://github.com/GuilhermeZalla/react-movieslib). Publicação ainda pendente; os dados reais exigem o token privado no servidor.
 
+## Guia para entrevista
+
+Os arquivos separados do guia não estão incluídos nesta árvore. Para explicar o projeto, consulte as [funcionalidades](#funcionalidades), a [estrutura e stack](#estrutura-e-stack) e o [roteiro de demonstração](#conferência-manual-com-dados-reais) deste README. O script docs:guide depende da recuperação do Markdown de origem antes de gerar um PDF.
+
+## Idiomas
+
+Use o seletor no rodapé para alternar **Português (Brasil)** e **English**. O português é o padrão; a preferência permanece ao recarregar e não apaga a lista nem muda as URLs. Textos da interface, gêneros conhecidos, datas/moeda e consultas de conteúdo acompanham o idioma. O TMDB pode não oferecer algumas traduções de sinopses/biografias; o projeto não inventa conteúdo ou usa tradutor externo. O aviso obrigatório de atribuição do TMDB permanece em inglês nos dois idiomas.
+
+Preferência e IDs são configurações locais; respostas TMDB continuam apenas no cache em memória. Cada consulta inclui o idioma na chave, impedindo misturar respostas em português e inglês.
+
 ## Demonstrações
 
 Gravações reais da interface executada no Chromium, com dados fictícios interceptados localmente e ilustrações SVG originais. Não são mockups nem capturas de dados/imagens do TMDB. A troca de destaque mostrada nos GIFs usa o controle manual; o avanço automático de 7 s tem teste próprio no navegador.
@@ -33,10 +43,10 @@ Capturas reais com o mesmo conteúdo fictício: desktop em **1440 × 1000** e ce
 
 ## Funcionalidades
 
-- Home com carrossel dos populares a cada 7 s, pausa explícita, controles por teclado e suspensão com foco, interação nos controles, aba oculta ou movimento reduzido. A seção Em cartaz permanece, sem a abertura duplicada.
+- Home com carrossel dos populares que inicia sozinho, troca a cada 7 s e volta ao primeiro filme continuamente. Sem play, pausa ou seleção direta de slide; as únicas ações de navegação são avançar e voltar. Setas por mouse ou teclado reiniciam os 7 s sem desligar o automático; foco e hover não o interrompem. Movimento reduzido remove a transição, sem impedir o início automático. Cards sobem com zoom discreto no hover, com amplitude/duração menores no modo reduzido. A seção Em cartaz permanece, sem a abertura duplicada.
 - Catálogos com busca normalizada, debounce de 300 ms, cancelamento e URL preservada. Filtros de gênero, ano, nota e ordem; paginação de uma página por requisição, até 500.
 - **Limite dos filtros:** sem termo, consultam discover/movie. Com busca por título, refinam somente a página recebida de search/movie; o aviso aparece junto aos controles.
-- Filmes com ficha, elenco, equipe, galeria e recomendações. Trailer youtube-nocookie só carrega ao clicar, sem autoplay, e fecha por botão/Escape.
+- Filmes com ficha, elenco, equipe, galeria e recomendações. Trailer youtube-nocookie só carrega ao clicar, sem autoplay, e fecha por botão/Escape. O iframe envia só a origem com strict-origin-when-cross-origin; há link alternativo no YouTube caso o player seja bloqueado.
 - Pessoas com busca, paginação, biografia e filmografia deduplicada.
 - Minha lista guarda **somente IDs** no localStorage (até 200), consulta 12 por página, sincroniza abas e trata armazenamento bloqueado/corrompido. É uma conveniência opcional, sem cadastro ou sincronização entre dispositivos. Persiste ao fechar o navegador; limpar os dados do site apaga a lista. O cache de respostas TMDB é separado e fica só em memória.
 - Loading, vazio sem retry, erro com recuperação, 404 e barreira de erro de renderização. Layout responsivo e movimento reduzido; não há seletor de tema.
@@ -59,6 +69,7 @@ src/components/movies/       carrossel de destaque
 src/components/layout/       shell e navegação
 src/pages/                   home, catálogos, detalhes, lista e 404
 src/hooks/                   debounce, parâmetros, título e lista
+src/i18n/                    preferência reativa e traduções locais
 src/test/                    fixtures e testes de integração
 e2e/                         jornada, reflow, carrossel e axe
 scripts/demo/                conteúdo fictício, capturas e codificador GIF
@@ -79,7 +90,7 @@ if (!(Test-Path .env.local)) { Copy-Item .env.example .env.local }
 npm.cmd run dev
 ```
 
-Abra http://127.0.0.1:5173. O Vite executa o proxy Node apenas no desenvolvimento; reinicie após alterar o ambiente. Se o projeto já está configurado, basta iniciar npm run dev, sem sobrescrever .env.local. No macOS/Linux, use npm no lugar de npm.cmd.
+Abra http://127.0.0.1:5173. O Vite executa o proxy Node apenas no desenvolvimento; reinicie após alterar o ambiente ou atualizar o código do proxy. Se o projeto já está configurado, basta iniciar npm run dev, sem sobrescrever .env.local. No macOS/Linux, use npm no lugar de npm.cmd.
 
 ```powershell
 npm.cmd run build
@@ -117,7 +128,7 @@ Configuração local e execução com a CLI Vercel:
 
 Somente GET em /api/tmdb/...; outros métodos retornam 405/Allow: GET. Endpoints JSON permitidos: movie/popular, movie/top_rated, movie/now_playing, movie/upcoming, trending/movie/day, person/popular, search/movie, search/person, genre/movie/list, movie/:id, movie/:id/credits, person/:id, person/:id/movie_credits, movie/:id/videos, movie/:id/images, movie/:id/recommendations e discover/movie. Descoberta aceita gênero, ano (1870–2100), nota mínima (0–10) e ordenação enumerada; recomendações aceitam página. page (1–500) somente em listas/buscas; query (até 200 caracteres normalizados) somente nas buscas; append_to_response=credits somente em movie/:id. IDs positivos seguros. Para imagens, apenas image/w500/:arquivo com nome simples e extensão jpg/jpeg/png/webp; origem fixa image.tmdb.org, sem repassar o token, sem URLs ou tamanhos escolhidos pelo cliente. path é apenas o transporte do rewrite, sujeito às mesmas listas; URLs externas, traversal, barras ambíguas, codificação dupla, parâmetros desconhecidos/duplicados são rejeitados.
 
-O servidor impõe **language=en-US** (default do legado) e **include_adult=false**, ignorando esses dois parâmetros do cliente, inclusive duplicados. Entradas explicitamente adult=true são removidas das listas/créditos; detalhes com esse sinalizador retornam 404. Isso depende da classificação fornecida pelo TMDB e não é moderação de conteúdo.
+O servidor aceita **locale=pt-BR ou locale=en-US**, validado e sem duplicatas; sem parâmetro usa pt-BR. Reconstrói language apenas com esses valores e impõe **include_adult=false**. Os parâmetros brutos language/include_adult enviados pelo cliente são ignorados, inclusive duplicados. O nome/host do TMDB e o token continuam exclusivos do servidor. [Idiomas na documentação oficial](https://developer.themoviedb.org/docs/languages). Entradas explicitamente adult=true são removidas das listas/créditos; detalhes com esse sinalizador retornam 404. Isso depende da classificação fornecida pelo TMDB e não é moderação de conteúdo.
 
 Timeout de 8 s inclui o corpo; resposta JSON máxima de 2 MB, validada pelos schemas. Imagens têm limite de 5 MB e Content-Type permitido (JPEG/PNG/WebP); o proxy devolve os bytes sem transformar o arquivo. Erros públicos padronizados em JSON, sem corpo/mensagem/stack upstream e sem logs do proxy. Redirects upstream são bloqueados. Respostas JSON e imagem têm Content-Type adequado e nosniff; nenhum CORS aberto. Ausência de CORS não autentica o endpoint público nem impede clientes fora do navegador.
 
@@ -149,7 +160,7 @@ npm.cmd run audit:lighthouse
 
 check roda lint → tipos estritos → Vitest → build → verify:dist → Prettier. A guarda de distribuição recusa variável privada, adaptador, fixtures e hosts TMDB diretos no bundle. ESLint aceita zero avisos e bloqueia rede fora do cliente, com exceções comentadas para mocks. Testes de servidor usam Node; os demais, jsdom. Cobertura v8 é informativa e ignorada pelo Git.
 
-Playwright executa um build de produção com fixtures locais na porta 4180 e headers de vercel.json, sem token ou rede externa. Cobre navegação, busca, filtros, detalhes, trailer, lista, pessoas, 404, teclado, axe AA e reflow em 360/768/1024/1440 px no tema escuro, além de rotação, pausa e dimensões uniformes do destaque. Isso não certifica acessibilidade integral, CDN ou WAF.
+Playwright executa um build de produção com fixtures locais na porta 4180 e headers de vercel.json, sem token ou rede externa. Cobre navegação, busca, filtros, detalhes, trailer, lista, pessoas, 404, teclado, axe e reflow em 360/768/1024/1440 px no tema escuro e nos dois idiomas, além de ciclos contínuos, ausência de play/pausa, setas e dimensões uniformes do destaque. O Referer do player é conferido com embed interceptado; isso não garante reprodução de qualquer vídeo real. Axe não avalia integralmente atualizações automáticas; a remoção do mecanismo de pausa é uma decisão visual do proprietário, não uma prova de conformidade AA. Os testes também não certificam CDN ou WAF.
 
 O CI roda npm ci, check, cobertura, audit de altas/críticas e Playwright com Chromium e fixtures. Sem segredo ou deploy. Execução remota depende do push pelo proprietário. Dependabot acompanha npm/Actions. Medições e limites de Lighthouse em [QUALITY.md](docs/quality/QUALITY.md); números anteriores ao redesenho são históricos.
 
@@ -167,12 +178,12 @@ O script usa a porta 4182, captura as seis telas em duas larguras e monta dois G
 
 Com o token privado configurado, em npm run dev ou vercel dev:
 
-1. Abra / e aguarde 7 s, sem focar/posicionar o mouse nos controles. Confirme a troca automática, pausa/retomada e imagens com a mesma altura. Com movimento reduzido, use as setas: o avanço automático fica suspenso.
+1. Abra / e aguarde 7 s, sem clicar em nenhum botão. Confirme a troca automática, inclusive com movimento reduzido ligado, e imagens com a mesma altura. Experimente as setas com mouse e teclado; a troca automática deve continuar em ciclos, sem botão de pausa/play. Os traços de posição são apenas visuais. Passe o mouse nos cards: subida/zoom devem aparecer e ficar mais suaves no modo reduzido. Abas em segundo plano podem ter temporizadores limitados pelo próprio navegador.
 2. Abra diretamente /catalog/popular/1, /upcoming_&_just_released/upcoming/1, /top_rated/top_rated/1, /genres/18/Drama, /cast, /minha-lista e uma URL inexistente. Abra filme e pessoa pelo catálogo; recarregue e teste voltar/avançar.
 3. Busque filmes/pessoas, avance página, altere gênero rapidamente e teste termo sem resultados. Confira os filtros na URL e o aviso de refinamento por página.
 4. Abra/feche trailer e confira elenco, equipe, galeria e recomendações. Antes do clique não deve haver conexão com YouTube; dados/imagens passam apenas pelo proxy da mesma origem.
 5. Guarde/remova filmes, recarregue Minha lista e confira só IDs no armazenamento. Limpar os dados do site remove a lista; nenhum dado TMDB é persistido.
-6. Use teclado, foco visível e zoom em desktop/celular. Simule Offline numa consulta nova fora do cache, volte a Online e tente novamente; vazio não oferece retry. Confira créditos, link do repositório e favicon.
+6. Use teclado, foco visível e zoom em desktop/celular. Simule Offline numa consulta nova fora do cache, volte a Online e tente novamente; vazio não oferece retry. Confira créditos, link do repositório e favicon. Troque o idioma no rodapé, recarregue e confirme a preferência, gêneros, lista e URL preservados; o link A próxima sessão aparece somente na home.
 
 ## Antes da publicação
 
@@ -181,4 +192,4 @@ Com o token privado configurado, em npm run dev ou vercel dev:
 - Ativar/testar WAF no painel; medir quotas/custos e limite compartilhado de 60 JSON/300 imagens por minuto por instância. Tráfego alto pode quebrar imagens por 429.
 - Validar funções, rewrites, headers/CDN, token e trailer com dados reais no ambiente publicado; conferir privacidade e acessibilidade em navegadores/leitores de tela.
 
-pt-BR/en, atalhos próprios e comparação de filmes permanecem futuros. Nenhuma publicação, alteração de histórico ou escrita no Git foi executada.
+pt-BR/en estão implementados. Atalhos próprios e comparação de filmes permanecem futuros. Nenhuma publicação, alteração de histórico ou escrita no Git foi executada.

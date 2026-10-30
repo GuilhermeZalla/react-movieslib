@@ -1,3 +1,5 @@
+import { useLocale } from '../../i18n/useLocale';
+import { t } from '../../i18n/translate';
 import { Link } from 'react-router-dom';
 import type { ReactNode } from 'react';
 import { tmdbImageUrl } from '../../api/tmdb/client';
@@ -23,6 +25,7 @@ export default function MovieCard({
   artwork,
   saveable = false,
 }: MovieCardProps) {
+  useLocale();
   return (
     <article className="movie-card">
       <Link
@@ -31,7 +34,9 @@ export default function MovieCard({
         className="movie-card__link focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-preview-accent-text"
       >
         {rank !== undefined && (
-          <span className="sr-only">Posição {rank}. </span>
+          <span className="sr-only">
+            {t('Posição {number}.', { number: rank })}
+          </span>
         )}
         <div className="movie-card__poster aspect-preview-poster">
           {artwork ? (
@@ -66,7 +71,9 @@ export default function MovieCard({
                 <path d="m12 2 3 6.3 7 .9-5.1 5 1.2 7L12 18l-6.1 3.2 1.2-7L2 9.2l7-.9L12 2Z" />
               </svg>
               <span aria-hidden="true">{vote}</span>
-              <span className="sr-only">Nota {vote} de 10</span>
+              <span className="sr-only">
+                {t('Nota {score} de 10', { score: vote })}
+              </span>
             </span>
           )}
         </div>

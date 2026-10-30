@@ -1,3 +1,5 @@
+import { t } from '../../i18n/translate';
+import { useLocale } from '../../i18n/useLocale';
 import { useContext } from 'react';
 import { SavedMoviesContext } from '../../app/savedMoviesContext';
 export default function SaveMovieButton({
@@ -11,6 +13,7 @@ export default function SaveMovieButton({
   compact?: boolean;
   fullWidth?: boolean;
 }) {
+  useLocale();
   const saved = useContext(SavedMoviesContext);
   if (!saved) return null;
   const selected = saved.ids.includes(id);
@@ -18,9 +21,12 @@ export default function SaveMovieButton({
     <button
       type="button"
       aria-pressed={selected}
-      aria-label={
-        (selected ? 'Retirar ' : 'Guardar ') + title + ' na minha lista'
-      }
+      aria-label={t(
+        selected
+          ? 'Retirar {title} na minha lista'
+          : 'Guardar {title} na minha lista',
+        { title },
+      )}
       onClick={() => saved.toggle(id)}
       className={
         compact
@@ -45,7 +51,7 @@ export default function SaveMovieButton({
           <path d="m9 9 2 2 4-4" stroke="currentColor" strokeWidth="2" />
         )}
       </svg>
-      {!compact && (selected ? 'Na minha lista' : 'Guardar')}
+      {!compact && (selected ? t('Na minha lista') : t('Guardar'))}
     </button>
   );
 }

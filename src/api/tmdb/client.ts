@@ -1,4 +1,6 @@
 import { z } from '../../../shared/zod.ts';
+import { getLocale } from '../../i18n/locale';
+import { isLocale, type Locale } from '../../../shared/locale';
 import {
   discoverRequestSchema,
   type DiscoverInput,
@@ -55,6 +57,7 @@ export const CLIENT_TIMEOUT_MS = 10_000;
 export type MovieCategory = z.infer<typeof movieCategorySchema>;
 export interface RequestOptions {
   signal?: AbortSignal;
+  locale?: Locale;
 }
 
 /** Browser images use the same-origin, fixed-path proxy and never a CDN URL. */
@@ -102,8 +105,9 @@ async function request<T>(
   path: string,
   params: Record<string, string>,
   schema: z.ZodType<T>,
-  { signal }: RequestOptions = {},
+  { signal, locale = getLocale() }: RequestOptions = {},
 ): Promise<T> {
+  if (!isLocale(locale)) throw new TmdbError('invalid-request', 400);
   const controller = new AbortController();
   const abort = () => controller.abort();
   if (signal?.aborted)
@@ -119,7 +123,7 @@ async function request<T>(
   const timer = setTimeout(() => {
     controller.abort();
   }, CLIENT_TIMEOUT_MS);
-  const query = new URLSearchParams(params).toString();
+  const query = new URLSearchParams({ ...params, locale }).toString();
   try {
     const operation = async () => {
       const response = await fetch(

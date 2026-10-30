@@ -1,3 +1,5 @@
+import { useLocale } from '../../i18n/useLocale';
+import { t } from '../../i18n/translate';
 import Button from './Button';
 import type { ReactNode } from 'react';
 
@@ -18,6 +20,7 @@ const EmptyState = ({
   preview = false,
   illustration,
 }: EmptyStateProps) => {
+  useLocale();
   return (
     <div
       className={
@@ -34,7 +37,7 @@ const EmptyState = ({
             : 'font-display text-title text-ink'
         }
       >
-        {title}
+        {t(title)}
       </h2>
       {message && (
         <p
@@ -44,12 +47,12 @@ const EmptyState = ({
               : 'font-body text-body text-muted'
           }
         >
-          {message}
+          {t(message)}
         </p>
       )}
       {actionLabel && onAction && (
         <Button variant="primary" preview={preview} onClick={onAction}>
-          {actionLabel}
+          {t(actionLabel)}
         </Button>
       )}
     </div>

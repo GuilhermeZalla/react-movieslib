@@ -8,9 +8,19 @@ Referência estrutural [enviada pelo proprietário](https://i.pinimg.com/origina
 
 O fundo usa a própria cena do filme com máscara escura para legibilidade, sem padrão ou efeitos de vidro. A antiga restrição de gradientes deixa de se aplicar **apenas à máscara funcional sobre fotografias**; não se adiciona decoração em gradiente. Raios pequenos, hover contido e título/nota sempre visíveis. Tokens nomeados em @theme, composições em components.css; nenhum pacote novo.
 
-Desktop: shell lateral, hero amplo, grades e filtros em colunas. Em 360 px: navegação compacta, busca em linha própria, hero com altura estável, duas colunas de pôsteres e filtros recolhidos; 768/1024/1440 px também verificados. O destaque usa até seis populares a cada 7 s e não duplica Em cartaz. Setas, indicadores e pausa continuam disponíveis; foco, interação nos controles, aba oculta ou movimento reduzido interrompem o automático. Cards têm proporção 2:3, imagens absolutas com cover e tamanho independente da origem; backdrop no hero segue quadro fixo responsivo. Não deformar imagens; recorte é esperado.
+Desktop: shell lateral, hero amplo, grades e filtros em colunas. Em 360 px: navegação compacta, busca em linha própria, hero com altura estável, duas colunas de pôsteres e filtros recolhidos; 768/1024/1440 px também verificados. O destaque usa até seis populares a cada 7 s e não duplica Em cartaz. Inicia sozinho e gira continuamente, sem play/pausa; apenas setas permitem avançar/voltar. Indicadores de posição são visuais, sem clique. Foco, hover e navegação manual não desligam o automático. Movimento reduzido desativa a transição da imagem, sem suspender a troca. Cards têm proporção 2:3, imagens absolutas com cover e tamanho independente da origem; backdrop no hero segue quadro fixo responsivo. Não deformar imagens; recorte é esperado.
 
 Máscaras e contraste precisam ser conferidos também com dados reais: axe não mede toda combinação de texto sobre imagem. Marca e favicon compartilham public/favicon.svg; variantes ICO/Apple são renderizadas desse mesmo arquivo. Artes dos screenshots/GIFs são SVGs originais do script de demonstração, com dados fictícios identificados no README.
+
+### Ajustes vigentes de interação e idioma
+
+Carrossel com altura fixa de 32rem em desktop e 34rem no celular; title clamp de duas linhas e sinopse de três, cover uniforme, sem depender da proporção original ou quantidade de texto. Decisão do proprietário em 30/10/2026: remover todo controle de play/pausa e permitir apenas avançar/voltar. Setas por mouse ou teclado reiniciam o intervalo de 7 s; foco e hover não interrompem a rotação. Os indicadores são decorativos, não botões. O último slide volta ao primeiro, sem limite de ciclos. O início automático vale também com prefers-reduced-motion: reduce; nesse caso, a imagem muda sem transição. Essa regra substitui as descrições históricas de pausa opcional ou por interação. A ausência de pausa é uma limitação de acessibilidade das atualizações automáticas; axe não comprova conformidade integral dessa interação.
+
+Hover/foco dos cards restaurado: subida de 4 px em 160 ms e zoom de 1,035 em 450 ms. Com movimento reduzido, subida de 1 px e zoom de 1,01 em 80 ms, apenas na interação, sem animação contínua. Valores definidos pelos tokens spacing-card-lift, scale-card-hover, duration-card-hover e duration-card-image e suas variantes reduzidas em @theme; conteúdo e foco continuam visíveis sem hover. Os estudos antigos abaixo descrevem decisões anteriores.
+
+Ranking: --color-ranking #C5A45D e --text-rank-label 2,25rem (36 px), fundo sólido chrome #0E0F11 e raio de controle, sem text-shadow. Contraste calculado **8.07:1**, AA para texto comum; rótulo de posição equivalente preservado para leitores de tela. Redução de 56 para 36 px diminui a disputa com a arte.
+
+Rodapé inclui seletor pt-BR/en-US, com nomes dos idiomas na própria língua, e CTA de catálogo somente na home. Layout, URLs e identidade escura permanecem; textos e metadados acompanham o idioma. Screenshots/GIFs do README atualizados com fixtures próprias, sem persistir imagens do TMDB.
 
 ### Contraste dos novos fundos sólidos
 
@@ -117,7 +127,7 @@ O arquivo `src/app/styles/theme.css` define os tokens no `@theme static`; o shel
 
 Fase 1 · 28/10/2026. A comparação abaixo retrata as alternativas antes da escolha de Caderno e do desvio posterior para Pulso. Cores, contrastes e recomendações a seguir não regem o visual vigente. O [STATUS.md](STATUS.md) é a fonte da verdade das decisões.
 
-Abra [o índice dos previews](design-previews/index.html) diretamente no navegador, inclusive sem rede. Cada direção mostra cabeçalho, home, linha de pôsteres/cards e topo do detalhe; os radios no início alternam claro/escuro sem JavaScript. Links são apenas âncoras de demonstração. Filmes e dados são fictícios; SVGs geométricos são originais e locais, sem imagens TMDB. Créditos, licenças e fallback tipográfico em [LICENSES.md](design-previews/LICENSES.md).
+Os previews estáticos e suas artes foram removidos pelo proprietário na limpeza da documentação. As descrições abaixo preservam os estudos históricos; para conferir o visual vigente, execute o app conforme o README. Licenças das fontes atualmente distribuídas estão em [CREDITS.md](../CREDITS.md).
 
 ## Critérios comuns
 
@@ -149,7 +159,7 @@ Todos os pares especificados passam seus limiares. Essa verificação das paleta
 
 **Conceito.** Um caderno de cinema em que cada pôster ganha o espaço de uma capa e cada título parece merecer uma segunda leitura. A composição usa margens, fios e serifas para criar interesse sem fingir que o catálogo publica críticas próprias.
 
-[Abrir preview Caderno](design-previews/caderno.html).
+Preview Caderno removido; descrição mantida como estudo histórico.
 
 **Clima:** íntimo, editorial, calor de papel e tinta. A ênfase está na leitura do filme e na relação entre título, pôster e sinopse.
 
@@ -237,7 +247,7 @@ Pôster 2:3, sem moldura, raio zero e sem sombra. A imagem abre o card, título 
 
 **Conceito.** Uma programação de cinema impressa em grande formato, com títulos condensados e pôsteres organizados como sessões de uma noite. O ritmo é direto: olhar a sequência, escolher um filme e abrir a ficha.
 
-[Abrir preview Sala 02](design-previews/sala.html).
+Preview Sala 02 removido; descrição mantida como estudo histórico.
 
 **Clima:** urbano, gráfico, enfático; o tipo e as linhas substituem ornamentos. Não é uma interface de streaming com banner fotográfico e botões sobre a imagem.
 
@@ -325,7 +335,7 @@ Pôster 2:3, cantos retos, sem sombra, número de ordem fora da imagem; metadado
 
 **Conceito.** Um acervo de cinema feito para seguir relações: um título leva a uma pessoa, uma pessoa leva a outro filme. O visual combina um índice lateral, imagens legíveis e pequenos dados de consulta, sem transformar o catálogo num painel administrativo.
 
-[Abrir preview Atlas](design-previews/atlas.html).
+Preview Atlas removido; descrição mantida como estudo histórico.
 
 **Clima:** calmo, preciso, de biblioteca contemporânea. O catálogo começa pelo índice e pela ficha, em vez da narrativa editorial ou do impacto do cartaz.
 

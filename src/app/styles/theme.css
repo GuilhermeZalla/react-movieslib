@@ -70,9 +70,16 @@
   --container-feature-copy: 36rem;
   --container-reel: 10.25rem;
   --spacing-cinema-header: 4.5rem;
-  --spacing-feature: 26rem;
-  --spacing-feature-mobile: 32rem;
+  --spacing-feature: 32rem;
+  --spacing-feature-mobile: 34rem;
+  --color-ranking: #c5a45d;
+  --text-rank-label: 2.25rem;
   --spacing-card-lift: -0.25rem;
+  --spacing-card-lift-reduced: -1px;
+  --scale-card-hover-reduced: 1.01;
+  --duration-card-hover: 160ms;
+  --duration-card-image: 450ms;
+  --duration-card-reduced: 80ms;
   --text-hero: clamp(1.875rem, 3.7vw, 3.5rem);
   --text-movie: 0.9375rem;
   --text-navigation: 0.75rem;

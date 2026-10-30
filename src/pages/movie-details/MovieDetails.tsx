@@ -1,3 +1,7 @@
+import { getLocale } from '../../i18n/locale';
+import { genreName, metadataLabel } from '../../i18n/metadata';
+import { t } from '../../i18n/translate';
+import { useLocale } from '../../i18n/useLocale';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
 import { idParameterSchema } from '../../../shared/tmdbRequest';
@@ -18,12 +22,15 @@ import SaveMovieButton from '../../components/base/SaveMovieButton';
 import Trailer from '../../components/base/Trailer';
 import EmptyState from '../../components/base/EmptyState';
 import NotFoundScreen from '../not-found/NotFoundScreen';
-const money = new Intl.NumberFormat('pt-BR', {
-  style: 'currency',
-  currency: 'USD',
-  maximumFractionDigits: 0,
-});
+const moneyFormat = () =>
+  new Intl.NumberFormat(getLocale(), {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+  });
 export default function MovieDetails() {
+  useLocale();
+  const money = moneyFormat();
   const { id } = useParams<'id'>();
   const parsed = idParameterSchema.safeParse(id ?? '');
   const safeId = parsed.success ? parsed.data : 1;
@@ -37,7 +44,7 @@ export default function MovieDetails() {
     enabled,
   });
   const movie = details.data;
-  usePageTitle(movie?.title ?? 'Filme');
+  usePageTitle(movie?.title ?? t('Filme'));
   if (
     !enabled ||
     (details.error instanceof TmdbError && details.error.kind === 'not-found')
@@ -63,7 +70,7 @@ export default function MovieDetails() {
         className="text-preview-accent-text underline"
         to="/catalog/popular/1"
       >
-        Voltar ao catálogo
+        {t('Voltar ao catálogo')}
       </Link>
       <QueryContent
         pending={details.isPending}
@@ -74,7 +81,7 @@ export default function MovieDetails() {
         }}
       >
         {movie && (
-          <section className="detail-opening" aria-label="Ficha do filme">
+          <section className="detail-opening" aria-label={t('Ficha do filme')}>
             <div className="mx-auto w-full max-w-preview-card">
               <div className="aspect-preview-poster overflow-hidden rounded-preview-poster">
                 <PosterImage
@@ -90,8 +97,8 @@ export default function MovieDetails() {
             </div>
             <article className="page-intro min-w-0">
               <p className="eyebrow">
-                {movie.release_date?.slice(0, 4) || 'Ano não informado'} ·{' '}
-                {movie.status || 'Status não informado'}
+                {movie.release_date?.slice(0, 4) || t('Ano não informado')} ·{' '}
+                {metadataLabel(movie.status ?? '') || t('Status não informado')}
               </p>
               <h1>{movie.title}</h1>
               {movie.tagline && (
@@ -99,40 +106,42 @@ export default function MovieDetails() {
                   {movie.tagline}
                 </p>
               )}
-              <p>{movie.overview || 'Sinopse indisponível.'}</p>
+              <p>{movie.overview || t('Sinopse indisponível.')}</p>
               <p className="font-semibold text-preview-accent-text">
                 {movie.vote_average === null
-                  ? 'Sem nota'
-                  : 'Nota ' + movie.vote_average.toFixed(1) + ' de 10'}
+                  ? t('Sem nota')
+                  : t('Nota {score} de 10', {
+                      score: movie.vote_average.toFixed(1),
+                    })}
               </p>
               <dl className="grid gap-4 sm:grid-cols-3">
                 <div>
-                  <dt>Orçamento</dt>
+                  <dt>{t('Orçamento')}</dt>
                   <dd>
                     {movie.budget
                       ? money.format(movie.budget)
-                      : 'Não informado'}
+                      : t('Não informado')}
                   </dd>
                 </div>
                 <div>
-                  <dt>Receita</dt>
+                  <dt>{t('Receita')}</dt>
                   <dd>
                     {movie.revenue
                       ? money.format(movie.revenue)
-                      : 'Não informada'}
+                      : t('Não informada')}
                   </dd>
                 </div>
                 <div>
-                  <dt>Duração</dt>
+                  <dt>{t('Duração')}</dt>
                   <dd>
                     {movie.runtime
                       ? String(movie.runtime) + ' min'
-                      : 'Não informada'}
+                      : t('Não informada')}
                   </dd>
                 </div>
               </dl>
               <nav
-                aria-label="Gêneros do filme"
+                aria-label={t('Gêneros do filme')}
                 className="flex flex-wrap gap-2"
               >
                 {movie.genres.map((genre) => (
@@ -143,10 +152,10 @@ export default function MovieDetails() {
                       '/genres/' +
                       String(genre.id) +
                       '/' +
-                      encodeURIComponent(genre.name)
+                      encodeURIComponent(genreName(genre))
                     }
                   >
-                    {genre.name}
+                    {genreName(genre)}
                   </Link>
                 ))}
               </nav>
@@ -157,12 +166,12 @@ export default function MovieDetails() {
       {movie && (
         <>
           <section className="page-stack" aria-label="Trailer">
-            <h2 className="section-title">Antes de dar play</h2>
+            <h2 className="section-title">{t('Antes de dar play')}</h2>
             <QueryContent
               pending={videos.isPending}
               error={videos.error}
               empty={!trailer}
-              emptyTitle="Trailer indisponível"
+              emptyTitle={t('Trailer indisponível')}
               retry={() => {
                 void videos.refetch();
               }}
@@ -176,13 +185,13 @@ export default function MovieDetails() {
               )}
             </QueryContent>
           </section>
-          <section className="page-stack" aria-label="Elenco">
-            <h2 className="section-title">Quem está em cena</h2>
+          <section className="page-stack" aria-label={t('Elenco')}>
+            <h2 className="section-title">{t('Quem está em cena')}</h2>
             <QueryContent
               pending={credits.isPending}
               error={credits.error}
               empty={cast.length === 0}
-              emptyTitle="Elenco não informado"
+              emptyTitle={t('Elenco não informado')}
               retry={() => {
                 void credits.refetch();
               }}
@@ -200,11 +209,13 @@ export default function MovieDetails() {
               </div>
             </QueryContent>
           </section>
-          <section className="page-stack" aria-label="Equipe">
-            <h2 className="section-title">Por trás da câmera</h2>
+          <section className="page-stack" aria-label={t('Equipe')}>
+            <h2 className="section-title">{t('Por trás da câmera')}</h2>
             {credits.error ? (
               <p>
-                Equipe indisponível. Use a nova tentativa da seção de elenco.
+                {t(
+                  'Equipe indisponível. Use a nova tentativa da seção de elenco.',
+                )}
               </p>
             ) : crew.length ? (
               <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -217,22 +228,23 @@ export default function MovieDetails() {
                       {person.name}
                     </Link>
                     <p className="text-preview-caption text-preview-muted">
-                      {person.job} · {person.department}
+                      {metadataLabel(person.job)} ·{' '}
+                      {metadataLabel(person.department)}
                     </p>
                   </li>
                 ))}
               </ul>
             ) : (
-              <EmptyState preview title="Equipe não informada" />
+              <EmptyState preview title={t('Equipe não informada')} />
             )}
           </section>
-          <section className="page-stack" aria-label="Galeria">
-            <h2 className="section-title">Dentro do filme</h2>
+          <section className="page-stack" aria-label={t('Galeria')}>
+            <h2 className="section-title">{t('Dentro do filme')}</h2>
             <QueryContent
               pending={images.isPending}
               error={images.error}
               empty={!gallery.length}
-              emptyTitle="Sem imagens de cena"
+              emptyTitle={t('Sem imagens de cena')}
               retry={() => {
                 void images.refetch();
               }}
@@ -247,20 +259,23 @@ export default function MovieDetails() {
                       fill
                       className="size-full"
                       src={tmdbImageUrl(image.file_path)}
-                      alt={'Cena ' + String(index + 1) + ' de ' + movie.title}
+                      alt={t('Cena {number} de {title}', {
+                        number: index + 1,
+                        title: movie.title,
+                      })}
                     />
                   </div>
                 ))}
               </div>
             </QueryContent>
           </section>
-          <section className="page-stack" aria-label="Recomendações">
-            <h2 className="section-title">A sessão pode continuar</h2>
+          <section className="page-stack" aria-label={t('Recomendações')}>
+            <h2 className="section-title">{t('A sessão pode continuar')}</h2>
             <QueryContent
               pending={recommendations.isPending}
               error={recommendations.error}
               empty={!related.length}
-              emptyTitle="Sem recomendações por enquanto"
+              emptyTitle={t('Sem recomendações por enquanto')}
               retry={() => {
                 void recommendations.refetch();
               }}

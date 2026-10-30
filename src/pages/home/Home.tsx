@@ -1,3 +1,6 @@
+import { genreName } from '../../i18n/metadata';
+import { t } from '../../i18n/translate';
+import { useLocale } from '../../i18n/useLocale';
 import { useQuery } from '@tanstack/react-query';
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
@@ -13,16 +16,21 @@ import { usePageTitle } from '../../hooks/usePageTitle';
 
 const isEmptyError = (error: unknown) =>
   error instanceof TmdbError && error.kind === 'empty';
-const SectionHeader = ({ title, href }: { title: string; href: string }) => (
-  <div className="home-section__heading">
-    <h2>{title}</h2>
-    <Link to={href}>
-      Ver mais <span aria-hidden="true">↗</span>
-    </Link>
-  </div>
-);
+const SectionHeader = ({ title, href }: { title: string; href: string }) => {
+  useLocale();
+  return (
+    <div className="home-section__heading">
+      <h2>{title}</h2>
+      <Link to={href}>
+        {t('Ver mais')}
+        <span aria-hidden="true">↗</span>
+      </Link>
+    </div>
+  );
+};
 
 const Carousel = ({ children }: { children: React.ReactNode }) => {
+  useLocale();
   const ref = useRef<HTMLDivElement>(null);
   const scroll = (direction: -1 | 1) => {
     const element = ref.current;
@@ -40,7 +48,7 @@ const Carousel = ({ children }: { children: React.ReactNode }) => {
       <div
         ref={ref}
         role="region"
-        aria-label="Filmes populares"
+        aria-label={t('Filmes populares')}
         className="home-reel__track"
       >
         {children}
@@ -49,7 +57,7 @@ const Carousel = ({ children }: { children: React.ReactNode }) => {
         <button
           type="button"
           className="cinema-icon-button"
-          aria-label="Anterior"
+          aria-label={t('Anterior')}
           onClick={() => scroll(-1)}
         >
           ←
@@ -57,7 +65,7 @@ const Carousel = ({ children }: { children: React.ReactNode }) => {
         <button
           type="button"
           className="cinema-icon-button"
-          aria-label="Próximo"
+          aria-label={t('Próximo')}
           onClick={() => scroll(1)}
         >
           →
@@ -67,6 +75,7 @@ const Carousel = ({ children }: { children: React.ReactNode }) => {
   );
 };
 export default function Home() {
+  useLocale();
   usePageTitle('MoviesLib');
   const nowPlaying = useQuery(movieListQuery('now_playing', 1));
   const popular = useQuery(movieListQuery('popular', 1));
@@ -80,13 +89,13 @@ export default function Home() {
   return (
     <div className="home-cinema">
       <PopularHero movies={pop} pending={popular.isPending} />
-      <section aria-label="Em cartaz" className="home-section">
-        <SectionHeader title="Em cartaz" href="/catalog/now_playing/1" />
+      <section aria-label={t('Em cartaz')} className="home-section">
+        <SectionHeader title={t('Em cartaz')} href="/catalog/now_playing/1" />
         <QueryContent
           pending={nowPlaying.isPending}
           error={nowPlaying.error}
           empty={!np.length}
-          emptyTitle="Nada em cartaz"
+          emptyTitle={t('Nada em cartaz')}
           retry={() => {
             void nowPlaying.refetch();
           }}
@@ -105,16 +114,16 @@ export default function Home() {
           </div>
         </QueryContent>
       </section>
-      <section aria-label="Populares" className="home-section">
+      <section aria-label={t('Populares')} className="home-section">
         <SectionHeader
-          title="Todo mundo está vendo"
+          title={t('Todo mundo está vendo')}
           href="/catalog/popular/1"
         />
         <QueryContent
           pending={popular.isPending}
           error={popular.error}
           empty={!pop.length}
-          emptyTitle="Sem populares"
+          emptyTitle={t('Sem populares')}
           retry={() => {
             void popular.refetch();
           }}
@@ -135,13 +144,16 @@ export default function Home() {
           </Carousel>
         </QueryContent>
       </section>
-      <section aria-label="Mais bem avaliados" className="home-section">
-        <SectionHeader title="Vale cada minuto" href="/catalog/top_rated/1" />
+      <section aria-label={t('Mais bem avaliados')} className="home-section">
+        <SectionHeader
+          title={t('Vale cada minuto')}
+          href="/catalog/top_rated/1"
+        />
         <QueryContent
           pending={topRated.isPending}
           error={topRated.error}
           empty={!tr.length}
-          emptyTitle="Sem resultados"
+          emptyTitle={t('Sem resultados')}
           retry={() => {
             void topRated.refetch();
           }}
@@ -160,10 +172,10 @@ export default function Home() {
           </div>
         </QueryContent>
       </section>
-      <section aria-label="Gêneros" className="home-genres">
+      <section aria-label={t('Gêneros')} className="home-genres">
         <div>
-          <p className="eyebrow">Cada humor, um caminho</p>
-          <h2>Qual é a sua hoje?</h2>
+          <p className="eyebrow">{t('Cada humor, um caminho')}</p>
+          <h2>{t('Qual é a sua hoje?')}</h2>
         </div>
         <div className="home-genres__links">
           {genres.isPending &&
@@ -173,7 +185,7 @@ export default function Home() {
           {genres.isError && (
             <ErrorState
               preview
-              message="Não foi possível carregar os gêneros."
+              message={t('Não foi possível carregar os gêneros.')}
               onRetry={() => {
                 void genres.refetch();
               }}
@@ -184,17 +196,17 @@ export default function Home() {
             !genres.data.genres.length && (
               <EmptyState
                 preview
-                title="Nenhum gênero por aqui"
-                message="A lista volta em outra sessão."
+                title={t('Nenhum gênero por aqui')}
+                message={t('A lista volta em outra sessão.')}
               />
             )}
           {genres.data?.genres.slice(0, 10).map((genre) => (
             <Link
               key={genre.id}
               className="home-genre"
-              to={`/genres/${genre.id}/${encodeURIComponent(genre.name)}`}
+              to={`/genres/${genre.id}/${encodeURIComponent(genreName(genre))}`}
             >
-              {genre.name}
+              {genreName(genre)}
               <span aria-hidden="true">↗</span>
             </Link>
           ))}

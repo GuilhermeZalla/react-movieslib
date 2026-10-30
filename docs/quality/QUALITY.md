@@ -1,10 +1,28 @@
 # Relatório — conclusão dos itens 1 a 6
 
-## Atualização vigente — Pulso Cinema
+## Atualização vigente — carrossel e links (30/10/2026)
+
+Carrossel automático contínuo a cada 7 s, sem play/pausa ou salto direto; restam apenas avançar/voltar, sem interromper a rotação por foco ou hover. Movimento reduzido remove a transição. Check aprovado: **341 testes Vitest em 32 arquivos**, lint/tipos/build/distribuição/formatação; **91 testes Playwright** aprovados. Os números de testes foram mantidos, com expectativas atualizadas para os ciclos contínuos e as duas setas. Axe não comprova conformidade integral das atualizações automáticas sem mecanismo de pausa.
+
+Corrigidos 14 links quebrados após a limpeza documental; 39 links/âncoras locais nos sete arquivos Markdown verificados sem destinos ausentes. Arquivos removidos não foram recriados. Guia separado e JSONs Lighthouse não estão presentes; medições abaixo são históricas. Build atual: CSS 56,50 kB (9,47 gzip), JS 362,10 kB (111,95 gzip). Sem dependências novas, credenciais ou escrita no Git.
+
+## Atualização anterior — idiomas e interações (histórico)
+
+Base **2ec9c70**. Idiomas pt-BR/en-US, cache/cliente/proxy enumerados por preferência, carrossel manual + automático de 7 s com quadro fixo, ranking dourado menor, CTA só na home e correção de Referer do trailer. Guia de entrevista em Markdown/PDF de quatro páginas.
+
+Check final: **340 testes Vitest em 32 arquivos**, lint/tipos/build/distribuição/formatação aprovados. Playwright: **90 casos**, incluindo 64 combinações de rota/largura/idioma com axe AA, sem overflow horizontal. Seis testes novos verificam idioma com recarga/lista/URL, CTA e estados em inglês, Referer real do iframe e src/dimensões do destaque nas duas larguras extremas, além de conferir limites dos rótulos do menu em 360/390 px. Sem rede real TMDB/YouTube.
+
+O teste do player intercepta a requisição HTTPS e exige Referer igual à origem local, antes ausente por no-referrer. Isso valida a configuração corrigida, não disponibilidade/permissão de vídeo real. CSP, sandbox, ausência de autoplay e link externo seguro preservados.
+
+Localização verificada por auditoria AST dos textos estáticos e chaves, paridade de parâmetros e testes de preferência/cache/cancelamento. Erros guardados mantêm mensagem canônica e traduzem na renderização. Preferência local é independente dos IDs; nenhuma resposta TMDB persistida.
+
+Build: CSS **56,48 kB** (9,45 gzip), JS **363,63 kB** (112,32 gzip). Lighthouse não foi repetido nesta revisão: JSONs e pontuações abaixo retratam a entrega anterior, sem promessa de nota atual. Nenhuma dependência nova, credencial pública ou escrita no Git. Detalhes em [REVIEW.md](REVIEW.md) e início de [STATUS.md](../STATUS.md).
+
+## Atualização anterior — Pulso Cinema (histórico)
 
 Redesenho escuro solicitado pelo proprietário, com carrossel automático, grade densa, créditos, ícones unificados e demonstrações. Revisão por gravidade: [REVIEW.md](REVIEW.md). Resultado atual: **319 testes Vitest** e **52 Playwright**; a matriz clara foi retirada pela decisão de escuro fixo, preservando as oito rotas nas quatro larguras e adicionando as provas de rotação/dimensões e créditos/favicon. Check de implementação isolado e check final registrados no STATUS.
 
-Lighthouse repetido após o redesenho: **home 100/100/100/100; catálogo 100/100/100/100**, na ordem desempenho/acessibilidade/boas práticas/SEO. Fixture local, uma medição por rota com throttling móvel simulado, sem promessa de nota em produção. lighthouse-after.json contém esta execução; lighthouse-baseline.json continua a fotografia de 13bc68d.
+Lighthouse repetido após o redesenho: **home 100/100/100/100; catálogo 100/100/100/100**, na ordem desempenho/acessibilidade/boas práticas/SEO. Fixture local, uma medição por rota com throttling móvel simulado, sem promessa de nota em produção. Os JSONs de evidência foram removidos pelo proprietário na limpeza; estes números são apenas o registro histórico, não uma medição atual.
 
 Build atual: CSS **56,13 kB / 9,40 kB gzip**; JS **349,75 kB / 107,55 kB gzip**. O aumento de CSS em relação à migração abaixo decorre das composições do novo layout; mídias do README não entram no bundle. O SVG da marca deriva também ICO/Apple Touch Icon.
 
@@ -57,7 +75,7 @@ Lighthouse **13.6.0**, Chromium local do Playwright, build de produção e respo
 
 CSS: **63,35 → 31,77 kB** (gzip 11,36 → 6,45 kB). JavaScript: **354,90 → 350,40 kB** (gzip 108,19 → 107,13 kB). A remoção do legado reduziu o CSS aproximadamente à metade. Fontes antigas não participam mais do bundle.
 
-Evidências: [baseline](lighthouse-baseline.json) e [resultado final](lighthouse-after.json), com pontuações, métricas, versão e auditorias restantes, sem caminhos locais. A baseline foi capturada sobre o build 13bc68d antes da migração; o resultado final usa a árvore desta entrega. Não sobrescrever baseline com código novo.
+Os arquivos JSON da baseline e do resultado final foram removidos na limpeza. O resumo histórico permanece acima: a baseline foi capturada sobre o build 13bc68d antes da migração e o resultado final sobre a árvore daquela entrega. Uma nova execução gera novas evidências; não comprova novamente os números históricos.
 
 Para repetir o resultado final, instale dependências e Chromium conforme README, rode npm run build e depois npm run audit:lighthouse, sem outras suítes concorrentes. Para reproduzir o antes, use uma cópia da revisão 13bc68d e o mesmo ferramental/fixtures. Variações da máquina e do navegador afetam as pontuações. Permanecem oportunidades informativas de reduzir JS não usado e a cadeia crítica de carregamento, listadas no JSON; não há promessa de nota fixa em hospedagem.
 
@@ -80,4 +98,4 @@ O servidor de fixtures e o adaptador Vite não entram no bundle. Testar os heade
 
 Continuam pendentes: logo aprovado TMDB, revisão dos termos de dados/proxy/cache de imagens, WAF no painel, quotas/custos e contador compartilhado, segredo/dados reais, CDN/rewrites/headers em hospedagem, validação entre navegadores/leitores de tela e execução remota do CI. Nenhum deploy realizado. Os detalhes vigentes estão no início de STATUS.md e no README.
 
-Plano de staging e mensagens em inglês: [COMMIT_PLAN.md](../COMMIT_PLAN.md). Não incluir arquivos de ambiente, segredos, node_modules, dist, coverage, relatórios HTML brutos, caches, logs ou capturas temporárias.
+O plano de staging anterior foi removido pelo proprietário. Mensagens de commit continuam em inglês; caminhos explícitos são entregues no relatório da solicitação. Não incluir arquivos de ambiente, segredos, node_modules, dist, coverage, relatórios HTML brutos, caches, logs ou capturas temporárias.

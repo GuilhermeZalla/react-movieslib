@@ -4,6 +4,8 @@ import '@fontsource-variable/bricolage-grotesque/wght.css';
 import '@fontsource-variable/figtree/wght.css';
 import './index.css';
 import App from './app/App';
+import { initializeLocale } from './i18n/locale';
+initializeLocale();
 const container = document.getElementById('root');
 if (!container)
   throw new Error('O elemento raiz da aplicação não foi encontrado.');

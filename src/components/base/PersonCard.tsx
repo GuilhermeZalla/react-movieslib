@@ -1,3 +1,5 @@
+import { t } from '../../i18n/translate';
+import { useLocale } from '../../i18n/useLocale';
 import { Link } from 'react-router-dom';
 import { tmdbImageUrl } from '../../api/tmdb/client';
 import PosterImage from './PosterImage';
@@ -12,6 +14,7 @@ export default function PersonCard({
   photo: string | null;
   character?: string | null;
 }) {
+  useLocale();
   return (
     <article className="min-w-0">
       <Link
@@ -24,7 +27,7 @@ export default function PersonCard({
             className="size-full"
             src={tmdbImageUrl(photo)}
             alt=""
-            placeholder="Sem retrato"
+            placeholder={t('Sem retrato')}
           />
         </div>
         <h3 className="mt-2 wrap-break-word font-display text-preview-card font-bold group-hover:text-preview-accent-text">
