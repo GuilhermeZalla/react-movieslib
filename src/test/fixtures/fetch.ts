@@ -35,6 +35,49 @@ export function fixtureFetch(input: RequestInfo | URL): Promise<Response> {
 
   if (url.pathname === '/api/tmdb/genre/movie/list') {
     data = { genres: movie.genres };
+  } else if (/\/movie\/\d+\/videos$/.test(url.pathname)) {
+    return Promise.resolve(
+      Response.json({
+        id: 1,
+        results: [
+          {
+            id: 'fixture',
+            key: 'abcdefghijk',
+            site: 'YouTube',
+            type: 'Trailer',
+            official: true,
+            name: 'Trailer fictício',
+          },
+        ],
+      }),
+    );
+  } else if (/\/movie\/\d+\/images$/.test(url.pathname)) {
+    return Promise.resolve(
+      Response.json({
+        id: 1,
+        backdrops: [{ file_path: '/fixture.jpg', width: 1200, height: 800 }],
+        posters: [],
+      }),
+    );
+  } else if (/\/movie\/\d+\/credits$/.test(url.pathname)) {
+    return Promise.resolve(Response.json(movie.credits));
+  } else if (/\/movie\/\d+\/recommendations$/.test(url.pathname)) {
+    data = {
+      page: 1,
+      total_pages: 1,
+      total_results: 1,
+      results: [{ ...movie, id: 3, title: 'Outra sessão' }],
+    };
+  } else if (url.pathname === '/api/tmdb/discover/movie') {
+    const matching =
+      !url.searchParams.has('with_genres') ||
+      url.searchParams.get('with_genres') === '18';
+    data = {
+      page: Number(url.searchParams.get('page') || 1),
+      total_pages: matching ? 5 : 0,
+      total_results: matching ? 5 : 0,
+      results: matching ? [movie] : [],
+    };
   } else if (/\/person\/\d+\/movie_credits$/.test(url.pathname)) {
     data = { cast: [movie], crew: [] };
   } else if (/\/person\/\d+$/.test(url.pathname)) {

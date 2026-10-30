@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '../../../shared/zod.ts';
 
 const idSchema = z.number().int().positive().max(Number.MAX_SAFE_INTEGER);
 const nullableText = z.string().nullable().default(null);
@@ -91,6 +91,30 @@ export const personMovieCreditsSchema = z.object({
 });
 export const moviePageSchema = createPageSchema(movieSummarySchema);
 export const personPageSchema = createPageSchema(personSummarySchema);
+
+export const movieVideosSchema = z.object({
+  id: idSchema,
+  results: z.array(
+    z.object({
+      id: z.string(),
+      key: z.string().max(200),
+      site: z.string(),
+      type: z.string(),
+      official: z.boolean().default(false),
+      name: z.string(),
+    }),
+  ),
+});
+const galleryImageSchema = z.object({
+  file_path: imagePathSchema,
+  width: z.number().positive(),
+  height: z.number().positive(),
+});
+export const movieImagesSchema = z.object({
+  id: idSchema,
+  backdrops: z.array(galleryImageSchema),
+  posters: z.array(galleryImageSchema).default([]),
+});
 
 export type Genre = z.infer<typeof genreSchema>;
 export type GenreList = z.infer<typeof genreListSchema>;

@@ -255,15 +255,14 @@ const DesignSystem = () => {
         </h1>
         <p className="mt-2 max-w-prose text-preview-body text-preview-muted">
           Tipografia escolhida: Bricolage Grotesque nos títulos e Figtree no
-          corpo. Compare os dois temas em 360 e 1440 px. Os filmes desta página
-          são fictícios.
+          corpo. Tema exclusivamente escuro em 360 e 1440 px. Os filmes desta
+          página são fictícios.
         </p>
-        {(['dark', 'light'] as const).flatMap((theme) =>
+        {(['dark'] as const).flatMap((theme) =>
           (['mobile', 'wide'] as const).map((size) => (
             <div key={theme + '-' + size} className="mb-10">
               <h2 className="mb-2 text-preview-section font-bold">
-                {theme === 'dark' ? 'Escuro' : 'Claro'} ·{' '}
-                {size === 'mobile' ? '360 px' : '1440 px'}
+                Escuro · {size === 'mobile' ? '360 px' : '1440 px'}
               </h2>
               <div className="overflow-x-auto rounded-preview-control border border-preview-line">
                 <PreviewFrame theme={theme} size={size} />

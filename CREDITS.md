@@ -1,31 +1,26 @@
-﻿# Créditos e licenças
+# Créditos e licenças
 
-## Fontes (Fase 4)
+## Fontes vigentes — Pulso, escolha B
 
-- **Source Serif 4** — SIL Open Font License 1.1 (OFL). Distribuída via `@fontsource/source-serif-4` (WOFF2 no bundle).
-- **Source Sans 3** — SIL Open Font License 1.1 (OFL). Distribuída via `@fontsource/source-sans-3` (WOFF2 no bundle).
+- [Bricolage Grotesque](https://fontsource.org/fonts/bricolage-grotesque/about): títulos. Pacote @fontsource-variable/bricolage-grotesque 5.3.0, SIL Open Font License 1.1.
+- [Figtree](https://fontsource.org/fonts/figtree/about): corpo e números. Pacote @fontsource-variable/figtree 5.3.0, SIL Open Font License 1.1.
 
-Ambas são carregadas localmente (sem CDN), com `font-display: swap` e fallback tipográfico.
+WOFF2 locais via Fontsource, font-display: swap e fallback do sistema. Licenças integrais distribuídas em [Bricolage Grotesque](public/licenses/bricolage-grotesque.txt) e [Figtree](public/licenses/figtree.txt), copiadas sem alteração do LICENSE de cada pacote. Não há requisição de fonte a CDN. Source Serif 4, Source Sans 3, PT Sans e Source Sans Pro não fazem mais parte do app/bundle; estudos históricos permanecem em docs/design-previews.
 
-## Fontes da amostra Pulso (escolha B)
+## Imagens e ícones
 
-- [Bricolage Grotesque](https://fontsource.org/fonts/bricolage-grotesque/about) — SIL Open Font License 1.1; pacote `@fontsource-variable/bricolage-grotesque` 5.3.0. Títulos da home e da amostra `/design`.
-- [Figtree](https://fontsource.org/fonts/figtree/about) — SIL Open Font License 1.1; pacote `@fontsource-variable/figtree` 5.3.0. Corpo e números da home e da amostra `/design`.
+Dados/imagens reais vêm do TMDB pelo proxy. SVGs de placeholders, ilustrações, ícones e pôster fictício dos testes foram criados neste projeto; nenhum pôster TMDB está incluído nas fixtures. React Icons e o reset Meyer legado deixaram de ser usados.
 
-Os dois pacotes fornecem WOFF2 local, `font-display: swap` e textos completos de licença no diretório de cada pacote. O shell da home importa as fontes em produção; `/design` é apenas de desenvolvimento. Fontes antigas (Source Serif 4, Source Sans 3, PT Sans, Source Sans Pro) permanecem instaladas durante a migração visual.
+## TMDB — pendência antes de publicar
 
-## Logotipo TMDB (atribuição)
+Obter um logo aprovado em [Logos e atribuição](https://www.themoviedb.org/about/logos-attribution), preservar cores/proporções e integrá-lo à seção Créditos, menor que a marca principal. **O arquivo não está instalado.** O rodapé atual usa texto e não tenta carregar um arquivo ausente; o texto não substitui o logo obrigatório. Integração será feita na etapa de pré-publicação.
 
-- O logo aprovado deve ser obtido em [Logos e atribuição TMDB](https://www.themoviedb.org/about/logos-attribution) e colocado em `public/tmdb-logo.svg`. **Arquivo ainda ausente**, pendência antes de publicar. Após falha de carregamento, a home mostra fallback textual TMDB; ele não substitui o logo exigido.
-- Aviso exato em inglês, conforme a [FAQ oficial sobre atribuição](https://developer.themoviedb.org/docs/faq): "This product uses the TMDB API but is not endorsed or certified by TMDB."
-- O logotipo TMDB deve ser menos proeminente que o logotipo do aplicativo e não deve implicar endosso. A atribuição deve estar na seção de créditos/rodapé.
+Aviso exato conforme a [FAQ oficial](https://developer.themoviedb.org/docs/faq):
 
-Não alterar cor, proporção, rotação ou espelhamento do logo aprovado. O shell não aplica opacidade/filtros à imagem e inclui uma seção Créditos identificável.
+> This product uses the TMDB API but is not endorsed or certified by TMDB.
 
-## Reset CSS
+O projeto mantém a licença MIT existente. Bibliotecas conservam suas licenças próprias. Ferramentas de auditoria são apenas de desenvolvimento; Lighthouse usa Apache-2.0 e axe-core usa MPL-2.0, com avisos nos respectivos pacotes.
 
-- meyer-reset 2.0 (domínio público / Eric Meyer), hospedado em `public/meyer-reset.css`.
+## Demonstrações e marca MoviesLib
 
-## Ícones
-
-SVGs inline próprios; sem biblioteca de ícones com licença duvidosa.
+As capturas em docs/screenshots e os GIFs em docs/demo mostram a interface real com nomes/sinopses fictícios e ilustrações SVG geométricas originais, criadas em scripts/demo/showcase.mjs. Não incluem pôsteres ou fotos do TMDB. Esses materiais e a marca/favicon próprios acompanham a licença MIT do projeto; não representam identidade, filmes ou pessoas reais. Fontes continuam com suas licenças OFL indicadas acima. O SVG único da marca gera as variantes ICO e Apple Touch Icon. Captura/regeneração: npm run build seguido de npm run docs:media.

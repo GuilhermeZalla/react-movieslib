@@ -1,16 +1,8 @@
 interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
-  height?: number | string;
-  width?: number | string;
-  variant?: 'line' | 'poster';
+  variant?: 'line' | 'poster' | 'chip';
 }
 
-const Skeleton = ({
-  height = '1rem',
-  width = '100%',
-  variant = 'line',
-  className,
-  ...props
-}: SkeletonProps) => {
+const Skeleton = ({ variant = 'line', className, ...props }: SkeletonProps) => {
   if (variant === 'poster') {
     return (
       <div
@@ -30,11 +22,11 @@ const Skeleton = ({
     <div
       className={[
         'animate-pulse motion-reduce:animate-none rounded-poster bg-surface border line border-line',
+        variant === 'chip' ? 'h-8 w-24' : 'h-4 w-full',
         className,
       ]
         .filter(Boolean)
         .join(' ')}
-      style={{ height, width }}
       {...props}
     />
   );

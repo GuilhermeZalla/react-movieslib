@@ -10,7 +10,7 @@ const Button = ({
   ...props
 }: ButtonProps) => {
   const base =
-    'inline-flex items-center justify-center gap-2 rounded-control px-4 py-2 font-body text-body transition-colors duration-fast ease-settle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-line focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none';
+    'inline-flex items-center justify-center gap-2 rounded-control px-4 py-2 font-body text-body transition-colors duration-(--duration-fast) ease-settle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-line focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none';
   const variants: Record<string, string> = {
     primary: 'bg-accent text-on-accent hover:bg-accent/90 active:bg-accent/80',
     secondary:
@@ -29,7 +29,7 @@ const Button = ({
         base,
         preview ? previewVariants[variant] : variants[variant],
         preview &&
-          'duration-preview ease-preview motion-reduce:transition-none',
+          'duration-(--duration-preview) ease-preview motion-reduce:transition-none',
         className,
       ]
         .filter(Boolean)

@@ -1,110 +1,92 @@
 # MoviesLib
 
-Catálogo de filmes e pessoas com dados do The Movie Database (TMDB). Projeto de estudo e portfólio, sem vínculo com TMDB ou estúdios.
+Projeto de estudo e portfólio feito por **Guilherme Zalla**, sem vínculo ou endosso do The Movie Database (TMDB) ou de estúdios. Código sob [licença MIT](LICENSE); fontes, ilustrações e atribuição em [CREDITS.md](CREDITS.md).
 
-MoviesLib is a React single-page application for browsing movies and people.
-It builds with Vite and uses strict TypeScript throughout the application.
-Existing screens retain their URLs; the visual migration is still incomplete.
-The server-only TMDB proxy requires a private environment variable.
+Catálogo de filmes e pessoas com React e um proxy serverless na Vercel. A interface reúne filmes populares, em cartaz e em breve, busca, filtros, detalhes, trailers, filmografias e uma lista pessoal local. Visual **Pulso Cinema**: tema exclusivamente escuro, carvão/cinzas, vermelho #C62828 e pôsteres em primeiro plano.
 
-Deploy: [LINK DO DEPLOY]
+[Repositório do projeto](https://github.com/GuilhermeZalla/react-movieslib). Publicação ainda pendente; os dados reais exigem o token privado no servidor.
 
-## Funcionalidades e limites atuais
+## Demonstrações
 
-- Home com visual Pulso: abertura assimétrica com pôster protagonista, em cartaz, populares com ranking/carrossel, bem avaliados e gêneros. Tema escuro padrão, alternância clara/escura e estados de carregamento, vazio e erro por seção. As demais telas ainda usam a composição legada.
-- Catálogo por categoria, páginas 1–5, busca de filmes e recorte por gênero.
-- Estrutura de detalhe com sinopse, orçamento, receita, duração, gêneros e elenco.
-- Catálogo/busca de pessoas, biografia e filmografia.
-- Menus desktop/mobile e acesso a em breve/bem avaliados.
-- 404 mínima com retorno ao início e os estilos existentes.
+Gravações reais da interface executada no Chromium, com dados fictícios interceptados localmente e ilustrações SVG originais. Não são mockups nem capturas de dados/imagens do TMDB. A troca de destaque mostrada nos GIFs usa o controle manual; o avanço automático de 7 s tem teste próprio no navegador.
 
-**O catálogo real depende da configuração do segredo no servidor.** Todos os fluxos de dados usam o cliente centralizado e TanStack Query; pôsteres, fotos e banners também usam caminhos da mesma origem servidos pelo proxy. Estrutura e navegação foram verificadas com dados fictícios; fixtures não são um modo de demonstração publicado. Sem configuração, o proxy retorna erro genérico e as telas podem ficar vazias/incompletas. Não coloque uma chave no cliente.
+### Desktop
 
-Dois loops de requisição foram corrigidos para validar a migração; outras limitações do legado estão na [análise](docs/ANALYSIS.md). Minha lista, filtros completos, recomendações, galeria e equipe ainda não estão implementados. Os [previews de design](docs/design-previews/index.html) são estudos estáticos separados do app; não há GIF de demonstração do aplicativo.
+![Home, troca de destaque, catálogo, filme, pessoas, filmografia e Minha lista](docs/demo/movieslib-desktop.gif)
 
-## Stack e decisões
+### Celular
 
-React/DOM 18.3.1, Router DOM 7.18.5 e React Icons 4.4.0. Fundação: Vite 8.3.5, TypeScript 6.0.3, ESLint 9.39.5, Prettier 3.9.10 e Vitest 4.1.12. Router atualizado para corrigir os advisories da linha 6, mantendo BrowserRouter, imports e URLs. Removidos CRA/react-scripts e seus transitivos exclusivos; somente package-lock.json permanece. React 19 requer migração própria, não realizada nesta atualização. ESLint 9 atende aos peers dos plugins React/a11y, mas está fora de suporte; risco em [DEPENDENCIES.md](docs/DEPENDENCIES.md).
+<img src="docs/demo/movieslib-mobile.gif" alt="Navegação pelo MoviesLib no celular, da home até os filmes guardados" width="300">
 
-TypeScript estrito cobre src, api, server, shared, e2e e configurações Vite/Playwright, com allowJs:false, noUncheckedIndexedAccess e exactOptionalPropertyTypes, sem exclusões de fontes ou skipLibCheck. Os contratos são derivados de schemas **Zod 4.6.7** em [schemas.ts](src/api/tmdb/schemas.ts); [src/types/tmdb.ts](src/types/tmdb.ts) preserva os exports anteriores. Há validação de IDs, páginas, categorias e busca em shared/tmdbRequest.ts. O cliente centralizado aplica os schemas às respostas do proxy, com timeout, cancelamento e erros tipados. **TanStack Query 5.105.0** usa cache apenas em memória por 60 s, até 1 retry para falhas de rede e sem retry para 400/404/429; o debounce de busca é de 300 ms. A integração de dados às telas está concluída: não há fetch direto fora do cliente em src. Tailwind CSS 4.3.3 usa o plugin Vite; tokens @theme ficam em src/app/styles/theme.css. As telas combinam classes Tailwind e CSS legado, inclusive valores arbitrários que precisam ser substituídos por tokens. Componentes base integrados apenas à home; revisão visual das demais rotas ainda pendente.
+## Screenshots
 
-O [STATUS.md](docs/STATUS.md) é a fonte da verdade. A direção vigente é **Pulso**, desvio decidido pelo proprietário após Caderno: visual moderno e jovem de streaming, escuro padrão, carvão/cinzas e vermelho #C62828, com o pôster protagonista. PXN Games continua apenas como referência de clima, sem cópia de cores exatas, logo, textos ou layout. A paleta, a escala vermelha e o contraste AA dos dois temas estão no [DESIGN.md](docs/DESIGN.md). Os previews estáticos da Fase 1 são históricos; a amostra vigente está em `/design` no servidor de desenvolvimento.
+Capturas reais com o mesmo conteúdo fictício: desktop em **1440 × 1000** e celular em **390 × 844**. Os nomes, sinopses e artes da demonstração são locais; não representam lançamentos reais.
 
-Estilo aprovado: Tailwind CSS 4.3.3, tokens em @theme, sem DaisyUI ou biblioteca de componentes visuais. Tipografia escolhida: **Bricolage Grotesque nos títulos + Figtree no corpo/números**, WOFF2 local Fontsource Variable 5.3.0, com font-display: swap. A home importa as fontes em produção; `/design` mostra a amostra somente em desenvolvimento, sem seletor. Fontes antigas permanecem instaladas, inclusive TTF legadas; a revisão das licenças completas destas permanece pendente. Componentes base integrados à home; demais páginas aguardam a migração visual. [Inventário de dependências](docs/DEPENDENCIES.md).
+| Tela                 | Desktop                                                 | Celular                                                |
+| -------------------- | ------------------------------------------------------- | ------------------------------------------------------ |
+| Home                 | [Ver captura](docs/screenshots/home-desktop.png)        | [Ver captura](docs/screenshots/home-mobile.png)        |
+| Catálogo e filtros   | [Ver captura](docs/screenshots/catalogo-desktop.png)    | [Ver captura](docs/screenshots/catalogo-mobile.png)    |
+| Filme                | [Ver captura](docs/screenshots/filme-desktop.png)       | [Ver captura](docs/screenshots/filme-mobile.png)       |
+| Pessoas              | [Ver captura](docs/screenshots/pessoas-desktop.png)     | [Ver captura](docs/screenshots/pessoas-mobile.png)     |
+| Pessoa e filmografia | [Ver captura](docs/screenshots/pessoa-desktop.png)      | [Ver captura](docs/screenshots/pessoa-mobile.png)      |
+| Minha lista          | [Ver captura](docs/screenshots/minha-lista-desktop.png) | [Ver captura](docs/screenshots/minha-lista-mobile.png) |
 
-Tema claro/escuro e trailer youtube-nocookie aprovados; preservar pessoa/filmografia e em cartaz/em breve. pt-BR/en, atalhos e comparação ficam como **futuro**. Sem login/cadastro, analytics, rastreamento ou coleta de dados pessoais pelo aplicativo; documentar comunicação com provedores terceiros.
+## Funcionalidades
 
-Cache aprovado: apenas memória no TanStack Query e borda de 60 s no proxy. Minha lista guardará somente IDs validados, sem metadados/respostas TMDB em localStorage. **Pendência: o proprietário conferirá os termos**; essa política provisória não comprova conformidade contratual. Os testes de consultas verificam chaves distintas, expiração em 60 s, ausência de acesso ao localStorage, cancelamento ao trocar termo e política de retry.
+- Home com carrossel dos populares a cada 7 s, pausa explícita, controles por teclado e suspensão com foco, interação nos controles, aba oculta ou movimento reduzido. A seção Em cartaz permanece, sem a abertura duplicada.
+- Catálogos com busca normalizada, debounce de 300 ms, cancelamento e URL preservada. Filtros de gênero, ano, nota e ordem; paginação de uma página por requisição, até 500.
+- **Limite dos filtros:** sem termo, consultam discover/movie. Com busca por título, refinam somente a página recebida de search/movie; o aviso aparece junto aos controles.
+- Filmes com ficha, elenco, equipe, galeria e recomendações. Trailer youtube-nocookie só carrega ao clicar, sem autoplay, e fecha por botão/Escape.
+- Pessoas com busca, paginação, biografia e filmografia deduplicada.
+- Minha lista guarda **somente IDs** no localStorage (até 200), consulta 12 por página, sincroniza abas e trata armazenamento bloqueado/corrompido. É uma conveniência opcional, sem cadastro ou sincronização entre dispositivos. Persiste ao fechar o navegador; limpar os dados do site apaga a lista. O cache de respostas TMDB é separado e fica só em memória.
+- Loading, vazio sem retry, erro com recuperação, 404 e barreira de erro de renderização. Layout responsivo e movimento reduzido; não há seletor de tema.
 
-## Estrutura do código
+Sem login/cadastro, analytics ou coleta de dados pessoais pelo aplicativo. A infraestrutura e o YouTube têm suas próprias políticas; o player só é acessado por ação explícita.
+
+## Estrutura e stack
+
+React/DOM **18.3.1**, React Router **7.18.5**, Vite **8.3.5**, TypeScript **6.0.3** estrito, Tailwind **4.3.3**, Zod **4.6.7** e TanStack Query **5.105.0**. Sem DaisyUI ou biblioteca de componentes visuais. Fontes Bricolage Grotesque + Figtree locais, via Fontsource, SIL OFL 1.1. React 19 e o risco de suporte do ESLint 9 estão registrados em [DEPENDENCIES.md](docs/DEPENDENCIES.md).
 
 ```text
-src/
-  main.tsx
-  app/
-    App.tsx
-    LayoutRoutes.tsx
-  pages/
-    home/
-    movies/
-    movie-details/
-    genres/
-    people/
-    person-details/
-    not-found/
-  components/
-    layout/
-    movies/
-    people/
-    base/
-  test/
-    fixtures/
-    helpers/
-    setup.ts
-    effects.test.tsx
-    interactions.test.tsx
-    navigation.test.tsx
-    nullability.test.tsx
-    searchPagination.test.tsx
-  types/tmdb.ts
-  index.css
-  sass/
-  style/
-  styles/
-  fonts/
-  vite-env.d.ts
+api/tmdb.ts                  entrada serverless Vercel
+server/tmdb/                 política, handler, imagens e limites
+server/dev/                  adaptador exclusivo de desenvolvimento
+shared/                      parâmetros e contratos compartilhados
+src/app/                     providers, rotas, barreira de erro e estilos
+src/api/tmdb/                único cliente HTTP, schemas e consultas
+src/components/base/         cards, controles, estados e trailer
+src/components/movies/       carrossel de destaque
+src/components/layout/       shell e navegação
+src/pages/                   home, catálogos, detalhes, lista e 404
+src/hooks/                   debounce, parâmetros, título e lista
+src/test/                    fixtures e testes de integração
+e2e/                         jornada, reflow, carrossel e axe
+scripts/demo/                conteúdo fictício, capturas e codificador GIF
+docs/screenshots/ e docs/demo/ mídias reais da demonstração
+docs/quality/                relatórios e resumos Lighthouse
 ```
 
-app contém App e LayoutRoutes; pages preserva as telas e seus wrappers existentes. components agrupa layout, filmes, pessoas e componentes base (Button, Link, Input, Card, Container, PosterPlaceholder, EmptyState, ErrorState, Skeleton); test guarda os testes e dados fictícios. Componentes usam PascalCase; utilitários/testes, camelCase; pastas, minúsculas/kebab-case. Imports relativos simples, sem alias. Os exports e as URLs existentes permanecem iguais.
+Tokens em src/app/styles/theme.css (@theme); composições em components.css. Imports relativos; componentes em PascalCase, hooks/utilitários em camelCase e pastas em minúsculas/kebab-case. [STATUS.md](docs/STATUS.md) é a fonte da verdade; [DESIGN.md](docs/DESIGN.md) documenta as escolhas. /design existe apenas em desenvolvimento.
 
-src/sass e src/style continuam no lugar durante a transição. O app incorpora o reset local e o CSS legado na camada legacy, abaixo dos utilitários Tailwind. A paleta própria já está na home e na amostra; retirada do legado e validação visual das demais rotas continuam pendentes.
+## Executar localmente
 
-## Como rodar
+Requisitos: **Node.js 24.15.0** e **npm 11.12.1**. Na raiz, em PowerShell:
 
-1. Use Node.js **24.15.0** e npm **11.12.1**, ambiente validado. .node-version, engines e packageManager registram a configuração.
-2. Abra o PowerShell na raiz e instale pelo lockfile:
+```powershell
+npm.cmd ci
+if (!(Test-Path .env.local)) { Copy-Item .env.example .env.local }
+# Preencha o token no editor local, nunca no terminal ou no chat.
+npm.cmd run dev
+```
 
-   ```powershell
-   npm.cmd ci
-   ```
+Abra http://127.0.0.1:5173. O Vite executa o proxy Node apenas no desenvolvimento; reinicie após alterar o ambiente. Se o projeto já está configurado, basta iniciar npm run dev, sem sobrescrever .env.local. No macOS/Linux, use npm no lugar de npm.cmd.
 
-3. Para dados reais, configure .env.local conforme a seção de credenciais. Sem variável, as rotas abrem, mas o proxy responde 502 genérico. Inicie:
+```powershell
+npm.cmd run build
+npm.cmd run preview
+```
 
-   ```powershell
-   npm.cmd run dev
-   ```
-
-4. Acesse `http://127.0.0.1:5173`. Encerre com Ctrl+C. npm start é um alias para o Vite.
-5. Para produção local:
-
-   ```powershell
-   npm.cmd run build
-   npm.cmd run preview
-   ```
-
-6. Abra `http://127.0.0.1:4173`. As portas são fixas; encerre servidores anteriores se estiverem ocupadas.
-
-No macOS/Linux, use npm no lugar de npm.cmd. O dev Vite tem adaptador local do proxy, importado somente em serve/development. O preview serve apenas arquivos estáticos e não executa /api; para testar as funções/regras Vercel use vercel dev. Fontes e reset são locais; imagens TMDB passam pelo proxy e exigem acesso à rede no servidor.
+Preview em http://127.0.0.1:4173 é estático e **não executa /api**. Para funções e dados reais, use vercel dev, conforme abaixo. Testes e demonstrações possuem seu próprio servidor de fixtures; isso não configura dados fictícios no aplicativo publicado.
 
 ## Credenciais
 
@@ -117,7 +99,7 @@ Configuração local e execução com a CLI Vercel:
 1. Copie o exemplo para arquivo ignorado:
 
    ```powershell
-   Copy-Item .env.example .env.local
+   if (!(Test-Path .env.local)) { Copy-Item .env.example .env.local }
    ```
 
 2. Preencha o valor apenas no editor local, a partir do gerenciador de senhas. Não cole o segredo em comandos de terminal. npm run dev já executa o adaptador local do proxy; é necessário reiniciar após mudar .env.local.
@@ -133,13 +115,13 @@ Configuração local e execução com a CLI Vercel:
 
 ### Política do proxy
 
-Somente GET em /api/tmdb/...; outros métodos retornam 405/Allow: GET. Endpoints JSON permitidos: movie/popular, movie/top_rated, movie/now_playing, movie/upcoming, trending/movie/day, person/popular, search/movie, search/person, genre/movie/list, movie/:id, movie/:id/credits, person/:id e person/:id/movie_credits. page (1–500) somente em listas/buscas; query (até 200 caracteres normalizados) somente nas buscas; append_to_response=credits somente em movie/:id. IDs positivos seguros. Para imagens, apenas image/w500/:arquivo com nome simples e extensão jpg/jpeg/png/webp; origem fixa image.tmdb.org, sem repassar o token, sem URLs ou tamanhos escolhidos pelo cliente. path é apenas o transporte do rewrite, sujeito às mesmas listas; URLs externas, traversal, barras ambíguas, codificação dupla, parâmetros desconhecidos/duplicados são rejeitados.
+Somente GET em /api/tmdb/...; outros métodos retornam 405/Allow: GET. Endpoints JSON permitidos: movie/popular, movie/top_rated, movie/now_playing, movie/upcoming, trending/movie/day, person/popular, search/movie, search/person, genre/movie/list, movie/:id, movie/:id/credits, person/:id, person/:id/movie_credits, movie/:id/videos, movie/:id/images, movie/:id/recommendations e discover/movie. Descoberta aceita gênero, ano (1870–2100), nota mínima (0–10) e ordenação enumerada; recomendações aceitam página. page (1–500) somente em listas/buscas; query (até 200 caracteres normalizados) somente nas buscas; append_to_response=credits somente em movie/:id. IDs positivos seguros. Para imagens, apenas image/w500/:arquivo com nome simples e extensão jpg/jpeg/png/webp; origem fixa image.tmdb.org, sem repassar o token, sem URLs ou tamanhos escolhidos pelo cliente. path é apenas o transporte do rewrite, sujeito às mesmas listas; URLs externas, traversal, barras ambíguas, codificação dupla, parâmetros desconhecidos/duplicados são rejeitados.
 
 O servidor impõe **language=en-US** (default do legado) e **include_adult=false**, ignorando esses dois parâmetros do cliente, inclusive duplicados. Entradas explicitamente adult=true são removidas das listas/créditos; detalhes com esse sinalizador retornam 404. Isso depende da classificação fornecida pelo TMDB e não é moderação de conteúdo.
 
 Timeout de 8 s inclui o corpo; resposta JSON máxima de 2 MB, validada pelos schemas. Imagens têm limite de 5 MB e Content-Type permitido (JPEG/PNG/WebP); o proxy devolve os bytes sem transformar o arquivo. Erros públicos padronizados em JSON, sem corpo/mensagem/stack upstream e sem logs do proxy. Redirects upstream são bloqueados. Respostas JSON e imagem têm Content-Type adequado e nosniff; nenhum CORS aberto. Ausência de CORS não autentica o endpoint público nem impede clientes fora do navegador.
 
-Somente 200 recebe Vercel-CDN-Cache-Control: public, s-maxage=60, stale-while-revalidate=15. Cache-Control: no-store para o navegador em todas as respostas; erros não recebem cache de borda. Não aumentar os 60 s antes de confirmar os termos. Headers globais anteriores em vercel.json foram preservados; rewrites excluem /api do fallback da SPA. Comportamento efetivo de CDN/roteamento em hospedagem ainda requer conferência após deploy.
+Somente 200 recebe Vercel-CDN-Cache-Control: public, s-maxage=60, stale-while-revalidate=15. Cache-Control: no-store para o navegador em todas as respostas; erros não recebem cache de borda. Não aumentar os 60 s antes de confirmar os termos. CSP limita scripts, estilos, fontes, imagens e conexões à mesma origem, sem unsafe-inline/eval; frames somente de https://www.youtube-nocookie.com. Headers em vercel.json; rewrites excluem /api do fallback da SPA. Comportamento efetivo de CDN/roteamento em hospedagem ainda requer conferência após deploy.
 
 ### Limite de requisições
 
@@ -155,107 +137,48 @@ Somente 200 recebe Vercel-CDN-Cache-Control: public, s-maxage=60, stale-while-re
 
 Regras WAF não são exercitadas por testes locais ou pelo adaptador de desenvolvimento. O contador no código permanece como proteção complementar.
 
-## Verificações
+## Verificações reproduzíveis
 
 ```powershell
 npm.cmd run check
-```
-
-Lint, tipos estritos, testes e build integram `npm run check`. A contagem atual e o resultado desta revisão constam em [STATUS.md](docs/STATUS.md). Os testes cobrem proxy, entrada Node, contador por instância, cliente, consultas, contratos das fixtures, nulidade, navegação e interações. Vitest separa client/jsdom e server/node; ambos entram no check. Fetch é bloqueado por padrão nos dois ambientes, com fixtures explícitas, sem API real. A ativação do WAF e o comportamento efetivo da CDN dependem de verificação na Vercel.
-
-check executa lint → tipos → testes (uma execução) → build → format:check. O workflow .github/workflows/quality.yml executa esse comando, cobertura informativa e npm audit --audit-level=high em push/PR, com Node de .node-version e npm 11.12.1. Não usa segredos ou deploy; a execução remota só poderá ser confirmada após o push pelo proprietário. Dependabot verifica npm e Actions semanalmente. npm run format aplica Prettier; format:check verifica sem escrever. CSS/mapa gerado em src/style e lockfile ficam fora do formatador; fontes Sass são formatados.
-
-ESLint usa flat config, strictTypeChecked com projectService, React Hooks/Refresh, jsx-a11y e eslint-config-prettier. HTML perigoso e console.log são erros; links target="_blank" exigem explicitamente noopener e noreferrer. O lint aceita zero avisos; os controles de gêneros agora são botões e não precisam mais de rebaixamento das regras. As exceções restantes têm justificativas na configuração. Isso não substitui auditoria de acessibilidade.
-
-Para gerar o relatório informativo de cobertura v8, sem percentual mínimo:
-
-```powershell
 npm.cmd run test:coverage
+npm.cmd exec playwright install chromium
+npm.cmd run test:e2e -- --reporter=line
+npm.cmd run audit:lighthouse
 ```
 
-Abra coverage/index.html após o comando. coverage/ é ignorado pelo Git. O relatório inclui os fontes do src (inclusive main.tsx não exercitado por estes testes), excluindo apenas testes e declarações .d.ts. A suíte usa respostas fictícias e fetch bloqueado por padrão. Os testes dos dois efeitos controlam a entrega das respostas e verificam contagens após atualizações de estado e de rota; a prova de regressão em cópias temporárias fica no STATUS.md.
+check roda lint → tipos estritos → Vitest → build → verify:dist → Prettier. A guarda de distribuição recusa variável privada, adaptador, fixtures e hosts TMDB diretos no bundle. ESLint aceita zero avisos e bloqueia rede fora do cliente, com exceções comentadas para mocks. Testes de servidor usam Node; os demais, jsdom. Cobertura v8 é informativa e ignorada pelo Git.
 
-## Testes E2E
+Playwright executa um build de produção com fixtures locais na porta 4180 e headers de vercel.json, sem token ou rede externa. Cobre navegação, busca, filtros, detalhes, trailer, lista, pessoas, 404, teclado, axe AA e reflow em 360/768/1024/1440 px no tema escuro, além de rotação, pausa e dimensões uniformes do destaque. Isso não certifica acessibilidade integral, CDN ou WAF.
 
-Há sete smoke tests com Playwright (Chromium): URLs diretas, estrutura básica, 404 e retorno ao início. Ainda não verificam o fluxo preenchido card → detalhe → voltar, nem isolam a rede com fixtures; não entram neste CI de fundação. Instale o navegador uma vez com npm.cmd exec playwright install chromium antes de executá-los.
+O CI roda npm ci, check, cobertura, audit de altas/críticas e Playwright com Chromium e fixtures. Sem segredo ou deploy. Execução remota depende do push pelo proprietário. Dependabot acompanha npm/Actions. Medições e limites de Lighthouse em [QUALITY.md](docs/quality/QUALITY.md); números anteriores ao redesenho são históricos.
+
+### Recriar as mídias
 
 ```powershell
-npm.cmd run test:e2e
+npm.cmd run build
+npm.cmd exec playwright install chromium
+npm.cmd run docs:media
 ```
 
-Modo interativo:
+O script usa a porta 4182, captura as seis telas em duas larguras e monta dois GIFs com um codificador local, sem adicionar dependências. Também deriva ICO e Apple Touch Icon do SVG da marca. Não usa .env, token ou rede TMDB, não altera a API de produção e não publica nada.
 
-```powershell
-npm.cmd run test:e2e:ui
-```
+## Conferência manual com dados reais
 
-O teste de regressão da busca verifica as páginas 1–5, uma vez cada; o antigo `it.fails` foi convertido em teste comum. Testes de cliques dos menus não certificam acessibilidade por teclado; essa revisão continua pendente.
+Com o token privado configurado, em npm run dev ou vercel dev:
 
-Auditoria do lockfile em 28/10/2026 após atualizar React/Router: **zero vulnerabilidades reportadas**. Isso não cobre fim de suporte (ESLint 9) ou problemas da aplicação. Sem audit fix --force ou legacy-peer-deps. Detalhes em [DEPENDENCIES.md](docs/DEPENDENCIES.md).
+1. Abra / e aguarde 7 s, sem focar/posicionar o mouse nos controles. Confirme a troca automática, pausa/retomada e imagens com a mesma altura. Com movimento reduzido, use as setas: o avanço automático fica suspenso.
+2. Abra diretamente /catalog/popular/1, /upcoming_&_just_released/upcoming/1, /top_rated/top_rated/1, /genres/18/Drama, /cast, /minha-lista e uma URL inexistente. Abra filme e pessoa pelo catálogo; recarregue e teste voltar/avançar.
+3. Busque filmes/pessoas, avance página, altere gênero rapidamente e teste termo sem resultados. Confira os filtros na URL e o aviso de refinamento por página.
+4. Abra/feche trailer e confira elenco, equipe, galeria e recomendações. Antes do clique não deve haver conexão com YouTube; dados/imagens passam apenas pelo proxy da mesma origem.
+5. Guarde/remova filmes, recarregue Minha lista e confira só IDs no armazenamento. Limpar os dados do site remove a lista; nenhum dado TMDB é persistido.
+6. Use teclado, foco visível e zoom em desktop/celular. Simule Offline numa consulta nova fora do cache, volte a Online e tente novamente; vazio não oferece retry. Confira créditos, link do repositório e favicon.
 
-## Acessibilidade e Lighthouse
+## Antes da publicação
 
-### Conferência da home com dados reais
+- Obter/integrar logo **aprovado** TMDB na seção Créditos, menor que a marca do app. O aviso exato em inglês permanece; texto não substitui o logo.
+- Conferir termos sobre dados, proxy/cache de imagens e atribuição. Cache provisório de borda em 60 s; reavaliar proxy de imagens versus CDN direto com CSP restrita após os termos.
+- Ativar/testar WAF no painel; medir quotas/custos e limite compartilhado de 60 JSON/300 imagens por minuto por instância. Tráfego alto pode quebrar imagens por 429.
+- Validar funções, rewrites, headers/CDN, token e trailer com dados reais no ambiente publicado; conferir privacidade e acessibilidade em navegadores/leitores de tela.
 
-1. Configure **TMDB_READ_ACCESS_TOKEN** somente no `.env.local` ignorado, conforme Credenciais, e rode `npm.cmd run dev`. Não use `TMDB_API_KEY` nem prefixo VITE_. Os testes automatizados usam fixtures, sem token ou acesso real ao TMDB.
-2. Abra `/` em 360/768/1024/1440 px, nos temas escuro e claro. Confira destaque, pôster/fallback, título, sinopse, nota e o link para o detalhe. Confirme quatro itens nas grades quando houver dados suficientes.
-3. Use Tab e Enter nos botões Anterior/Próximo e toque no carrossel. Confira gêneros e navegue para detalhe, catálogo e pessoas; volte à home pelo histórico. As outras páginas ainda usam o layout legado.
-4. No navegador, simule rede offline e use retry da seção. Reative a rede e confirme recuperação. Respostas vazias são verificadas por fixtures; não dependem de existir uma categoria vazia no provedor.
-
-O teste `e2e/home.spec.ts` cobre larguras/temas e carrossel por teclado com 20 filmes fictícios, sem rede externa. Os testes unitários cobrem vazio, falhas/retry isolado, imagens quebradas, dados ausentes e chamadas após rerender. Isso não substitui a conferência com dados reais, do logo e da hospedagem.
-
-Há botões semânticos nos menus de gêneros, labels em controles e lazy loading em imagens. vercel.json declara cabeçalhos, mas seu comportamento em deploy, CSP com dados/embeds e fallback SPA ainda não foram verificados. Meta tags não substituem cabeçalhos HTTP. Os resultados Lighthouse registrados anteriormente não têm relatório reproduzível disponível e não são apresentados como medição confirmada. Auditoria de teclado, contraste, responsividade e baseline antes/depois continuam pendentes.
-
-## Conferência rápida de rotas
-
-Com um token válido configurado somente no servidor, use `npm.cmd run dev` ou `vercel dev` e confira os dados reais:
-
-1. Abra `/cast`, confirme fotos e cards, busque uma pessoa, depois um termo sem resultados. A busca deve esperar cerca de 300 ms após o clique; o caso vazio deve mostrar mensagem sem botão de retry. Limpe a entrada para voltar ao catálogo.
-2. Abra `/catalog/popular/1`, avance para a página 2 e use Voltar do navegador. Confira `/genres/18/Drama` e troque rapidamente para outro gênero pelo menu; só o gênero atual deve permanecer. Abra `/genres/abc/Drama` diretamente: deve aparecer a 404 sem chamada de catálogo.
-3. Na aba Network, confira que dados e imagens usam somente `/api/tmdb/...` da mesma origem e que não há chamadas do navegador ao TMDB ou cdnjs. Abra um card, visite o detalhe e volte.
-4. No DevTools, ative Offline e faça uma busca **nova** (fora do cache de 60 s): deve aparecer erro com “Tentar novamente”. Volte a Online e use esse botão; os resultados devem se recuperar. Repita a troca rápida de termos e confirme que o resultado antigo não substitui o novo.
-
-O preview puro do Vite não executa `/api`; para conferir funções com o build de produção, use `vercel dev` ou um ambiente Vercel configurado. Os testes automatizados não acessam o TMDB real; esta conferência depende do token e da rede do proprietário.
-
-1. Execute npm run dev e, em http://127.0.0.1:5173, abra diretamente /, /catalog/popular/1, /movie-details/1, /cast/2 e /endereco-inexistente. Recarregue cada URL. As demais categorias/gêneros mantêm os caminhos da tabela completa abaixo.
-2. Com o segredo configurado e o proxy rodando, abra um card, confira o detalhe e use Voltar do navegador. Na 404, use Voltar ao início. Sem essa configuração, dados preenchidos ficam restritos às fixtures dos testes; não coloque credenciais no frontend.
-3. Execute npm run build e npm run preview. Repita as mesmas URLs e a navegação em http://127.0.0.1:4173.
-
-## Roteiro manual do lote 1
-
-1. Com npm run dev, abra cada caminho diretamente após `http://127.0.0.1:5173` e recarregue com F5:
-
-   | Caminho                              | Conferência                                                 |
-   | ------------------------------------ | ----------------------------------------------------------- |
-   | /                                    | Cabeçalho, menus e estrutura da home                        |
-   | /catalog/popular/1                   | Catálogo e paginação                                        |
-   | /upcoming_&_just_released/upcoming/1 | Categoria em breve                                          |
-   | /top_rated/top_rated/1               | Categoria bem avaliados                                     |
-   | /genres/18/Drama                     | Estrutura por gênero                                        |
-   | /movie-details/1                     | Estrutura do detalhe; dados dependem do proxy               |
-   | /cast                                | Busca e estrutura de pessoas                                |
-   | /cast/2                              | Estrutura de biografia/filmografia; dados dependem do proxy |
-   | /endereco-inexistente                | 404 com link Voltar ao início                               |
-
-2. Na home, use MORE, abra página 2 no catálogo, volte pelo navegador e recarregue. Confira links de categorias no menu. Gêneros/cards dependem de dados e serão conferidos manualmente após o proxy; os testes com fixtures já exercitam card → filme → voltar.
-3. Na 404, clique Voltar ao início. A rota da SPA usa fallback HTML com HTTP 200 no dev/preview; não é uma resposta HTTP 404 do servidor.
-4. Encerre o dev, execute build/preview e repita os caminhos na porta 4173 (estrutura estática, sem função /api). O fallback Vercel está configurado para excluir /api; confirmar comportamento hospedado após deploy.
-5. Confira o visual legado e ausência de chave no código/Network. Não espere dados reais nem insira credenciais para completar essa conferência.
-
-## Conferência manual após a conversão TypeScript
-
-As URLs não mudaram. Com npm run dev, confira somente os pontos afetados pela conversão:
-
-1. Em /catalog/popular/1 e /cast, abra a busca pela lupa, digite e limpe pelo X; confira também abrir/fechar menus. Resultados dependem do proxy; os testes usam fixtures.
-2. Recarregue /movie-details/1 e /cast/2: a estrutura deve abrir sem erro de importação. Com dados disponíveis, confirme card → detalhe → voltar; campos ausentes não devem produzir NaN, URLs de imagem terminadas em null ou atribuir gênero feminino a pessoas sem gênero informado.
-3. Abra /endereco-inexistente e use Voltar ao início. Não é necessário repetir todas as categorias do roteiro anterior; os caminhos foram mantidos e cobertos pelos testes.
-
-Sem configurar e executar o proxy, a conferência preenchida e dos campos nulos fica limitada às fixtures dos testes. Não adicione credenciais ao frontend para fazê-la.
-
-## Créditos e licença
-
-Dados e imagens: [TMDB](https://www.themoviedb.org). O rodapé da home contém uma seção Créditos e o aviso exato em inglês, conforme a [documentação oficial](https://developer.themoviedb.org/docs/faq). **Antes de publicar, falta adicionar o logo aprovado em public/tmdb-logo.svg** e conferir tamanho/proporção. Enquanto ausente, há fallback textual TMDB; isso não completa a atribuição obrigatória. README não substitui atribuição na interface.
-
-Ícones: React Icons. Fontes: PT Sans e Source Sans Pro, locais em src/fonts/. Reset: Meyer Reset 2.0 local em public/meyer-reset.css. Licenças detalhadas em [CREDITS.md](CREDITS.md). Licenças específicas serão registradas em CREDITS.md ao incorporar/substituir recursos; créditos dos estudos estão em [LICENSES.md](docs/design-previews/LICENSES.md).
-
-Código sob [MIT](LICENSE), sem transferir direitos sobre dados, imagens e marcas de terceiros. Não há autenticação, lista persistente ou tratamento completo de erros. Interface legada em inglês; 404 em pt-BR. Há configuração parcial de headers, sem publicação validada ou Lighthouse reproduzível. Não publicar esta etapa como catálogo completo.
+pt-BR/en, atalhos próprios e comparação de filmes permanecem futuros. Nenhuma publicação, alteração de histórico ou escrita no Git foi executada.

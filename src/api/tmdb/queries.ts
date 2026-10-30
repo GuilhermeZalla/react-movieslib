@@ -6,6 +6,10 @@ import {
   searchInputSchema,
 } from '../../../shared/tmdbRequest';
 import {
+  discoverMovies,
+  getMovieVideos,
+  getMovieImages,
+  getRecommendations,
   getGenres,
   getMovie,
   getMovieCredits,
@@ -19,6 +23,11 @@ import {
   validateRequest,
   type MovieCategory,
 } from './client';
+import {
+  discoverRequestSchema,
+  type DiscoverInput,
+} from '../../../shared/tmdbRequest';
+import type { MoviePage, PersonPage } from './schemas';
 
 export function movieListQuery(
   category: MovieCategory,
@@ -28,7 +37,7 @@ export function movieListQuery(
     category,
     page: String(page),
   });
-  return queryOptions({
+  return queryOptions<MoviePage>({
     queryKey: ['tmdb', 'movie', 'list', input.category, input.page] as const,
     queryFn: ({ signal }) => getMovies(input.category, input.page, { signal }),
   });
@@ -42,7 +51,7 @@ export function trendingQuery(page: number | string = 1) {
 }
 export function peopleQuery(page: number | string = 1) {
   const value = validateRequest(pageParameterSchema, String(page));
-  return queryOptions({
+  return queryOptions<PersonPage>({
     queryKey: ['tmdb', 'person', 'list', 'popular', value] as const,
     queryFn: ({ signal }) => getPeople(value, { signal }),
   });
@@ -50,7 +59,7 @@ export function peopleQuery(page: number | string = 1) {
 export function movieSearchQuery(term: string, page: number | string = 1) {
   const query = validateRequest(searchInputSchema, term);
   const value = validateRequest(pageParameterSchema, String(page));
-  return queryOptions({
+  return queryOptions<MoviePage>({
     queryKey: ['tmdb', 'movie', 'search', query, value] as const,
     enabled: query.length > 0,
     queryFn: ({ signal }) => searchMovies(query, value, { signal }),
@@ -59,7 +68,7 @@ export function movieSearchQuery(term: string, page: number | string = 1) {
 export function personSearchQuery(term: string, page: number | string = 1) {
   const query = validateRequest(searchInputSchema, term);
   const value = validateRequest(pageParameterSchema, String(page));
-  return queryOptions({
+  return queryOptions<PersonPage>({
     queryKey: ['tmdb', 'person', 'search', query, value] as const,
     enabled: query.length > 0,
     queryFn: ({ signal }) => searchPeople(query, value, { signal }),
@@ -97,5 +106,34 @@ export function personCreditsQuery(id: number | string) {
   return queryOptions({
     queryKey: ['tmdb', 'person', 'movie_credits', value] as const,
     queryFn: ({ signal }) => getPersonCredits(value, { signal }),
+  });
+}
+
+export function discoverQuery(input: DiscoverInput) {
+  const parsed = validateRequest(discoverRequestSchema, input);
+  return queryOptions<MoviePage>({
+    queryKey: ['tmdb', 'movie', 'discover', parsed] as const,
+    queryFn: ({ signal }) => discoverMovies(input, { signal }),
+  });
+}
+export function movieVideosQuery(id: number | string) {
+  const value = validateRequest(idParameterSchema, String(id));
+  return queryOptions({
+    queryKey: ['tmdb', 'movie', 'videos', value] as const,
+    queryFn: ({ signal }) => getMovieVideos(value, { signal }),
+  });
+}
+export function movieImagesQuery(id: number | string) {
+  const value = validateRequest(idParameterSchema, String(id));
+  return queryOptions({
+    queryKey: ['tmdb', 'movie', 'images', value] as const,
+    queryFn: ({ signal }) => getMovieImages(value, { signal }),
+  });
+}
+export function recommendationsQuery(id: number | string) {
+  const value = validateRequest(idParameterSchema, String(id));
+  return queryOptions({
+    queryKey: ['tmdb', 'movie', 'recommendations', value, 1] as const,
+    queryFn: ({ signal }) => getRecommendations(value, { signal }),
   });
 }

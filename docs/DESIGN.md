@@ -1,8 +1,30 @@
 # MoviesLib — direções visuais
 
-## Direção vigente — Pulso (desvio decidido pelo proprietário em 29/10/2026)
+## Layout vigente — Pulso Cinema
 
-O proprietário substituiu **Caderno**, editorial e com serifas, por um visual moderno e jovem de streaming. A direção agora se chama **Pulso**: carvão/cinzas, vermelho principal **#C62828** e pôster protagonista, com tema escuro padrão. A home aplica Pulso com a tipografia B escolhida; as demais páginas conservam a composição legada. A amostra está em `/design`, somente em desenvolvimento. As três propostas da Fase 1 abaixo permanecem como registro histórico, não como especificação ativa.
+Decisão do proprietário em 29/10/2026: tema **exclusivamente escuro**, sem alternância. A paleta clara da seção anterior de estudos fica como documentação histórica; não rege telas atuais. Mantidos #C62828 e suas escalas de contraste, carvão/cinzas e tipografia B.
+
+Referência estrutural [enviada pelo proprietário](https://i.pinimg.com/originals/a0/2f/f1/a02ff10ea31c90c5745b117a194ba048.png): navegação lateral discreta, topo com busca, pôsteres alinhados, filtros separados dos resultados e densidade de catálogo. Consultados [Apple TV](https://www.apple.com/apple-tv/) e [Criterion Channel](https://www.criterionchannel.com/) como referências de hierarquia cinematográfica, sem copiar marcas, textos, arte ou layout integral.
+
+O fundo usa a própria cena do filme com máscara escura para legibilidade, sem padrão ou efeitos de vidro. A antiga restrição de gradientes deixa de se aplicar **apenas à máscara funcional sobre fotografias**; não se adiciona decoração em gradiente. Raios pequenos, hover contido e título/nota sempre visíveis. Tokens nomeados em @theme, composições em components.css; nenhum pacote novo.
+
+Desktop: shell lateral, hero amplo, grades e filtros em colunas. Em 360 px: navegação compacta, busca em linha própria, hero com altura estável, duas colunas de pôsteres e filtros recolhidos; 768/1024/1440 px também verificados. O destaque usa até seis populares a cada 7 s e não duplica Em cartaz. Setas, indicadores e pausa continuam disponíveis; foco, interação nos controles, aba oculta ou movimento reduzido interrompem o automático. Cards têm proporção 2:3, imagens absolutas com cover e tamanho independente da origem; backdrop no hero segue quadro fixo responsivo. Não deformar imagens; recorte é esperado.
+
+Máscaras e contraste precisam ser conferidos também com dados reais: axe não mede toda combinação de texto sobre imagem. Marca e favicon compartilham public/favicon.svg; variantes ICO/Apple são renderizadas desse mesmo arquivo. Artes dos screenshots/GIFs são SVGs originais do script de demonstração, com dados fictícios identificados no README.
+
+### Contraste dos novos fundos sólidos
+
+Mesmo cálculo sRGB da tabela histórica. Texto comum ≥4,5:1; bordas/foco ≥3:1. chrome-line (#2A2D33) é separador decorativo, nunca identificador único de controle. Texto sobre fotografia tem máscara escura e requer também conferência visual com dados reais.
+
+| Fundo            | ink #F5F5F6 | muted #B7BBC2 | accent-text #FF8585 | line #777E87 |
+| ---------------- | ----------: | ------------: | ------------------: | -----------: |
+| chrome #0e0f11   |     17.60:1 |        9.95:1 |              8.17:1 |       4.67:1 |
+| floating #191b20 |     15.81:1 |        8.94:1 |              7.34:1 |       4.20:1 |
+| raised #24272d   |     13.74:1 |        7.77:1 |              6.38:1 |       3.65:1 |
+
+## Direção anterior — Pulso (desvio decidido pelo proprietário em 29/10/2026)
+
+O proprietário substituiu **Caderno**, editorial e com serifas, por um visual moderno e jovem de streaming. A direção agora se chama **Pulso**: carvão/cinzas, vermelho principal **#C62828** e pôster protagonista, com tema escuro padrão. Todas as telas aplicam Pulso com a tipografia B: home, catálogos, detalhes, pessoas, lista e 404. A amostra está em `/design`, somente em desenvolvimento. As três propostas da Fase 1 abaixo permanecem como registro histórico, não como especificação ativa.
 
 ### Paleta e uso
 
@@ -34,15 +56,18 @@ Contrastes recalculados pela fórmula WCAG sRGB indicada na seção histórica d
 | accent-text / canvas         |  7,92:1 |  6,67:1 |
 | accent-text / surface        |  6,95:1 |  7,35:1 |
 | accent-text / accent-soft    |  6,50:1 |  6,24:1 |
+| ink / accent-soft (hover)    | 14,00:1 | 14,50:1 |
+| muted / accent-soft          |  7,92:1 |  6,58:1 |
 | branco / botão #C62828       |  5,62:1 |  5,62:1 |
 | branco / hover #AD2222       |  6,93:1 |  6,93:1 |
 | branco / pressionado #8F1D1D |  8,89:1 |  8,89:1 |
 | line / canvas (controle)     |  4,53:1 |  3,89:1 |
 | line / surface (controle)    |  3,98:1 |  4,28:1 |
+| line / accent-soft (foco)    |  3,72:1 |  3,64:1 |
 
 ### Tipografia, escala e amostra
 
-As opções avaliadas usaram WOFF2 locais de `@fontsource-variable` versão 5.3.0, `font-display: swap` e fallback do sistema, sem CDN. Licenças confirmadas como **SIL OFL 1.1** nas páginas oficiais [Plus Jakarta Sans](https://fontsource.org/fonts/plus-jakarta-sans/about), [Bricolage Grotesque](https://fontsource.org/fonts/bricolage-grotesque/about) e [Figtree](https://fontsource.org/fonts/figtree/about). Bricolage e Figtree foram escolhidas e são importadas pelo shell da home e por `/design`; Plus Jakarta foi removida. Fontes legadas permanecem durante a transição. A tabela abaixo registra as opções apresentadas antes da escolha.
+As opções avaliadas usaram WOFF2 locais de `@fontsource-variable` versão 5.3.0, `font-display: swap` e fallback do sistema, sem CDN. Licenças confirmadas como **SIL OFL 1.1** nas páginas oficiais [Plus Jakarta Sans](https://fontsource.org/fonts/plus-jakarta-sans/about), [Bricolage Grotesque](https://fontsource.org/fonts/bricolage-grotesque/about) e [Figtree](https://fontsource.org/fonts/figtree/about). Bricolage e Figtree são importadas em main.tsx para todas as rotas. Plus Jakarta e as fontes legadas foram removidas. A tabela abaixo registra as opções apresentadas antes da escolha.
 
 | Opção | Títulos                        | Corpo / números   | Leitura                       |
 | ----- | ------------------------------ | ----------------- | ----------------------------- |
@@ -65,11 +90,11 @@ Em `/design`, quatro amostras fixas exibem a opção B em 360 e 1440 px, em clar
 
 **Recomendação anterior, superada pela escolha B:** C reduzia o número de famílias; B foi escolhida pelo proprietário para dar mais caráter aos títulos, preservando Figtree no corpo e números. A escolha final já foi registrada e aplicada à home.
 
-**Decisão do proprietário (29/10/2026): tipografia B.** Títulos em Bricolage Grotesque, corpo e números em Figtree. As opções A (Plus Jakarta Sans) e C (Figtree-only) foram removidas da amostra `/design`; o seletor de fonte foi removido. Fontes antigas (Source Serif 4, Source Sans 3) mantidas na árvore — saem com o Sass no fim da Fase 5, pois `src/app/styles/theme.css` ainda as referencia nos tokens legados.
+**Decisão do proprietário (29/10/2026): tipografia B.** Títulos em Bricolage Grotesque, corpo e números em Figtree. As opções A (Plus Jakarta Sans) e C (Figtree-only) foram removidas da amostra `/design`; o seletor de fonte foi removido. Source Serif 4, Source Sans 3 e TTF legadas foram removidas ao concluir a migração; tokens canônicos agora apontam para Pulso.
 
 ### Tokens Tailwind 4
 
-O arquivo `src/app/styles/theme.css` define os tokens no `@theme static`; a amostra e o shell da home isolam suas cores e fontes por `[data-design-preview]`, sem substituir os tokens legados nas demais páginas. Exemplo do tema implementado:
+O arquivo `src/app/styles/theme.css` define os tokens no `@theme static`; o shell de todas as rotas aplica cores e fontes por `[data-design-preview]`, com o mesmo contrato na amostra. Não há CSS legado no build. Duração usa o token nomeado `duration-(--duration-preview)`, inclusive no @apply; movimento reduzido remove transição/deslocamento. Exemplo do tema implementado:
 
 ```css
 @theme static {

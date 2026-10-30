@@ -1,167 +1,275 @@
-import { tmdbImageUrl } from '../../api/tmdb/client';
-// Legacy JSON is trusted only at these explicit boundaries; schema validation is Phase 3.
-import Header from '../../components/layout/Header';
-import { Navigate, useParams } from 'react-router-dom';
-import { Fragment } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { movieQuery, movieCreditsQuery } from '../../api/tmdb/queries';
+import { Link, useParams } from 'react-router-dom';
 import { idParameterSchema } from '../../../shared/tmdbRequest';
-import { BsWallet2 } from 'react-icons/bs';
-import { BiTimer } from 'react-icons/bi';
-import { FaChartLine } from 'react-icons/fa';
-import Genres from '../../components/movies/Genres';
-import Cast from '../../components/people/Cast';
-import Aside from '../../components/layout/Aside';
-import AsideMobile from '../../components/layout/AsideMobile';
+import {
+  movieQuery,
+  movieCreditsQuery,
+  movieVideosQuery,
+  movieImagesQuery,
+  recommendationsQuery,
+} from '../../api/tmdb/queries';
+import { TmdbError, tmdbImageUrl } from '../../api/tmdb/client';
+import { usePageTitle } from '../../hooks/usePageTitle';
+import QueryContent from '../../components/base/QueryContent';
+import PosterImage from '../../components/base/PosterImage';
+import PersonCard from '../../components/base/PersonCard';
+import MovieGrid from '../../components/base/MovieGrid';
+import SaveMovieButton from '../../components/base/SaveMovieButton';
+import Trailer from '../../components/base/Trailer';
 import EmptyState from '../../components/base/EmptyState';
-import ErrorState from '../../components/base/ErrorState';
-
-const dollarUSLocale = Intl.NumberFormat('en-US');
-
-const MovieDetails = () => {
+import NotFoundScreen from '../not-found/NotFoundScreen';
+const money = new Intl.NumberFormat('pt-BR', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+});
+export default function MovieDetails() {
   const { id } = useParams<'id'>();
-  const validId = (() => {
-    const parsed = idParameterSchema.safeParse(id ?? '');
-    return parsed.success ? String(parsed.data) : null;
-  })();
-
-  const detailsQuery = useQuery({
-    ...movieQuery(validId ?? '1'),
-    enabled: validId !== null,
+  const parsed = idParameterSchema.safeParse(id ?? '');
+  const safeId = parsed.success ? parsed.data : 1;
+  const enabled = parsed.success;
+  const details = useQuery({ ...movieQuery(safeId), enabled });
+  const credits = useQuery({ ...movieCreditsQuery(safeId), enabled });
+  const videos = useQuery({ ...movieVideosQuery(safeId), enabled });
+  const images = useQuery({ ...movieImagesQuery(safeId), enabled });
+  const recommendations = useQuery({
+    ...recommendationsQuery(safeId),
+    enabled,
   });
-  const creditsQuery = useQuery({
-    ...movieCreditsQuery(validId ?? '1'),
-    enabled: validId !== null,
-  });
-
-  const details = detailsQuery.data ?? null;
-  const credits = creditsQuery.data ?? null;
-
-  if (detailsQuery.isError) {
-    const err = detailsQuery.error;
-    const kind =
-      err instanceof Error && 'kind' in err
-        ? (err as { kind: string }).kind
-        : '';
-    if (kind === 'empty') {
-      return (
-        <Fragment>
-          <Header search={true} />
-          <Aside />
-          <AsideMobile />
-          <EmptyState title="Nenhum filme encontrado" />
-        </Fragment>
-      );
-    }
-    return (
-      <Fragment>
-        <Header search={true} />
-        <Aside />
-        <AsideMobile />
-        <ErrorState
-          message="Não foi possível carregar o filme."
-          onRetry={() => {
-            void detailsQuery.refetch();
-          }}
-        />
-      </Fragment>
-    );
-  }
-
-  if (validId === null) {
-    return <Navigate to="/404" replace />;
-  }
-
+  const movie = details.data;
+  usePageTitle(movie?.title ?? 'Filme');
+  if (
+    !enabled ||
+    (details.error instanceof TmdbError && details.error.kind === 'not-found')
+  )
+    return <NotFoundScreen />;
+  const trailer = videos.data?.results
+    .filter(
+      (video) =>
+        video.site === 'YouTube' &&
+        video.type === 'Trailer' &&
+        /^[A-Za-z0-9_-]{11}$/.test(video.key),
+    )
+    .sort((a, b) => Number(b.official) - Number(a.official))[0];
+  const cast = credits.data?.cast.slice(0, 20) ?? [];
+  const crew = credits.data?.crew ?? [];
+  const gallery = images.data?.backdrops.slice(0, 6) ?? [];
+  const related = (recommendations.data?.results ?? [])
+    .filter((item) => item.id !== movie?.id)
+    .slice(0, 6);
   return (
-    <Fragment>
-      <Header search={true} />
-      <Aside />
-      <AsideMobile />
-      <main className="main flex flex-start items-center flex-wrap text-ink p-[10%] pr-[15%] pb-[5%] pt-[15%]">
-        <div className="container flex flex-start items-start gap-150 rounded-[10px]">
-          <div className="main__img rounded-[10px]">
-            <img
-              src={
-                details?.poster_path
-                  ? (tmdbImageUrl(details.poster_path) ?? undefined)
-                  : undefined
-              }
-              alt={details?.title ?? ''}
-              className="rounded-[10px] shadow-[0_0_8px_0_#000] w-[20vw] object-cover"
-            />
-          </div>
-          <article className="main__article self-flex-start flex-col gap-15">
-            <h1 className="main__title text-[2rem] font-bold font-display">
-              {details?.title}
-            </h1>
-            <p className="movie-year text-[1.1rem]">
-              {details?.release_date?.split('-')[0]} <span>Status:</span>{' '}
-              <span>{details?.status}</span>
-            </p>
-            <h2 className="main__subtitle uppercase font-bold text-[1.2rem] mt-[20px]">
-              {details?.tagline}
-            </h2>
-            <p className="main__paragraph text-[1.1rem] leading-[.7cm]">
-              {details?.overview}
-            </p>
-            <ul className="main__list mt-[30px] flex flex-col gap-15">
-              <li className="main__item flex items-center gap-10 font-bold text-[1rem]">
-                <BsWallet2 /> Budget:{' '}
-                <span>
-                  $
-                  {details?.budget == null
-                    ? '\u2014'
-                    : dollarUSLocale.format(details.budget)}
-                </span>
-              </li>
-              <li className="main__item flex items-center gap-10 font-bold text-[1rem]">
-                <FaChartLine /> Revenue:{' '}
-                <span>
-                  $
-                  {details?.revenue == null
-                    ? '\u2014'
-                    : dollarUSLocale.format(details.revenue)}
-                </span>
-              </li>
-              <li className="main__item flex items-center gap-10 font-bold text-[1rem]">
-                <BiTimer /> Runtime:{' '}
-                <span>{details?.runtime ?? '\u2014'} minutes</span>
-              </li>
-            </ul>
-            <ul className="main__list mt-[30px] flex flex-col gap-15">
-              {details?.genres?.map((genre, index) => (
-                <Genres key={index} id={genre.id} genre={genre.name} />
-              ))}
-            </ul>
-          </article>
-        </div>
-        <div className="container-cast relative border-t line/40 w-full mt-[12%] pt-[20px] grid grid-cols-[repeat(auto-fill,minmax(180px,2fr))]">
-          {creditsQuery.isError ? (
-            <ErrorState
-              message="Não foi possível carregar o elenco."
-              onRetry={() => {
-                void creditsQuery.refetch();
-              }}
-            />
-          ) : credits?.cast?.length ? (
-            credits.cast.map((cast, index) =>
-              index < 20 ? (
-                <Cast
-                  key={index}
-                  id={cast.id}
-                  photo={tmdbImageUrl(cast.profile_path)}
-                  name={cast.name}
-                  character={cast.character}
+    <div className="page-stack">
+      <Link
+        className="text-preview-accent-text underline"
+        to="/catalog/popular/1"
+      >
+        Voltar ao catálogo
+      </Link>
+      <QueryContent
+        pending={details.isPending}
+        error={details.error}
+        empty={!movie}
+        retry={() => {
+          void details.refetch();
+        }}
+      >
+        {movie && (
+          <section className="detail-opening" aria-label="Ficha do filme">
+            <div className="mx-auto w-full max-w-preview-card">
+              <div className="aspect-preview-poster overflow-hidden rounded-preview-poster">
+                <PosterImage
+                  fill
+                  className="size-full"
+                  src={tmdbImageUrl(movie.poster_path)}
+                  alt={movie.title}
+                  loading="eager"
+                  fetchPriority="high"
                 />
-              ) : null,
-            )
-          ) : credits ? (
-            <EmptyState title="Nenhum membro do elenco encontrado" />
-          ) : null}
-        </div>
-      </main>
-    </Fragment>
+              </div>
+              <SaveMovieButton id={movie.id} title={movie.title} />
+            </div>
+            <article className="page-intro min-w-0">
+              <p className="eyebrow">
+                {movie.release_date?.slice(0, 4) || 'Ano não informado'} ·{' '}
+                {movie.status || 'Status não informado'}
+              </p>
+              <h1>{movie.title}</h1>
+              {movie.tagline && (
+                <p className="font-display text-preview-section text-preview-ink">
+                  {movie.tagline}
+                </p>
+              )}
+              <p>{movie.overview || 'Sinopse indisponível.'}</p>
+              <p className="font-semibold text-preview-accent-text">
+                {movie.vote_average === null
+                  ? 'Sem nota'
+                  : 'Nota ' + movie.vote_average.toFixed(1) + ' de 10'}
+              </p>
+              <dl className="grid gap-4 sm:grid-cols-3">
+                <div>
+                  <dt>Orçamento</dt>
+                  <dd>
+                    {movie.budget
+                      ? money.format(movie.budget)
+                      : 'Não informado'}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Receita</dt>
+                  <dd>
+                    {movie.revenue
+                      ? money.format(movie.revenue)
+                      : 'Não informada'}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Duração</dt>
+                  <dd>
+                    {movie.runtime
+                      ? String(movie.runtime) + ' min'
+                      : 'Não informada'}
+                  </dd>
+                </div>
+              </dl>
+              <nav
+                aria-label="Gêneros do filme"
+                className="flex flex-wrap gap-2"
+              >
+                {movie.genres.map((genre) => (
+                  <Link
+                    className="chip"
+                    key={genre.id}
+                    to={
+                      '/genres/' +
+                      String(genre.id) +
+                      '/' +
+                      encodeURIComponent(genre.name)
+                    }
+                  >
+                    {genre.name}
+                  </Link>
+                ))}
+              </nav>
+            </article>
+          </section>
+        )}
+      </QueryContent>
+      {movie && (
+        <>
+          <section className="page-stack" aria-label="Trailer">
+            <h2 className="section-title">Antes de dar play</h2>
+            <QueryContent
+              pending={videos.isPending}
+              error={videos.error}
+              empty={!trailer}
+              emptyTitle="Trailer indisponível"
+              retry={() => {
+                void videos.refetch();
+              }}
+            >
+              {trailer && (
+                <Trailer
+                  key={trailer.key}
+                  videoKey={trailer.key}
+                  title={movie.title}
+                />
+              )}
+            </QueryContent>
+          </section>
+          <section className="page-stack" aria-label="Elenco">
+            <h2 className="section-title">Quem está em cena</h2>
+            <QueryContent
+              pending={credits.isPending}
+              error={credits.error}
+              empty={cast.length === 0}
+              emptyTitle="Elenco não informado"
+              retry={() => {
+                void credits.refetch();
+              }}
+            >
+              <div className="poster-grid">
+                {cast.map((person, index) => (
+                  <PersonCard
+                    key={String(person.id) + '-' + String(index)}
+                    id={person.id}
+                    name={person.name}
+                    photo={person.profile_path}
+                    character={person.character}
+                  />
+                ))}
+              </div>
+            </QueryContent>
+          </section>
+          <section className="page-stack" aria-label="Equipe">
+            <h2 className="section-title">Por trás da câmera</h2>
+            {credits.error ? (
+              <p>
+                Equipe indisponível. Use a nova tentativa da seção de elenco.
+              </p>
+            ) : crew.length ? (
+              <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {crew.slice(0, 24).map((person) => (
+                  <li key={person.credit_id}>
+                    <Link
+                      className="font-semibold text-preview-accent-text underline"
+                      to={'/cast/' + String(person.id)}
+                    >
+                      {person.name}
+                    </Link>
+                    <p className="text-preview-caption text-preview-muted">
+                      {person.job} · {person.department}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <EmptyState preview title="Equipe não informada" />
+            )}
+          </section>
+          <section className="page-stack" aria-label="Galeria">
+            <h2 className="section-title">Dentro do filme</h2>
+            <QueryContent
+              pending={images.isPending}
+              error={images.error}
+              empty={!gallery.length}
+              emptyTitle="Sem imagens de cena"
+              retry={() => {
+                void images.refetch();
+              }}
+            >
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {gallery.map((image, index) => (
+                  <div
+                    className="aspect-video overflow-hidden rounded-preview-poster"
+                    key={image.file_path ?? index}
+                  >
+                    <PosterImage
+                      fill
+                      className="size-full"
+                      src={tmdbImageUrl(image.file_path)}
+                      alt={'Cena ' + String(index + 1) + ' de ' + movie.title}
+                    />
+                  </div>
+                ))}
+              </div>
+            </QueryContent>
+          </section>
+          <section className="page-stack" aria-label="Recomendações">
+            <h2 className="section-title">A sessão pode continuar</h2>
+            <QueryContent
+              pending={recommendations.isPending}
+              error={recommendations.error}
+              empty={!related.length}
+              emptyTitle="Sem recomendações por enquanto"
+              retry={() => {
+                void recommendations.refetch();
+              }}
+            >
+              <MovieGrid movies={related} />
+            </QueryContent>
+          </section>
+        </>
+      )}
+    </div>
   );
-};
-
-export default MovieDetails;
+}

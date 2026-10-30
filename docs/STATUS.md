@@ -1,5 +1,57 @@
 # Status do MoviesLib
 
+Atualizado em 29/10/2026. Base desta entrega: **13bc68d**. O proprietário autorizou concluir os itens 1 a 6 sem pausas intermediárias; pendências de pré-publicação ficam para a etapa seguinte. Git somente leitura; nenhuma operação de staging, commit, push ou reescrita de histórico. **Mensagens de commit em inglês**, conforme decisão vigente.
+
+## Entrega vigente — Pulso Cinema, créditos e demonstrações
+
+- Nova decisão do proprietário: tema **somente escuro**, sem seletor nem persistência de preferência. Mantidos vermelho #C62828, carvão/cinzas e Bricolage Grotesque + Figtree locais. Registros claros/escuros abaixo são históricos.
+- Estrutura inspirada na referência enviada: navegação lateral em desktop, busca no cabeçalho, filtros laterais e grade mais densa; no celular, navegação compacta e filtros recolhíveis. Sem cópia de identidade/ativos. Fundo cinematográfico vem do backdrop com máscara de leitura; sem padrões decorativos.
+- A abertura Em cartaz agora saiu. Carrossel usa até seis populares já consultados, avança a cada 7 s e não cria consultas extras. Pausa explícita, foco, controles, aba oculta e prefers-reduced-motion; manual interrompe rotação até retomada explícita. Imagens de dimensões diferentes ocupam o mesmo quadro com object-fit:cover.
+- Correções da revisão: mouse parado no fundo não bloqueia rotação; hover respeita movimento reduzido; proporções intrínsecas não expandem pôsteres; buscas global/local têm rótulos distintos. Créditos Feito por Guilherme Zalla e repositório no rodapé. Marca e favicon usam um SVG comum, com ICO e Apple Touch Icon derivados.
+- Minha lista mantida: conveniência opcional, sem conta, só IDs em localStorage; perde-se ao limpar dados do site e não sincroniza dispositivos. Cache TMDB permanece só em memória.
+- README reestruturado com 12 screenshots e dois GIFs reais da UI, dados fictícios/artes próprias e regeneração sem dependências novas. Revisão por gravidade em [REVIEW.md](quality/REVIEW.md).
+- Verificação atual: **311 → 319 testes Vitest em 29 arquivos**, lint sem erros/avisos, tipos estritos, build e verify:dist aprovados. **52 testes Playwright** passando; 32 casos de rota/largura com axe AA e sem overflow, quatro larguras da home e jornadas. Os 86 casos anteriores incluíam combinações claras removidas pela decisão de escuro fixo; dois testes novos cobrem rotação/dimensões e marca/créditos. **npm run check completo aprovado**, incluindo Prettier. O primeiro commit proposto também passou em cópia temporária, com documentação/workflow de HEAD e dependências instaladas compartilhadas; não é uma nova prova de instalação limpa e nenhum ambiente privado foi copiado.
+- Lighthouse final com fixtures: home e catálogo **100/100/100/100**. CSS **56,13 kB** (9,40 gzip), JS **349,75 kB** (107,55 gzip); o CSS aumentou em relação aos 31,77 kB da migração anterior por incluir o novo shell/layout. Não confundir essa comparação com a baseline de 13bc68d. Capturas: 12 PNG; GIF desktop 960×667 e mobile 300×649, oito quadros cada, decodificados localmente. Sem novas dependências.
+- Varredura dos arquivos pendentes: nenhum segredo real ou caminho absoluto de usuário; único padrão hexadecimal de 32 caracteres identificado é o nome público da imagem de referência enviada pelo proprietário, explicitamente classificado como não credencial. AST/ESLint: zero chamadas de rede ou hosts TMDB diretos fora do cliente. Não é certificação do histórico nem detecção universal de segredos.
+- O proprietário informou que o token e os dados reais funcionaram localmente; o agente validou esta revisão com fixtures, sem ler o ambiente privado nem acessar o TMDB. Infraestrutura publicada continua pendente.
+
+## Entrega anterior — conclusão das telas e qualidade (histórico)
+
+1. **Catálogos/buscas/gêneros:** Pulso em todas as URLs anteriores, busca normalizada com debounce de 300 ms, limite de 200 caracteres, cancelamento e parâmetros validados. Uma página por consulta, até 500; corrigida a sequência 1,2,3,3,3 e substituídas as buscas antecipadas de várias páginas. Filtros gênero/ano/nota/ordem usam discover/movie sem termo. Com termo, refinam apenas a página de search/movie, com aviso visível; não alegar filtragem global combinada.
+2. **Filme/pessoa:** ficha, sinopse, elenco, equipe, galeria, recomendações, biografia e filmografia deduplicada. Endpoints novos enumerados no proxy, schemas Zod e consultas com AbortSignal. Seções têm loading/vazio/falha e retry independente; informações ausentes têm fallback.
+3. **Trailer/lista/404:** youtube-nocookie carregado somente por clique, sem autoplay, fecha por botão/Escape. /minha-lista armazena somente IDs validados (máximo 200), consulta 12 por página, sincroniza abas e trata corrupção/bloqueio; remover a última entrada ajusta a página disponível. 404 e barreira de erro com recuperação.
+4. **Retirada do legado:** removidos Sass, CSS/mapa compilado, TTF, reset Meyer sem uso, componentes antigos sem imports e pacotes Source Serif 4/Source Sans 3/React Icons. Bricolage Grotesque + Figtree 5.3.0 em todas as rotas, WOFF2 local, swap, OFL integral em public/licenses. Tokens canônicos apontam para Pulso; Tailwind 4.3.3 preservado, sem DaisyUI.
+5. **Acessibilidade/performance/segurança:** foco visível, link de pular conteúdo, foco em mudanças de rota, controles rotulados, estados de erro anunciados e movimento reduzido. Contraste dos novos pares de hover/foco registrado em DESIGN.md. CSP sem inline/eval, conexões/imagens da mesma origem e iframe apenas youtube-nocookie; headers definidos em vercel.json, testados localmente com HTTP. Guarda de produção em verify:dist. Lighthouse antes/depois com fixtures e resumos sanitizados em docs/quality.
+6. **Integração/CI/documentação:** Playwright cobre jornada completa, armazenamento, pessoas, URLs, temas, reflow e axe AA. CI inclui instalação Chromium e E2E, além de check/cobertura/audit; timeout de 30 minutos. Instalação limpa validada pelo lockfile em cópia temporária sem arquivos de ambiente privados. README, DESIGN, CREDITS e DEPENDENCIES sincronizados.
+
+### Validação desta entrega
+
+- Entrada: **273 testes Vitest** e 15 Playwright (8 home + 7 smoke).
+- Resultado de navegador: **86 testes Playwright passando**, incluindo 64 combinações de rota/largura/tema com axe AA e boas práticas, teclado, jornada, rede, lista, movimento reduzido e ausência de violações CSP. **npm run check completo aprovado:** lint 0 erros/avisos, tipos estritos, **311 casos em 28 arquivos**, build, verify:dist e Prettier. Cobertura v8: **93,33% linhas**, informativa. O commit de implementação também passou isolado em instalação limpa; relatório e planos em [QUALITY.md](quality/QUALITY.md) e [COMMIT_PLAN.md](COMMIT_PLAN.md).
+- Lighthouse local com fixtures: home **99/100/100/100** e catálogo **100/100/100/100** (desempenho/acessibilidade/boas práticas/SEO). Baseline: 99/100/92/100 e 83/96/92/100. CSS **63,35 → 31,77 kB**; JS **354,90 → 350,40 kB**. Medição sintética, sem dados reais ou promessa de nota em hospedagem; JSONs e limites em [QUALITY.md](quality/QUALITY.md).
+- Corrigidos na validação: hierarquia h1/h2/h3 dos catálogos/lista e foto decorativa com descrição repetida. O aviso de eval veio da sondagem JIT do Zod; shared/zod.ts usa jitless sem afrouxar CSP. Movimento reduzido verificado por transition-property:none e ausência de deslocamento ao hover, não apenas pela duração declarada.
+- Auditoria npm em 29/10/2026: **zero vulnerabilidades**. Lighthouse 13.6.0 e @axe-core/playwright 4.14.0 adicionados somente em desenvolvimento. React 18.3.1 continua desvio aceito; reavaliar 19 em trabalho próprio após esta fase. ESLint 9 EOL continua risco de suporte documentado.
+- Não houve uso de token real nem consulta real ao TMDB. Fixtures não substituem conferência real de servidor, imagens, player, CDN/WAF ou navegação com dados do provedor.
+- Observação histórica preservada: lotes 3 e 4 estão reunidos em **1eb6de3**, conforme confirmação do proprietário; não separar nem reescrever commits.
+
+## Antes da publicação — pendências vigentes
+
+- [ ] Obter/integrar logo aprovado TMDB na seção Créditos, sem alterar cores/proporção, menor que a marca do app. O rodapé usa texto e aviso obrigatório em inglês; **logo ausente**, sem requisição a arquivo inexistente. Texto não substitui essa obrigação.
+- [ ] Conferir termos TMDB para dados, proxy de imagens, redistribuição/cache e atribuição. Cache de borda segue **60 s**, stale-while-revalidate 15 s; cache Query apenas em memória. Nada de dados TMDB em localStorage; a lista guarda só IDs.
+- [ ] Ativar e testar WAF no painel Vercel. Não foi acessado/configurado e não há promessa de ativação; excluir imagens da regra de dados.
+- [ ] Medir quotas/custos/concorrência: **60 JSON e 300 imagens/minuto por instância**, contadores anônimos compartilhados por todos os visitantes, melhor esforço sem coordenação entre instâncias. Tráfego alto pode gerar imagens quebradas (429). Após conferir termos, o proprietário reavaliará proxy de imagens versus CDN direto, com CSP restrita ao host autorizado.
+- [ ] Configurar/validar segredo privado somente no servidor, testar dados reais, funções, rewrites, erros/Retry-After, cache e headers na Vercel. Token correto: TMDB_READ_ACCESS_TOKEN, nunca VITE_.
+- [ ] Conferir player/privacidade com conteúdo real e comportamento entre navegadores/leitores de tela; repetir medição de desempenho no ambiente publicado. Validação automática local não certifica acessibilidade integral nem infraestrutura.
+- [ ] Conferir o workflow remoto após push pelo proprietário. Nenhuma execução remota ou publicação realizada nesta entrega.
+
+Revogação da API key e Bearer e geração de novos valores foram informadas como concluídas pelo proprietário; não verificadas pelo agente. Reescrita de histórico **não realizada, por decisão do proprietário**. MIT preservada. pt-BR/en, atalhos próprios e comparação seguem futuros; sem login/cadastro/coleta de dados pessoais.
+
+## Arquivo histórico — não executar os planos abaixo
+
+Os registros e planos antigos abaixo documentam cada etapa quando ocorreu. Referências a telas legadas, fontes antigas, cache/CI pendentes, contagens anteriores, metas/hashes CSP e pausas superadas **não descrevem o estado vigente**. Esta abertura, README e o relatório de qualidade prevalecem.
+
+# Status do MoviesLib
+
 Atualizado em 29/10/2026. HEAD da revisão atual: `448fc2b`. Os blocos antigos abaixo são registros históricos; esta abertura e o README descrevem o estado vigente. Git somente leitura. **Mensagens de commit em inglês, conforme decisão mais recente do proprietário.**
 
 ## Retomada — Fase 5, grupo 1, Commit B em revisão

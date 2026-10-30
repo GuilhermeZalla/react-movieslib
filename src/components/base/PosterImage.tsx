@@ -9,6 +9,7 @@ interface PosterImageProps extends Omit<
   width?: number;
   height?: number;
   fill?: boolean;
+  placeholder?: string;
 }
 
 const PosterImage = ({
@@ -19,6 +20,7 @@ const PosterImage = ({
   className,
   fill = false,
   fetchPriority,
+  placeholder = 'Sem pôster',
   ...props
 }: PosterImageProps) => {
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
@@ -27,21 +29,18 @@ const PosterImage = ({
   if (!showImage) {
     return (
       <div
-        role="img"
-        aria-label={alt}
+        role={alt ? 'img' : undefined}
+        aria-label={alt || undefined}
+        aria-hidden={!alt || undefined}
         className={[
-          'flex items-center justify-center bg-surface border border-line text-muted font-body text-caption',
+          'flex items-center justify-center bg-surface text-muted font-body text-caption',
+          !fill && 'w-preview-card aspect-preview-poster',
           className,
         ]
           .filter(Boolean)
           .join(' ')}
-        style={
-          fill
-            ? undefined
-            : { width, height, aspectRatio: `${width}/${height}` }
-        }
       >
-        Sem pôster
+        {placeholder}
       </div>
     );
   }

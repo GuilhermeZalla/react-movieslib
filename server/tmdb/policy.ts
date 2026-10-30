@@ -1,10 +1,13 @@
-import { z } from 'zod';
+import { z } from '../../shared/zod.ts';
 import {
+  discoverRequestSchema,
   idParameterSchema,
   pageParameterSchema,
   searchQuerySchema,
 } from '../../shared/tmdbRequest.ts';
 import {
+  movieVideosSchema,
+  movieImagesSchema,
   genreListSchema,
   movieCreditsSchema,
   movieDetailsSchema,
@@ -94,7 +97,10 @@ export function resolveRequest(target: string): {
 
   let input: z.ZodType;
   let schema: z.ZodType;
-  if (lists.has(path)) {
+  if (path === 'discover/movie') {
+    input = discoverRequestSchema;
+    schema = moviePageSchema;
+  } else if (lists.has(path)) {
     input = paged;
     schema = moviePageSchema;
   } else if (path === 'person/popular') {
@@ -110,9 +116,10 @@ export function resolveRequest(target: string): {
     input = empty;
     schema = genreListSchema;
   } else {
-    const match = /^(movie|person)\/(\d+)(?:\/(credits|movie_credits))?$/.exec(
-      path,
-    );
+    const match =
+      /^(movie|person)\/(\d+)(?:\/(credits|movie_credits|videos|images|recommendations))?$/.exec(
+        path,
+      );
     if (!match || !idParameterSchema.safeParse(match[2]).success)
       throw new PolicyError(match ? 400 : 404);
     if (match[1] === 'movie' && !match[3]) {
@@ -121,6 +128,15 @@ export function resolveRequest(target: string): {
     } else if (match[1] === 'movie' && match[3] === 'credits') {
       input = empty;
       schema = movieCreditsSchema;
+    } else if (match[1] === 'movie' && match[3] === 'videos') {
+      input = empty;
+      schema = movieVideosSchema;
+    } else if (match[1] === 'movie' && match[3] === 'images') {
+      input = empty;
+      schema = movieImagesSchema;
+    } else if (match[1] === 'movie' && match[3] === 'recommendations') {
+      input = paged;
+      schema = moviePageSchema;
     } else if (match[1] === 'person' && !match[3]) {
       input = empty;
       schema = personDetailsSchema;
@@ -135,7 +151,17 @@ export function resolveRequest(target: string): {
     // These values never reach upstream, even when repeated by an attacker.
     if (key === 'path' || key === 'language' || key === 'include_adult')
       continue;
-    if (!['page', 'query', 'append_to_response'].includes(key))
+    if (
+      ![
+        'page',
+        'query',
+        'append_to_response',
+        'with_genres',
+        'primary_release_year',
+        'vote_average.gte',
+        'sort_by',
+      ].includes(key)
+    )
       throw new PolicyError(400);
     if (params.getAll(key).length !== 1) throw new PolicyError(400);
     values[key] = params.get(key) ?? '';

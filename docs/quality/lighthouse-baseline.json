@@ -1,0 +1,137 @@
+{
+  "fixtureOnly": true,
+  "mode": "mobile simulated throttling, Lighthouse defaults",
+  "results": [
+    {
+      "path": "/",
+      "scores": {
+        "performance": 99,
+        "accessibility": 100,
+        "best-practices": 92,
+        "seo": 100
+      },
+      "metrics": {
+        "first-contentful-paint": 1051.106,
+        "largest-contentful-paint": 1051.106,
+        "cumulative-layout-shift": 0.0825728600406104,
+        "total-blocking-time": 4.5
+      },
+      "failedAudits": [
+        {
+          "id": "cumulative-layout-shift",
+          "title": "Cumulative Layout Shift",
+          "score": 0.94
+        },
+        {
+          "id": "errors-in-console",
+          "title": "Browser errors were logged to the console",
+          "score": 0
+        },
+        {
+          "id": "interactive",
+          "title": "Time to Interactive",
+          "score": 0.98
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "score": 0
+        },
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "score": 0.5
+        },
+        {
+          "id": "inspector-issues",
+          "title": "Issues were logged in the `Issues` panel in Chrome Devtools",
+          "score": 0
+        },
+        {
+          "id": "network-dependency-tree-insight",
+          "title": "Network dependency tree",
+          "score": 0
+        },
+        {
+          "id": "render-blocking-insight",
+          "title": "Render-blocking requests",
+          "score": 0
+        }
+      ],
+      "lighthouseVersion": "13.6.0"
+    },
+    {
+      "path": "/catalog/popular/1",
+      "scores": {
+        "performance": 83,
+        "accessibility": 96,
+        "best-practices": 92,
+        "seo": 100
+      },
+      "metrics": {
+        "first-contentful-paint": 1051.462,
+        "largest-contentful-paint": 1051.462,
+        "cumulative-layout-shift": 0.34886528949727963,
+        "total-blocking-time": 6.5
+      },
+      "failedAudits": [
+        {
+          "id": "cumulative-layout-shift",
+          "title": "Cumulative Layout Shift",
+          "score": 0.32
+        },
+        {
+          "id": "errors-in-console",
+          "title": "Browser errors were logged to the console",
+          "score": 0
+        },
+        {
+          "id": "interactive",
+          "title": "Time to Interactive",
+          "score": 0.88
+        },
+        {
+          "id": "layout-shifts",
+          "title": "Avoid large layout shifts",
+          "score": 0
+        },
+        {
+          "id": "color-contrast",
+          "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+          "score": 0
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "score": 0
+        },
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "score": 0.5
+        },
+        {
+          "id": "inspector-issues",
+          "title": "Issues were logged in the `Issues` panel in Chrome Devtools",
+          "score": 0
+        },
+        {
+          "id": "cls-culprits-insight",
+          "title": "Layout shift culprits",
+          "score": 0
+        },
+        {
+          "id": "network-dependency-tree-insight",
+          "title": "Network dependency tree",
+          "score": 0
+        },
+        {
+          "id": "render-blocking-insight",
+          "title": "Render-blocking requests",
+          "score": 0
+        }
+      ],
+      "lighthouseVersion": "13.6.0"
+    }
+  ]
+}

@@ -56,7 +56,7 @@ describe('home Pulso', () => {
     renderHome();
     expect(
       screen.getAllByRole('status', { name: 'Carregando pôster' }),
-    ).toHaveLength(13);
+    ).toHaveLength(15);
     expect(
       screen.queryByRole('button', { name: 'Tentar novamente' }),
     ).not.toBeInTheDocument();
@@ -217,7 +217,9 @@ describe('home Pulso', () => {
       name: fixture.movie.title,
     });
     fireEvent.error(poster);
-    expect(within(opening).getByText('Sem pôster')).toBeInTheDocument();
+    expect(
+      within(opening).getByRole('img', { name: fixture.movie.title }),
+    ).not.toHaveAttribute('src');
     const card = within(
       screen.getByRole('region', { name: 'Em cartaz' }),
     ).getByRole('img', { name: fixture.movie.title });
@@ -233,7 +235,7 @@ describe('home Pulso', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn((input: RequestInfo | URL) =>
-        pathOf(input) === '/api/tmdb/movie/now_playing'
+        pathOf(input) === '/api/tmdb/movie/popular'
           ? Promise.resolve(
               json({
                 page: 1,
@@ -243,6 +245,7 @@ describe('home Pulso', () => {
                   {
                     ...fixture.movie,
                     poster_path: null,
+                    backdrop_path: null,
                     vote_average: null,
                     overview: null,
                   },
@@ -260,13 +263,13 @@ describe('home Pulso', () => {
         name: fixture.movie.title,
       }),
     ).toBeInTheDocument();
-    expect(
-      within(opening).getByRole('img', { name: 'Sem nota' }),
-    ).toBeInTheDocument();
+    expect(within(opening).getByText('Sem nota')).toBeInTheDocument();
     expect(
       within(opening).getByText('Sinopse indisponível.'),
     ).toBeInTheDocument();
-    expect(within(opening).getByText('Sem pôster')).toBeInTheDocument();
+    expect(
+      within(opening).getByRole('img', { name: fixture.movie.title }),
+    ).not.toHaveAttribute('src');
   });
 
   it.each([false, true])(
@@ -275,7 +278,11 @@ describe('home Pulso', () => {
       vi.stubGlobal('fetch', vi.fn(fixtureFetch));
       vi.stubGlobal(
         'matchMedia',
-        vi.fn(() => ({ matches: reducedMotion })),
+        vi.fn(() => ({
+          matches: reducedMotion,
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+        })),
       );
       renderHome();
       const region = await screen.findByRole('region', {

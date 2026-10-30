@@ -1,158 +1,124 @@
-import { tmdbImageUrl } from '../../api/tmdb/client';
-import type { PersonGender } from '../../types/tmdb';
-// Legacy JSON is trusted only at these explicit boundaries; schema validation is Phase 3.
-import { Navigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { personQuery, personCreditsQuery } from '../../api/tmdb/queries';
+import { useParams, Link } from 'react-router-dom';
 import { idParameterSchema } from '../../../shared/tmdbRequest';
-import { Fragment } from 'react';
-import Aside from '../../components/layout/Aside';
-import AsideMobile from '../../components/layout/AsideMobile';
-import Header from '../../components/layout/Header';
-import FilmCard from '../../components/movies/FilmCard';
-import EmptyState from '../../components/base/EmptyState';
-import ErrorState from '../../components/base/ErrorState';
-
-const genderLabels: Record<PersonGender, string> = {
-  0: 'Not specified',
-  1: 'Feminine',
-  2: 'Masculine',
-  3: 'Non-binary',
+import { personQuery, personCreditsQuery } from '../../api/tmdb/queries';
+import { tmdbImageUrl, TmdbError } from '../../api/tmdb/client';
+import { usePageTitle } from '../../hooks/usePageTitle';
+import PosterImage from '../../components/base/PosterImage';
+import QueryContent from '../../components/base/QueryContent';
+import MovieGrid from '../../components/base/MovieGrid';
+import NotFoundScreen from '../not-found/NotFoundScreen';
+const genders = {
+  0: 'Não informado',
+  1: 'Feminino',
+  2: 'Masculino',
+  3: 'Não binário',
 };
-
-const CastDetails = () => {
+const formatDate = (value: string | null) =>
+  value
+    ? new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(
+        new Date(value + 'T00:00:00Z'),
+      )
+    : 'Não informada';
+export default function CastDetails() {
   const { id } = useParams<'id'>();
-  const validId = (() => {
-    const parsed = idParameterSchema.safeParse(id ?? '');
-    return parsed.success ? String(parsed.data) : null;
-  })();
-
-  const personQueryResult = useQuery({
-    ...personQuery(validId ?? '1'),
-    enabled: validId !== null,
+  const parsed = idParameterSchema.safeParse(id ?? '');
+  const safeId = parsed.success ? parsed.data : 1;
+  const details = useQuery({ ...personQuery(safeId), enabled: parsed.success });
+  const credits = useQuery({
+    ...personCreditsQuery(safeId),
+    enabled: parsed.success,
   });
-  const creditsQueryResult = useQuery({
-    ...personCreditsQuery(validId ?? '1'),
-    enabled: validId !== null,
-  });
-
-  const person = personQueryResult.data ?? null;
-  const credits = creditsQueryResult.data ?? null;
-
-  if (validId === null) {
-    return <Navigate to="/404" replace />;
-  }
-
-  if (personQueryResult.isError) {
-    const err = personQueryResult.error;
-    const kind =
-      err instanceof Error && 'kind' in err
-        ? (err as { kind: string }).kind
-        : '';
-    if (kind === 'empty') {
-      return (
-        <Fragment>
-          <Header search={true} />
-          <Aside />
-          <AsideMobile />
-          <EmptyState title="Nenhuma pessoa encontrada" />
-        </Fragment>
-      );
-    }
-    return (
-      <Fragment>
-        <Header search={true} />
-        <Aside />
-        <AsideMobile />
-        <ErrorState
-          message="Não foi possível carregar a pessoa."
-          onRetry={() => {
-            void personQueryResult.refetch();
-          }}
-        />
-      </Fragment>
-    );
-  }
-
+  const person = details.data;
+  usePageTitle(person?.name ?? 'Pessoa');
+  if (
+    !parsed.success ||
+    (details.error instanceof TmdbError && details.error.kind === 'not-found')
+  )
+    return <NotFoundScreen />;
+  const movies = [
+    ...new Map(
+      [...(credits.data?.cast ?? []), ...(credits.data?.crew ?? [])].map(
+        (movie) => [movie.id, movie],
+      ),
+    ).values(),
+  ];
   return (
-    <Fragment>
-      <Header search={true} />
-      <Aside />
-      <AsideMobile />
-      <main className="main cast-detail p-[10%] pr-[20px] pb-[20px] pt-[20px]">
-        <div className="container flex flex-start items-start gap-150">
-          <img
-            src={
-              person?.profile_path
-                ? (tmdbImageUrl(person.profile_path) ?? undefined)
-                : undefined
-            }
-            alt={person?.name ?? ''}
-            className="main__img rounded-[10px] shadow-[0_0_8px_0_#000] w-[18vw] object-cover"
-          />
-          <article className="article flex-col gap-15 self-flex-start">
-            <h1 className="article__title text-[2rem] font-bold font-display">
-              {person?.name}
-            </h1>
-            <span>Biography</span>
-            <p className="article__paragraph text-[1.1rem] leading-[.7cm]">
-              {person?.biography}
-            </p>
-            <ul className="article__list flex-col gap-15">
-              <li className="article__item flex items-center gap-10">
-                <span>Birthday: </span>
-                {person?.birthday}
-              </li>
-              {person?.deathday ? (
-                <li className="article__item flex items-center gap-10">
-                  <span>Deathday: </span>
-                  {person.deathday}
-                </li>
-              ) : null}
-              <li className="article__item flex items-center gap-10">
-                <span>Known for: </span>
-                {person?.known_for_department}
-              </li>
-              <li className="article__item flex items-center gap-10">
-                <span>Gender: </span>
-                {person ? genderLabels[person.gender] : ''}
-              </li>
-              <li className="article__item flex items-center gap-10">
-                <span>Place of birth: </span>
-                {person?.place_of_birth}
-              </li>
-              <li className="article__item flex items-center gap-10">
-                <span>IMDB ID: </span>
-                {person?.imdb_id}
-              </li>
-            </ul>
-          </article>
-        </div>
-        <div className="container-credits relative border-t line/40 w-full mt-[12%] pt-[20px] grid grid-cols-[repeat(auto-fill,minmax(180px,2fr))]">
-          {creditsQueryResult.isError ? (
-            <ErrorState
-              message="Não foi possível carregar a filmografia."
-              onRetry={() => {
-                void creditsQueryResult.refetch();
-              }}
-            />
-          ) : credits?.cast?.length ? (
-            credits.cast.map((movie, index) => (
-              <FilmCard
-                key={index}
-                poster={tmdbImageUrl(movie.poster_path)}
-                title={movie.title}
-                vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
-                movieId={movie.id}
-              />
-            ))
-          ) : credits ? (
-            <EmptyState title="Nenhuma filmografia encontrada" />
-          ) : null}
-        </div>
-      </main>
-    </Fragment>
+    <div className="page-stack">
+      <Link to="/cast" className="text-preview-accent-text underline">
+        Voltar às pessoas
+      </Link>
+      <QueryContent
+        pending={details.isPending}
+        error={details.error}
+        empty={!person}
+        emptyTitle="Nenhuma pessoa encontrada"
+        retry={() => {
+          void details.refetch();
+        }}
+      >
+        {person && (
+          <section className="detail-opening">
+            <div className="mx-auto w-full max-w-preview-card">
+              <div className="aspect-preview-poster overflow-hidden rounded-preview-poster">
+                <PosterImage
+                  fill
+                  className="size-full"
+                  src={tmdbImageUrl(person.profile_path)}
+                  alt={person.name}
+                  loading="eager"
+                />
+              </div>
+            </div>
+            <article className="page-intro min-w-0">
+              <p className="eyebrow">
+                {person.known_for_department || 'No cinema'}
+              </p>
+              <h1>{person.name}</h1>
+              <h2 className="section-title">Biografia</h2>
+              <p className="whitespace-pre-line">
+                {person.biography || 'Biografia indisponível.'}
+              </p>
+              <dl className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <dt>Nascimento</dt>
+                  <dd>{formatDate(person.birthday)}</dd>
+                </div>
+                {person.deathday && (
+                  <div>
+                    <dt>Falecimento</dt>
+                    <dd>{formatDate(person.deathday)}</dd>
+                  </div>
+                )}
+                <div>
+                  <dt>Local de nascimento</dt>
+                  <dd>{person.place_of_birth || 'Não informado'}</dd>
+                </div>
+                <div>
+                  <dt>Gênero</dt>
+                  <dd>{genders[person.gender]}</dd>
+                </div>
+              </dl>
+            </article>
+          </section>
+        )}
+      </QueryContent>
+      {person && (
+        <section className="page-stack">
+          <h2 className="section-title">Uma vida em filmes</h2>
+          <QueryContent
+            pending={credits.isPending}
+            error={credits.error}
+            empty={!movies.length}
+            emptyTitle="Nenhuma filmografia encontrada"
+            retry={() => {
+              void credits.refetch();
+            }}
+          >
+            <MovieGrid movies={movies} />
+          </QueryContent>
+        </section>
+      )}
+    </div>
   );
-};
-
-export default CastDetails;
+}

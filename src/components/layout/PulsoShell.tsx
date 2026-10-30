@@ -1,123 +1,175 @@
-import '@fontsource-variable/bricolage-grotesque/wght.css';
-import '@fontsource-variable/figtree/wght.css';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import ThemeToggle from '../base/ThemeToggle';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { SavedMoviesContext } from '../../app/savedMoviesContext';
+import { searchInputSchema } from '../../../shared/tmdbRequest';
 
-const getInitialTheme = (): 'light' | 'dark' => {
-  if (typeof window === 'undefined') return 'dark';
-  try {
-    const stored = localStorage.getItem('theme');
-    if (stored === 'light' || stored === 'dark') return stored;
-  } catch {
-    // Blocked storage must not prevent the home from rendering.
-  }
-  return 'dark';
-};
+const links = [
+  ['/catalog/popular/1', 'Filmes', 'M4 4h16v16H4zM4 9h16M9 4v5M15 4v5'],
+  [
+    '/catalog/now_playing/1',
+    'Em cartaz',
+    'M3 7h18v13H3zM3 7l3-4h15l-3 4M8 3l-3 4M14 3l-3 4',
+  ],
+  ['/catalog/upcoming/1', 'Em breve', 'M8 3v4m8-4v4M4 10h16M4 5h16v16H4z'],
+  [
+    '/cast',
+    'Pessoas',
+    'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8m11 10v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75',
+  ],
+  ['/minha-lista', 'Minha lista', 'M6 3h12v18l-6-4-6 4V3Z'],
+] as const;
 
-const PulsoShell = ({ children }: { children: React.ReactNode }) => {
-  const [theme, setTheme] = useState<'light' | 'dark'>(getInitialTheme);
-  const [logoFailed, setLogoFailed] = useState(false);
-
-  const toggleTheme = () => {
-    const next = theme === 'dark' ? 'light' : 'dark';
-    setTheme(next);
-    try {
-      localStorage.setItem('theme', next);
-    } catch {
-      // Theme still works for this visit when storage is unavailable.
+export default function PulsoShell({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const saved = useContext(SavedMoviesContext);
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const [search, setSearch] = useState('');
+  const previousPath = useRef(pathname);
+  useEffect(() => {
+    if (previousPath.current !== pathname) {
+      document.getElementById('main')?.focus({ preventScroll: true });
+      previousPath.current = pathname;
     }
-  };
-
+  }, [pathname]);
   return (
-    <div
-      data-design-preview
-      data-design-theme={theme}
-      className="min-h-screen bg-preview-canvas text-preview-ink font-preview-figtree"
-    >
-      <a
-        href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-preview-control focus:bg-preview-accent focus:px-4 focus:py-2 focus:text-preview-on-accent"
-      >
+    <div data-design-preview data-design-theme="dark" className="cinema-shell">
+      <a href="#main" className="skip-link">
         Pular para o conteúdo principal
       </a>
-      <header className="sticky top-0 z-20 border-b border-preview-line bg-preview-canvas">
-        <nav
-          aria-label="Navegação principal"
-          className="mx-auto flex max-w-preview-wide flex-wrap items-center justify-between gap-4 px-5 py-3"
+      <header className="cinema-header">
+        <Link to="/" aria-label="MoviesLib — início" className="cinema-brand">
+          <span aria-hidden="true" className="cinema-brand__mark">
+            <img src="/favicon.svg" width="32" height="32" alt="" />
+          </span>
+          movieslib<span className="text-preview-accent-text">.</span>
+        </Link>
+        <form
+          role="search"
+          aria-label="Busca global"
+          className="cinema-search"
+          onSubmit={(event) => {
+            event.preventDefault();
+            const term = searchInputSchema.parse(search);
+            if (term)
+              void navigate('/catalog/popular/1?q=' + encodeURIComponent(term));
+          }}
         >
-          <Link
-            to="/"
-            className="font-preview-bricolage text-preview-card font-extrabold text-preview-ink"
-          >
-            movieslib<span className="text-preview-accent-text">.</span>
-          </Link>
-          <ul className="flex items-center gap-4 text-preview-caption text-preview-muted">
-            <li>
-              <Link to="/catalog/popular/1" className="hover:text-preview-ink">
-                Filmes
-              </Link>
-            </li>
-            <li>
-              <Link to="/cast" className="hover:text-preview-ink">
-                Pessoas
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/catalog/now_playing/1"
-                className="hover:text-preview-ink"
-              >
-                Em cartaz
-              </Link>
-            </li>
-          </ul>
-          <ThemeToggle theme={theme} onToggle={toggleTheme} />
-        </nav>
+          <label className="sr-only" htmlFor="global-film-search">
+            Pesquisar catálogo
+          </label>
+          <input
+            id="global-film-search"
+            type="search"
+            value={search}
+            maxLength={200}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Encontre seu próximo filme"
+          />
+          <button type="submit" aria-label="Pesquisar no catálogo">
+            <svg
+              width="19"
+              height="19"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <circle
+                cx="10.5"
+                cy="10.5"
+                r="6.5"
+                stroke="currentColor"
+                strokeWidth="1.6"
+              />
+              <path d="m16 16 5 5" stroke="currentColor" strokeWidth="1.6" />
+            </svg>
+          </button>
+        </form>
+        <span className="cinema-header__note">O cinema continua por aqui.</span>
       </header>
-      <main id="main" className="mx-auto max-w-preview-wide px-5 py-8">
+      <aside aria-label="Exploração" className="cinema-sidebar">
+        <p className="cinema-sidebar__label">Explorar</p>
+        <nav aria-label="Navegação principal">
+          <ul className="cinema-menu">
+            {links.map(([path, label, icon]) => (
+              <li key={path}>
+                <NavLink
+                  to={path}
+                  className={({ isActive }) =>
+                    'cinema-menu__link' +
+                    (isActive ? ' cinema-menu__link--active' : '')
+                  }
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d={icon} />
+                  </svg>
+                  <span>{label}</span>
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <div className="cinema-sidebar__end">
+          <span aria-hidden="true" />
+          Uma boa história muda o dia.
+        </div>
+      </aside>
+      <main id="main" tabIndex={-1} className="cinema-main">
         {children}
       </main>
-      <footer className="border-t border-preview-line px-5 py-8 text-preview-caption text-preview-muted">
-        <section
-          aria-label="Créditos"
-          className="mx-auto flex max-w-preview-wide flex-col items-center gap-4 text-center"
-        >
-          <div className="flex items-center gap-3">
-            {logoFailed ? (
-              <span>TMDB</span>
-            ) : (
-              <img
-                src="/tmdb-logo.svg"
-                alt="The Movie Database (TMDB)"
-                width="80"
-                height="16"
-                className="h-4 w-auto"
-                onError={() => setLogoFailed(true)}
-              />
-            )}
-          </div>
+      {saved?.error && (
+        <p role="status" className="cinema-notice">
+          {saved.error}
+        </p>
+      )}
+      <footer className="cinema-footer">
+        <section aria-label="Créditos">
+          <h2 className="sr-only">Créditos</h2>
           <p>
-            This product uses the TMDB API but is not endorsed or certified by
-            TMDB.
-          </p>
-          <p>
-            Projeto de estudo e portfólio, sem vínculo com TMDB ou estúdios.
+            Feito por{' '}
+            <strong className="font-semibold text-preview-ink">
+              Guilherme Zalla
+            </strong>{' '}
+            ·{' '}
+            <a
+              href="https://github.com/GuilhermeZalla/react-movieslib"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Código no GitHub ↗
+            </a>
           </p>
           <p>
             <a
               href="https://www.themoviedb.org"
               target="_blank"
               rel="noopener noreferrer"
-              className="underline hover:text-preview-ink"
             >
-              themoviedb.org
+              Dados e imagens: The Movie Database (TMDB)
             </a>
           </p>
+          <p>
+            This product uses the TMDB API but is not endorsed or certified by
+            TMDB.
+          </p>
         </section>
+        <Link to="/catalog/popular/1" className="cinema-footer__link">
+          A próxima sessão →
+        </Link>
       </footer>
     </div>
   );
-};
-
-export default PulsoShell;
+}

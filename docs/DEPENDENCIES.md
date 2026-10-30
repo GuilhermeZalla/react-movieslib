@@ -2,7 +2,16 @@
 
 Este inventário preserva os achados originais e registra as atualizações dos lotes 1, 3 e 4. O [STATUS.md](STATUS.md) é a fonte da verdade das decisões vigentes.
 
-## Atualização vigente — Fase 3, grupo 1 (28/10/2026)
+## Atualização vigente — conclusão visual e qualidade (29/10/2026)
+
+- Mantidos React/DOM 18.3.1, Router 7.18.5, Tailwind 4.3.3, Zod 4.6.7 e Query 5.105.0. Nenhuma nova migração de majors.
+- Fontsource Variable Bricolage Grotesque/Figtree 5.3.0 são as únicas famílias em uso. Removidos @fontsource/source-serif-4, @fontsource/source-sans-3 e react-icons, sem referências restantes no código.
+- Adicionados somente em desenvolvimento **lighthouse 13.6.0** e **@axe-core/playwright 4.14.0**, versões exatas. Playwright 1.64.1 e Vitest/coverage-v8 4.1.12 preservados. Lockfile atualizado sem force/legacy-peer-deps.
+- React 19 e suporte do ESLint 9 permanecem reavaliações explícitas; não são resolvidos pelo npm audit. Resultado da auditoria atual em STATUS.md.
+
+As seções abaixo são fotografias históricas, inclusive afirmações sobre pacotes/fontes ainda não instalados e proxy ainda não implementado naquela etapa.
+
+## Histórico — Fase 3, grupo 1 (28/10/2026)
 
 Adicionados **zod 4.6.7** e **@tanstack/react-query 5.105.0**, tags latest estáveis consultadas no registro npm; versões exatas. Query declara peers React/@types/react ^18 ou ^19, atendidos por React 18.3.1/types 18 instalados. React 18 é desvio aceito; reavaliar 19 depois da Fase 6. Sem force/legacy-peer-deps. Instalação reportou **zero vulnerabilidades**. Zod define contratos/testes; Query instalado, sem integração com telas neste grupo. SDK Vercel e proxy não instalados/implementados ainda. Ferramentas anteriores e risco ESLint 9 EOL preservados. Fotografias abaixo pertencem às etapas anteriores.
 

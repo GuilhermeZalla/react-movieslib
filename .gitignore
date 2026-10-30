@@ -11,6 +11,7 @@
 # production
 /build
 /dist
+/dist-css-regression
 
 # misc
 .DS_Store
@@ -33,3 +34,4 @@ yarn-error.log*
 # Browser/test artifacts
 /playwright-report
 /test-results
+/debug.log

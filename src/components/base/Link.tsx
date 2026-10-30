@@ -10,7 +10,7 @@ const Link = ({
   ...props
 }: LinkProps) => {
   const base =
-    'font-body text-body transition-colors duration-fast ease-settle focus-visible:underline focus-visible:outline-none';
+    'font-body text-body transition-colors duration-(--duration-fast) ease-settle focus-visible:underline focus-visible:outline-none';
   const variants: Record<string, string> = {
     primary: 'text-accent hover:underline',
     muted: 'text-muted hover:underline',

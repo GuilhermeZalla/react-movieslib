@@ -1,159 +1,188 @@
-﻿import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import App from '../app/App';
-import fixture from './fixtures/tmdb.json';
 import { fixtureFetch } from './fixtures/fetch';
-
-beforeEach(() => {
-  window.history.replaceState(null, '', '/');
-  vi.stubGlobal('fetch', vi.fn(fixtureFetch));
-});
-
-describe('detalhe do filme e pessoa (grupo 4b)', () => {
-  it('mantém o detalhe visível quando os créditos falham', async () => {
+import fixture from './fixtures/tmdb.json';
+import { openApp, pathOf, json } from './helpers/app';
+beforeEach(() => vi.stubGlobal('fetch', vi.fn(fixtureFetch)));
+describe('fichas completas com falhas independentes', () => {
+  it.each([
+    '/movie-details/abc',
+    '/cast/abc',
+    '/movie-details/0',
+    '/genres/abc/Drama',
+  ])('ID inválido em %s não chama API', (path) => {
+    openApp(path);
+    expect(screen.getByRole('heading', { name: /404/ })).toBeInTheDocument();
+    expect(fetch).not.toHaveBeenCalled();
+  });
+  it.each(['/movie-details/1', '/cast/2'])(
+    '404 do provedor em %s vira página não encontrada',
+    async (path) => {
+      vi.stubGlobal(
+        'fetch',
+        vi.fn(() => Promise.resolve(json({}, 404))),
+      );
+      openApp(path);
+      expect(
+        await screen.findByRole('heading', { name: /404/ }),
+      ).toBeInTheDocument();
+    },
+  );
+  it('falha dos créditos não apaga o filme e permite recuperar elenco', async () => {
+    let failing = true;
     vi.stubGlobal(
       'fetch',
-      vi.fn((input: RequestInfo | URL) => {
-        const url = String(input instanceof Request ? input.url : input);
-        if (url.startsWith('/api/tmdb/movie/1/credits')) {
-          return Promise.reject(new Error('network'));
-        }
-        return fixtureFetch(input);
-      }),
+      vi.fn((input: RequestInfo | URL) =>
+        pathOf(input).pathname === '/api/tmdb/movie/1/credits' && failing
+          ? Promise.resolve(json({}, 502))
+          : fixtureFetch(input),
+      ),
     );
-    window.history.replaceState(null, '', '/movie-details/1');
-    render(<App />);
+    openApp('/movie-details/1');
     expect(
       await screen.findByRole('heading', {
         level: 1,
         name: 'Filme de exemplo',
       }),
     ).toBeInTheDocument();
-    expect(
-      await screen.findByText('Não foi possível carregar o elenco.'),
-    ).toBeInTheDocument();
-  });
-
-  it('filme sem pôster e sem sinopse tem fallback (sem imagem quebrada)', async () => {
-    const movie = JSON.parse(JSON.stringify(fixture.movie)) as {
-      poster_path: string | null;
-      overview: string | null;
-      title: string;
-    };
-    movie.poster_path = null;
-    movie.overview = null;
-    vi.stubGlobal(
-      'fetch',
-      vi.fn((input: RequestInfo | URL) => {
-        const url = String(input instanceof Request ? input.url : input);
-        if (url.startsWith('/api/tmdb/movie/1?')) {
-          return Promise.resolve(
-            new Response(JSON.stringify(movie), {
-              headers: { 'Content-Type': 'application/json' },
-            }),
-          );
-        }
-        return fixtureFetch(input);
-      }),
-    );
-    window.history.replaceState(null, '', '/movie-details/1');
-    render(<App />);
-    expect(
-      await screen.findByRole('heading', {
-        level: 1,
-        name: 'Filme de exemplo',
-      }),
-    ).toBeInTheDocument();
-    const img = screen.getByRole('img', { name: 'Filme de exemplo' });
-    expect(img).not.toHaveAttribute('src');
-  });
-
-  it('ID inválido de filme vai para 404 sem chamar o fetch', async () => {
-    window.history.replaceState(null, '', '/movie-details/abc');
-    render(<App />);
-    expect(
-      await screen.findByRole('heading', { level: 1, name: /404/ }),
-    ).toBeInTheDocument();
-    expect(fetch).not.toHaveBeenCalled();
-  });
-
-  it('ID inválido de pessoa vai para 404 sem chamar o fetch', async () => {
-    window.history.replaceState(null, '', '/cast/abc');
-    render(<App />);
-    expect(
-      await screen.findByRole('heading', { level: 1, name: /404/ }),
-    ).toBeInTheDocument();
-    expect(fetch).not.toHaveBeenCalled();
-  });
-
-  it('pessoa sem filmografia mostra EmptyState sem botão de tentar de novo', async () => {
-    const person = { ...fixture.person, gender: 0 };
-    const credits = { id: 2, cast: [], crew: [] };
-    vi.stubGlobal(
-      'fetch',
-      vi.fn((input: RequestInfo | URL) => {
-        const url = String(input instanceof Request ? input.url : input);
-        if (url === '/api/tmdb/person/2') {
-          return Promise.resolve(
-            new Response(JSON.stringify(person), {
-              headers: { 'Content-Type': 'application/json' },
-            }),
-          );
-        }
-        if (url === '/api/tmdb/person/2/movie_credits') {
-          return Promise.resolve(
-            new Response(JSON.stringify(credits), {
-              headers: { 'Content-Type': 'application/json' },
-            }),
-          );
-        }
-        return fixtureFetch(input);
-      }),
-    );
-    window.history.replaceState(null, '', '/cast/2');
-    render(<App />);
-    expect(
-      await screen.findByRole('heading', {
-        level: 1,
-        name: 'Pessoa de exemplo',
-      }),
-    ).toBeInTheDocument();
-    expect(
-      await screen.findByText('Nenhuma filmografia encontrada'),
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: /Tentar novamente/ }),
-    ).not.toBeInTheDocument();
-  });
-
-  it('falha real mostra ErrorState com retry que refaz a consulta', async () => {
-    let calls = 0;
-    vi.stubGlobal(
-      'fetch',
-      vi.fn((input: RequestInfo | URL) => {
-        const url = String(input instanceof Request ? input.url : input);
-        if (url.startsWith('/api/tmdb/movie/1?')) {
-          calls += 1;
-          if (calls <= 2) return Promise.reject(new TypeError('network'));
-          return fixtureFetch(input);
-        }
-        return fixtureFetch(input);
-      }),
-    );
-    window.history.replaceState(null, '', '/movie-details/1');
-    render(<App />);
-    const retry = await screen.findByRole(
-      'button',
-      { name: /Tentar novamente/ },
-      { timeout: 5000 },
-    );
-    expect(retry).toBeInTheDocument();
+    const section = within(screen.getByRole('region', { name: 'Elenco' }));
+    const retry = await section.findByRole('button', {
+      name: 'Tentar novamente',
+    });
+    failing = false;
     fireEvent.click(retry);
     expect(
+      await section.findByRole('link', { name: /Pessoa de exemplo/ }),
+    ).toBeInTheDocument();
+  });
+  it('sem filmografia usa vazio sem retry', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((input: RequestInfo | URL) =>
+        pathOf(input).pathname.endsWith('/movie_credits')
+          ? Promise.resolve(json({ cast: [], crew: [] }))
+          : fixtureFetch(input),
+      ),
+    );
+    openApp('/cast/2');
+    expect(
       await screen.findByRole('heading', {
-        level: 1,
-        name: 'Filme de exemplo',
+        name: 'Nenhuma filmografia encontrada',
       }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Tentar novamente' }),
+    ).not.toBeInTheDocument();
+  });
+  it('inclui equipe, imagens e recomendações reais do contrato', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((input: RequestInfo | URL) =>
+        pathOf(input).pathname.endsWith('/credits')
+          ? Promise.resolve(
+              json({
+                cast: fixture.movie.credits.cast,
+                crew: [
+                  {
+                    id: 3,
+                    name: 'Diretora de exemplo',
+                    profile_path: null,
+                    credit_id: 'one',
+                    job: 'Director',
+                    department: 'Directing',
+                  },
+                ],
+              }),
+            )
+          : fixtureFetch(input),
+      ),
+    );
+    openApp('/movie-details/1');
+    expect(
+      await screen.findByRole('link', { name: 'Diretora de exemplo' }),
+    ).toHaveAttribute('href', '/cast/3');
+    expect(
+      await screen.findByRole('img', { name: 'Cena 1 de Filme de exemplo' }),
+    ).toHaveAttribute('src', '/api/tmdb/image/w500/fixture.jpg');
+    expect(
+      await screen.findByRole('link', { name: /Outra sessão.*Nota/ }),
+    ).toHaveAttribute('href', '/movie-details/3');
+  });
+  it('trailer só cria iframe nocookie após clique, sem autoplay, e fecha com Escape', async () => {
+    openApp('/movie-details/1');
+    const open = await screen.findByRole('button', { name: 'Abrir trailer' });
+    expect(document.querySelector('iframe')).toBeNull();
+    fireEvent.click(open);
+    const player = screen.getByTitle('Trailer de Filme de exemplo');
+    expect(player).toHaveAttribute(
+      'src',
+      'https://www.youtube-nocookie.com/embed/abcdefghijk?autoplay=0&rel=0',
+    );
+    expect(player).toHaveAttribute('referrerpolicy', 'no-referrer');
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(document.querySelector('iframe')).toBeNull();
+  });
+  it.each([
+    'javascript:alert(1)',
+    '../attack',
+    'https://evil.test/video',
+    'abcdefghijk?x=1',
+    'short',
+  ])('não incorpora chave de vídeo inválida: %s', async (key) => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((input: RequestInfo | URL) =>
+        pathOf(input).pathname.endsWith('/videos')
+          ? Promise.resolve(
+              json({
+                id: 1,
+                results: [
+                  {
+                    id: 'fixture',
+                    key,
+                    name: 'Vídeo',
+                    site: 'YouTube',
+                    type: 'Trailer',
+                    official: true,
+                  },
+                ],
+              }),
+            )
+          : fixtureFetch(input),
+      ),
+    );
+    openApp('/movie-details/1');
+    expect(
+      await screen.findByRole('heading', { name: 'Trailer indisponível' }),
+    ).toBeInTheDocument();
+    expect(document.querySelector('iframe')).toBeNull();
+  });
+  it('não incorpora vídeos de outro provedor', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((input: RequestInfo | URL) =>
+        pathOf(input).pathname.endsWith('/videos')
+          ? Promise.resolve(
+              json({
+                id: 1,
+                results: [
+                  {
+                    id: 'fixture',
+                    key: 'abcdefghijk',
+                    name: 'Vídeo',
+                    site: 'Vimeo',
+                    type: 'Trailer',
+                    official: true,
+                  },
+                ],
+              }),
+            )
+          : fixtureFetch(input),
+      ),
+    );
+    openApp('/movie-details/1');
+    expect(
+      await screen.findByRole('heading', { name: 'Trailer indisponível' }),
     ).toBeInTheDocument();
   });
 });

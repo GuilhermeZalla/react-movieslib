@@ -2,14 +2,17 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import { createQueryClient } from './queryClient';
 import LayoutRoutes from './LayoutRoutes';
-
-function App() {
-  const [queryClient] = useState(() => createQueryClient());
+import SavedMoviesProvider from './SavedMoviesProvider';
+import ErrorBoundary from './ErrorBoundary';
+export default function App() {
+  const [queryClient] = useState(createQueryClient);
   return (
-    <QueryClientProvider client={queryClient}>
-      <LayoutRoutes />
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <SavedMoviesProvider>
+          <LayoutRoutes />
+        </SavedMoviesProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
-
-export default App;

@@ -1,5 +1,7 @@
-import { z } from 'zod';
+import { z } from '../../../shared/zod.ts';
 import {
+  discoverRequestSchema,
+  type DiscoverInput,
   idParameterSchema,
   movieCategorySchema,
   movieListRequestSchema,
@@ -7,6 +9,8 @@ import {
   searchRequestSchema,
 } from '../../../shared/tmdbRequest';
 import {
+  movieVideosSchema,
+  movieImagesSchema,
   genreListSchema,
   movieCreditsSchema,
   movieDetailsSchema,
@@ -281,6 +285,31 @@ export function getPersonCredits(
     `person/${idValue(id)}/movie_credits`,
     {},
     personMovieCreditsSchema,
+    options,
+  );
+}
+
+export function discoverMovies(input: DiscoverInput, options?: RequestOptions) {
+  const parsed = validateRequest(discoverRequestSchema, input);
+  const params = Object.fromEntries(
+    Object.entries(parsed).map(([key, value]) => [key, String(value)]),
+  );
+  return request('discover/movie', params, moviePageSchema, options);
+}
+export function getMovieVideos(id: number | string, options?: RequestOptions) {
+  return request(`movie/${idValue(id)}/videos`, {}, movieVideosSchema, options);
+}
+export function getMovieImages(id: number | string, options?: RequestOptions) {
+  return request(`movie/${idValue(id)}/images`, {}, movieImagesSchema, options);
+}
+export function getRecommendations(
+  id: number | string,
+  options?: RequestOptions,
+) {
+  return request(
+    `movie/${idValue(id)}/recommendations`,
+    { page: '1' },
+    moviePageSchema,
     options,
   );
 }

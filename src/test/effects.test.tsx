@@ -1,156 +1,76 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { useState } from 'react';
-import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
-import MoviesCatalog from '../pages/movies/MoviesCatalog';
-import CastDetails from '../pages/person-details/CastDetails';
-import { controlledFetch } from './fixtures/controlledFetch';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { createQueryClient } from '../app/queryClient';
-
-function Scenario({ kind }: { kind: 'catalog' | 'person' }) {
+import App from '../app/App';
+import { fixtureFetch } from './fixtures/fetch';
+import { pathOf } from './helpers/app';
+function Scenario() {
   const [revision, setRevision] = useState(0);
-  const navigate = useNavigate();
   return (
     <>
       <button type="button" onClick={() => setRevision((value) => value + 1)}>
         Atualizar contexto
       </button>
       <output aria-label="Revisão">{revision}</output>
-      <button
-        type="button"
-        onClick={() => {
-          // MemoryRouter navigates synchronously; v7 also types data-router promises.
-          void navigate(
-            kind === 'catalog' ? '/catalog/top_rated/2' : '/cast/3',
-          );
-        }}
-      >
-        Trocar contexto da rota
-      </button>
-      {kind === 'catalog' ? <MoviesCatalog /> : <CastDetails />}
+      <App />
     </>
   );
 }
-
-function catalogTree() {
-  const client = createQueryClient();
-  return (
-    <QueryClientProvider client={client}>
-      <MemoryRouter initialEntries={['/catalog/popular/1']}>
-        <Routes>
-          <Route
-            path="/catalog/:category/:page"
-            element={<Scenario kind="catalog" />}
-          />
-        </Routes>
-      </MemoryRouter>
-    </QueryClientProvider>
-  );
-}
-
-function personTree() {
-  const client = createQueryClient();
-  return (
-    <QueryClientProvider client={client}>
-      <MemoryRouter initialEntries={['/cast/2']}>
-        <Routes>
-          <Route path="/cast/:id" element={<Scenario kind="person" />} />
-        </Routes>
-      </MemoryRouter>
-    </QueryClientProvider>
-  );
-}
-
-describe('regressões dos efeitos de dados', () => {
-  it('catálogo: não consulta novamente por resposta, rerender ou estado do pai', async () => {
-    const api = controlledFetch((url) =>
-      /^\/api\/tmdb\/movie\//.test(url.pathname),
-    );
-    vi.stubGlobal('fetch', vi.fn(api.fetch));
-    const view = render(catalogTree());
-    expect(api.requests).toHaveLength(1);
-
-    await act(async () => {
-      await api.respondNext();
-    });
-    await screen.findByRole('link', { name: 'View' });
-    expect(api.requests).toHaveLength(1);
-    expect(fetch).toHaveBeenCalledTimes(2); // catálogo + dois menus de gêneros
-
-    view.rerender(catalogTree());
-    fireEvent.click(screen.getByRole('button', { name: 'Atualizar contexto' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Atualizar contexto' }));
-    expect(screen.getByLabelText('Revisão')).toHaveTextContent('2');
-    expect(api.requests).toHaveLength(1);
+describe('regressões das chamadas contínuas', () => {
+  it('catálogo: resposta, rerender e estado do pai não repetem chamadas; página nova consulta uma vez', async () => {
+    window.history.replaceState(null, '', '/catalog/popular/1');
+    vi.stubGlobal('fetch', vi.fn(fixtureFetch));
+    const view = render(<Scenario />);
+    await screen.findByRole('link', { name: /Filme de exemplo.*Nota/ });
     expect(fetch).toHaveBeenCalledTimes(2);
-
-    fireEvent.click(screen.getByRole('link', { name: 'Página 2' }));
-    expect(api.requests).toHaveLength(2);
-    await act(async () => {
-      await api.respondNext();
-    });
-    expect(api.requests.map((url) => url.searchParams.get('page'))).toEqual([
-      '1',
-      '2',
-    ]);
-    expect(api.requests).toHaveLength(2);
-
-    fireEvent.click(
-      screen.getByRole('button', { name: 'Trocar contexto da rota' }),
-    );
-    await act(async () => {
-      await api.respondNext();
-    });
-    expect(api.requests.map((url) => url.pathname)).toEqual([
-      '/api/tmdb/movie/popular',
-      '/api/tmdb/movie/popular',
-      '/api/tmdb/movie/top_rated',
-    ]);
-    expect(fetch).toHaveBeenCalledTimes(4);
-  });
-
-  it('pessoa: duas consultas por id, sem repetir por resposta, rerender ou estado do pai', async () => {
-    const api = controlledFetch((url) =>
-      /^\/api\/tmdb\/person\/\d+/.test(url.pathname),
-    );
-    vi.stubGlobal('fetch', vi.fn(api.fetch));
-    const view = render(personTree());
-    expect(api.requests).toHaveLength(2);
-
-    await act(async () => {
-      await api.respondNext();
-    });
-    await act(async () => {
-      await api.respondNext();
-    });
-    await screen.findByRole('heading', { level: 1, name: 'Pessoa de exemplo' });
-    await screen.findByRole('link', { name: 'View' });
-    expect(api.requests).toHaveLength(2);
-    expect(fetch).toHaveBeenCalledTimes(3); // detalhe/créditos + dois menus
-
-    view.rerender(personTree());
+    view.rerender(<Scenario />);
     fireEvent.click(screen.getByRole('button', { name: 'Atualizar contexto' }));
-    expect(screen.getByLabelText('Revisão')).toHaveTextContent('1');
-    expect(api.requests).toHaveLength(2);
+    fireEvent.click(screen.getByRole('button', { name: 'Atualizar contexto' }));
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(fetch).toHaveBeenCalledTimes(2);
+    fireEvent.click(screen.getByRole('link', { name: 'Página 2' }));
+    await screen.findByRole('link', { name: /Filme de exemplo.*Nota/ });
     expect(fetch).toHaveBeenCalledTimes(3);
-
-    fireEvent.click(
-      screen.getByRole('button', { name: 'Trocar contexto da rota' }),
-    );
-    expect(api.requests).toHaveLength(4);
+    expect(
+      vi
+        .mocked(fetch)
+        .mock.calls.filter(
+          ([input]) => pathOf(input).pathname === '/api/tmdb/movie/popular',
+        )
+        .map(([input]) => pathOf(input).searchParams.get('page')),
+    ).toEqual(['1', '2']);
+  });
+  it('pessoa: duas chamadas por ID; resposta, rerender e contexto não geram loops', async () => {
+    window.history.replaceState(null, '', '/cast/2');
+    vi.stubGlobal('fetch', vi.fn(fixtureFetch));
+    const view = render(<Scenario />);
+    await screen.findByRole('heading', { level: 1, name: 'Pessoa de exemplo' });
+    await screen.findByRole('link', { name: /Filme de exemplo.*Nota/ });
+    expect(fetch).toHaveBeenCalledTimes(2);
+    view.rerender(<Scenario />);
+    fireEvent.click(screen.getByRole('button', { name: 'Atualizar contexto' }));
     await act(async () => {
-      await api.respondNext();
+      await Promise.resolve();
     });
-    await act(async () => {
-      await api.respondNext();
-    });
-    expect(api.requests.map((url) => url.pathname)).toEqual([
+    expect(fetch).toHaveBeenCalledTimes(2);
+    window.history.pushState(null, '', '/cast/3');
+    fireEvent.popState(window);
+    await waitFor(() => expect(fetch).toHaveBeenCalledTimes(4));
+    expect(
+      vi.mocked(fetch).mock.calls.map(([input]) => pathOf(input).pathname),
+    ).toEqual([
       '/api/tmdb/person/2',
       '/api/tmdb/person/2/movie_credits',
       '/api/tmdb/person/3',
       '/api/tmdb/person/3/movie_credits',
     ]);
-    expect(fetch).toHaveBeenCalledTimes(5);
   });
 });

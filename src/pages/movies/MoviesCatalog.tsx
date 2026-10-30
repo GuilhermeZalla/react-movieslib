@@ -1,164 +1,150 @@
-import { tmdbImageUrl } from '../../api/tmdb/client';
-// Legacy JSON is trusted only at these explicit boundaries; schema validation is Phase 3.
-import Header from '../../components/layout/Header';
-import FilmCard from '../../components/movies/FilmCard';
-import { Fragment, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { movieListQuery, movieSearchQuery } from '../../api/tmdb/queries';
+import { useParams, Link } from 'react-router-dom';
 import {
-  movieCategorySchema,
-  pageParameterSchema,
-} from '../../../shared/tmdbRequest';
-import { useParams } from 'react-router-dom';
-import Aside from '../../components/layout/Aside';
-import AsideMobile from '../../components/layout/AsideMobile';
-import Footer from '../../components/layout/Footer';
-import EmptyState from '../../components/base/EmptyState';
-import ErrorState from '../../components/base/ErrorState';
-import { useDebouncedValue } from '../../hooks/useDebouncedValue';
-
-const normalizeTerm = (value: string): string =>
-  value.normalize('NFC').trim().replace(/\s+/gu, ' ').slice(0, 200);
-
-const MoviesCatalog = () => {
-  const { category: rawCategory = 'popular' } = useParams<'category'>();
-  const { page: rawPage = '1' } = useParams<'page'>();
-  const category = movieCategorySchema.safeParse(rawCategory).success
-    ? rawCategory
-    : 'popular';
-  const page = pageParameterSchema.safeParse(rawPage).success ? rawPage : '1';
-  const [searchContent, setSearchContent] = useState('');
-  const debouncedSearch = useDebouncedValue(searchContent);
-  const safeTerm = normalizeTerm(debouncedSearch);
-  const isSearching = safeTerm.length > 0;
-
-  const catalog = useQuery(
-    movieListQuery(
-      category as 'popular' | 'top_rated' | 'now_playing' | 'upcoming',
-      page,
-    ),
-  );
-
-  const search1 = useQuery(movieSearchQuery(safeTerm, 1));
-  const search2 = useQuery(movieSearchQuery(safeTerm, 2));
-  const search3 = useQuery(movieSearchQuery(safeTerm, 3));
-  const search4 = useQuery(movieSearchQuery(safeTerm, 4));
-  const search5 = useQuery(movieSearchQuery(safeTerm, 5));
-
-  const handleSearchMovies = (result: string) => {
-    setSearchContent(result);
-  };
-
-  const refetchSearch = () => {
-    void search1.refetch();
-    void search2.refetch();
-    void search3.refetch();
-    void search4.refetch();
-    void search5.refetch();
-  };
-
-  const searchHasError = search1.isError;
-  const searchIsEmpty =
-    !searchHasError &&
-    search1.isSuccess &&
-    (search1.data?.results?.length ?? 0) === 0;
-
-  return (
-    <Fragment>
-      <Header handleSearchMovies={handleSearchMovies} />
-      <Aside />
-      <AsideMobile />
-      <main className="home__main relative mb-[5%] mt-[7%] pl-[100px] pr-[30px] pt-[20px] pb-[20px] text-ink">
-        {isSearching ? (
-          <div className="home__container container__films catalog relative border-t line/40 mt-[5%] pt-[10px] grid grid-cols-[repeat(auto-fill,minmax(150px,2fr))] gap-10">
-            <h1 className="home__title movies-catalog text-[1.4rem] font-normal absolute top-[-35px]">
-              Movies by the name <span>{safeTerm}</span>
-            </h1>
-            {searchHasError ? (
-              <ErrorState
-                message="Não foi possível realizar a busca."
-                onRetry={refetchSearch}
-              />
-            ) : searchIsEmpty ? (
-              <EmptyState title="Nenhum filme encontrado" />
-            ) : (
-              <>
-                {search1.data?.results?.map((movie, index) => (
-                  <FilmCard
-                    key={`s1-${index}`}
-                    poster={tmdbImageUrl(movie.poster_path)}
-                    title={movie.title}
-                    vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
-                    movieId={movie.id}
-                  />
-                ))}
-                {search2.data?.results?.map((movie, index) => (
-                  <FilmCard
-                    key={`s2-${index}`}
-                    poster={tmdbImageUrl(movie.poster_path)}
-                    title={movie.title}
-                    vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
-                    movieId={movie.id}
-                  />
-                ))}
-                {search3.data?.results?.map((movie, index) => (
-                  <FilmCard
-                    key={`s3-${index}`}
-                    poster={tmdbImageUrl(movie.poster_path)}
-                    title={movie.title}
-                    vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
-                    movieId={movie.id}
-                  />
-                ))}
-                {search4.data?.results?.map((movie, index) => (
-                  <FilmCard
-                    key={`s4-${index}`}
-                    poster={tmdbImageUrl(movie.poster_path)}
-                    title={movie.title}
-                    vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
-                    movieId={movie.id}
-                  />
-                ))}
-                {search5.data?.results?.map((movie, index) => (
-                  <FilmCard
-                    key={`s5-${index}`}
-                    poster={tmdbImageUrl(movie.poster_path)}
-                    title={movie.title}
-                    vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
-                    movieId={movie.id}
-                  />
-                ))}
-              </>
-            )}
-          </div>
-        ) : (
-          <div className="home__container container__films catalog relative border-t line/40 mt-[5%] pt-[10px] grid grid-cols-[repeat(auto-fill,minmax(150px,2fr))] gap-10">
-            <h1 className="home__title movies-catalog text-[1.4rem] font-normal absolute top-[-35px]">
-              Overviewing{' '}
-              <span>
-                {`${category.split('_')[0]} ${
-                  category.split('_')[1] === undefined
-                    ? ''
-                    : category.split('_')[1]
-                }`.trim()}
-              </span>{' '}
-              movies
-            </h1>
-            {catalog.data?.results?.map((movie, index) => (
-              <FilmCard
-                key={index}
-                poster={tmdbImageUrl(movie.poster_path)}
-                title={movie.title}
-                vote={movie.vote_average?.toFixed(1) ?? '\u2014'}
-                movieId={movie.id}
-              />
-            ))}
-          </div>
-        )}
-      </main>
-      <Footer category={category} />
-    </Fragment>
-  );
+  movieListQuery,
+  movieSearchQuery,
+  discoverQuery,
+  genresQuery,
+} from '../../api/tmdb/queries';
+import { movieCategorySchema } from '../../../shared/tmdbRequest';
+import { useCatalogParams } from '../../hooks/useCatalogParams';
+import { usePageTitle } from '../../hooks/usePageTitle';
+import {
+  SearchField,
+  CatalogFilters,
+  Pagination,
+} from '../../components/base/CatalogTools';
+import MovieGrid from '../../components/base/MovieGrid';
+import QueryContent from '../../components/base/QueryContent';
+interface Props {
+  genre?: { id: number; name: string };
+}
+const labels = {
+  popular: 'Filmes populares',
+  now_playing: 'Em cartaz',
+  upcoming: 'Em breve',
+  top_rated: 'Mais bem avaliados',
 };
-
-export default MoviesCatalog;
+export default function MoviesCatalog({ genre }: Props) {
+  const route = useParams<'category' | 'page'>();
+  const parsedCategory = movieCategorySchema.safeParse(
+    route.category ?? 'popular',
+  );
+  const category = parsedCategory.success ? parsedCategory.data : 'popular';
+  const state = useCatalogParams(genre ? undefined : (route.page ?? '1'));
+  const genreList = useQuery(genresQuery());
+  const filters = {
+    ...state.filters,
+    ...(genre ? { with_genres: String(genre.id) } : {}),
+  };
+  const hasFilters = Object.keys(filters).length > 0;
+  const result = useQuery(
+    state.term
+      ? movieSearchQuery(state.term, state.page)
+      : hasFilters
+        ? discoverQuery({ ...filters, page: String(state.page) })
+        : movieListQuery(category, state.page),
+  );
+  const title = state.term
+    ? 'Busca por “' + state.term + '”'
+    : genre
+      ? 'Filmes de ' + genre.name
+      : hasFilters
+        ? 'Filmes para a sua sessão'
+        : labels[category];
+  usePageTitle(title);
+  let movies = result.data?.results ?? [];
+  if (state.term) {
+    movies = movies.filter(
+      (movie) =>
+        (!filters.with_genres ||
+          movie.genre_ids.includes(Number(filters.with_genres))) &&
+        (!filters.primary_release_year ||
+          movie.release_date?.startsWith(filters.primary_release_year)) &&
+        (!filters['vote_average.gte'] ||
+          (movie.vote_average ?? -1) >= Number(filters['vote_average.gte'])),
+    );
+    if (filters.sort_by === 'title.asc')
+      movies = [...movies].sort((a, b) =>
+        a.title.localeCompare(b.title, 'pt-BR'),
+      );
+    if (filters.sort_by === 'vote_average.desc')
+      movies = [...movies].sort(
+        (a, b) => (b.vote_average ?? -1) - (a.vote_average ?? -1),
+      );
+    if (filters.sort_by === 'primary_release_date.desc')
+      movies = [...movies].sort((a, b) =>
+        (b.release_date ?? '').localeCompare(a.release_date ?? ''),
+      );
+  }
+  return (
+    <div className="page-stack">
+      <header className="catalog-heading">
+        <h1>{title}</h1>
+        <p role="status">
+          {result.isPending
+            ? 'Preparando os pôsteres…'
+            : `${movies.length} filmes nesta página`}
+        </p>
+      </header>
+      <div className="catalog-layout">
+        <aside aria-label="Filtros de filmes" className="grid min-w-0 gap-5">
+          <CatalogFilters
+            params={state.params}
+            update={state.update}
+            genres={genreList.data?.genres ?? []}
+            {...(genre ? { lockedGenre: genre.id } : {})}
+          />
+          {genre && (
+            <nav aria-label="Outros gêneros" className="catalog-genre-links">
+              {genreList.data?.genres.map((item) => (
+                <Link
+                  className="catalog-genre-link"
+                  key={item.id}
+                  to={
+                    '/genres/' +
+                    String(item.id) +
+                    '/' +
+                    encodeURIComponent(item.name)
+                  }
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </nav>
+          )}
+        </aside>
+        <section aria-label="Resultados de filmes" className="catalog-results">
+          <SearchField
+            value={state.input}
+            onChange={(value) => state.update('q', value)}
+          />
+          {state.term && hasFilters && (
+            <p className="text-preview-caption text-preview-muted">
+              Na busca por título, os filtros refinam os resultados desta
+              página. Sem termo, a seleção consulta o catálogo completo.
+            </p>
+          )}
+          <h2 className="sr-only">Filmes desta página</h2>
+          <QueryContent
+            pending={result.isPending}
+            error={result.error}
+            empty={movies.length === 0}
+            retry={() => {
+              void result.refetch();
+            }}
+          >
+            <MovieGrid movies={movies} />
+          </QueryContent>
+          {result.data && !result.isError && (
+            <Pagination
+              page={state.page}
+              total={result.data.total_pages}
+              href={state.pageHref}
+            />
+          )}
+        </section>
+      </div>
+    </div>
+  );
+}

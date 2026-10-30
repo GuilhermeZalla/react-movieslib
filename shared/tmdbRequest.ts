@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from './zod.ts';
 
 export const SEARCH_MAX_LENGTH = 200;
 export const MAX_PAGE = 500;
@@ -37,6 +37,27 @@ export const movieListRequestSchema = z.strictObject({
   page: pageParameterSchema.default(1),
 });
 export const detailRequestSchema = z.strictObject({ id: idParameterSchema });
+
+export const movieSortSchema = z.enum([
+  'popularity.desc',
+  'vote_average.desc',
+  'primary_release_date.desc',
+  'title.asc',
+]);
+export const discoverRequestSchema = z.strictObject({
+  page: pageParameterSchema.default(1),
+  with_genres: idParameterSchema.optional(),
+  primary_release_year: idParameterSchema
+    .pipe(z.number().min(1870).max(2100))
+    .optional(),
+  'vote_average.gte': z
+    .string()
+    .regex(/^(?:[0-9](?:\.[0-9])?|10)$/)
+    .transform(Number)
+    .optional(),
+  sort_by: movieSortSchema.default('popularity.desc'),
+});
+export type DiscoverInput = z.input<typeof discoverRequestSchema>;
 
 export type SearchRequest = z.infer<typeof searchRequestSchema>;
 export type MovieListRequest = z.infer<typeof movieListRequestSchema>;

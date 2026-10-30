@@ -18,6 +18,7 @@ const ErrorState = ({
 }: ErrorStateProps) => {
   return (
     <div
+      role="alert"
       className={
         preview
           ? 'flex flex-col items-start gap-3 rounded-preview-control bg-preview-accent-soft p-6 text-left'

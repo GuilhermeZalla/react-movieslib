@@ -8,7 +8,7 @@ export default defineConfig({
   ...(process.env.CI ? { workers: 1 } : {}),
   reporter: 'html',
   use: {
-    baseURL: 'http://127.0.0.1:4173',
+    baseURL: 'http://127.0.0.1:4180',
     trace: 'on-first-retry',
   },
   projects: [
@@ -18,8 +18,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run build && npm run preview',
-    url: 'http://127.0.0.1:4173',
+    command: 'node scripts/startTestServer.mjs',
+    url: 'http://127.0.0.1:4180',
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
   },

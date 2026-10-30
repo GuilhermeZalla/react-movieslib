@@ -1,32 +1,26 @@
-﻿@layer theme, legacy, base, components, utilities;
-
+@layer theme, base, components, utilities;
 @import 'tailwindcss/theme' layer(theme);
-@import '../public/meyer-reset.css' layer(legacy);
-@import './style/style.css' layer(legacy);
+@import 'tailwindcss/preflight' layer(base);
 @import 'tailwindcss/utilities' layer(utilities);
 @import './app/styles/theme.css';
-@import './fonts/fonts.css';
-
-/* Scoped normalization: native button defaults must not override Pulso colors.
-   Production screens outside the new shell keep their legacy defaults. */
+@import './app/styles/components.css';
 @layer base {
+  body {
+    margin: 0;
+    background: var(--color-preview-canvas);
+    color: var(--color-preview-ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible {
+    outline: var(--outline-width-focus) solid var(--color-preview-accent-text);
+    outline-offset: var(--outline-offset-focus);
+  }
   [data-design-preview] button {
-    background-color: transparent;
-    color: inherit;
-    font: inherit;
-    border: 0 solid;
+    font-family: inherit;
     cursor: pointer;
   }
-}
-
-body {
-  margin: 0;
-  font-family: 'Source Sans Pro', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family:
-    source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  button:disabled {
+    cursor: not-allowed;
+  }
 }

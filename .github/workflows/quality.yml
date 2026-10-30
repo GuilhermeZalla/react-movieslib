@@ -15,7 +15,7 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     env:
       CI: 'true'
     steps:
@@ -39,3 +39,7 @@ jobs:
         run: npm run test:coverage
       - name: Audit high and critical advisories
         run: npm audit --audit-level=high
+      - name: Install Chromium
+        run: node node_modules/@playwright/test/cli.js install --with-deps chromium
+      - name: Browser flows, accessibility and security headers
+        run: npm run test:e2e -- --reporter=line

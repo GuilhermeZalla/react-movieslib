@@ -1,46 +1,5 @@
-﻿@theme static {
-  /* Tokens legados: mantidos até a migração visual das telas de produção. */
-  --color-canvas: #191715;
-  --color-surface: #24211e;
-  --color-ink: #f5ede0;
-  --color-muted: #c0b5a5;
-  --color-accent: #ff9b85;
-  --color-on-accent: #191715;
-  --color-line: #938575;
-
-  /* Tipografia */
-  --font-display: 'Source Serif 4', Georgia, 'Times New Roman', serif;
-  --font-body: 'Source Sans 3', 'Segoe UI', Arial, sans-serif;
-  --text-display: 5.5rem;
-  --text-title: 3rem;
-  --text-section: 2rem;
-  --text-card: 1.25rem;
-  --text-body: 1rem;
-  --text-caption: 0.8125rem;
-
-  /* Espaçamento */
+@theme static {
   --spacing: 0.25rem;
-  --container-page: 76rem;
-
-  /* Raios */
-  --radius-poster: 0;
-  --radius-control: 2px;
-
-  /* Sombras */
-  --shadow-poster: none;
-
-  /* Movimento */
-  --duration-fast: 180ms;
-  --ease-settle: cubic-bezier(0.2, 0.7, 0.2, 1);
-
-  /* Z-index */
-  --z-base: 0;
-  --z-dropdown: 10;
-  --z-sticky: 20;
-  --z-modal: 50;
-  --z-toast: 60;
-
-  /* Direção Pulso: nomes próprios para isolar a amostra /design. */
   --color-preview-canvas: #121315;
   --color-preview-surface: #1e2024;
   --color-preview-ink: #f5f5f6;
@@ -53,9 +12,17 @@
   --color-preview-accent-soft: #3a1d20;
   --color-preview-on-accent: #ffffff;
   --color-preview-skeleton: #33363c;
-
+  --color-canvas: var(--color-preview-canvas);
+  --color-surface: var(--color-preview-surface);
+  --color-ink: var(--color-preview-ink);
+  --color-muted: var(--color-preview-muted);
+  --color-line: var(--color-preview-line);
+  --color-accent: var(--color-preview-accent);
+  --color-on-accent: var(--color-preview-on-accent);
   --font-preview-bricolage: 'Bricolage Grotesque Variable', Arial, sans-serif;
   --font-preview-figtree: 'Figtree Variable', 'Segoe UI', sans-serif;
+  --font-display: var(--font-preview-bricolage);
+  --font-body: var(--font-preview-figtree);
   --text-preview-display: 2.75rem;
   --text-preview-display-wide: 4.5rem;
   --text-preview-title: 2rem;
@@ -70,41 +37,68 @@
   --text-preview-number-wide: 2.25rem;
   --text-preview-rank: 3.5rem;
   --text-preview-rank-wide: 5.25rem;
+  --text-display: var(--text-preview-display);
+  --text-title: var(--text-preview-title);
+  --text-section: var(--text-preview-section);
+  --text-card: var(--text-preview-card);
+  --text-body: var(--text-preview-body);
+  --text-caption: var(--text-preview-caption);
   --tracking-preview-tight: -0.035em;
+  --container-page: 76rem;
   --container-preview-mobile: 22.5rem;
   --container-preview-wide: 90rem;
   --container-preview-card: 13rem;
   --radius-preview-poster: 3px;
   --radius-preview-control: 4px;
+  --radius-poster: var(--radius-preview-poster);
+  --radius-control: var(--radius-preview-control);
+  --shadow-poster: none;
   --aspect-preview-poster: 2 / 3;
   --duration-preview: 160ms;
+  --duration-fast: var(--duration-preview);
   --ease-preview: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-settle: var(--ease-preview);
+  --outline-width-focus: 2px;
+  --outline-offset-focus: 3px;
+  --color-chrome: #0e0f11;
+  --color-chrome-line: #2a2d33;
+  --color-floating: #191b20;
+  --color-raised: #24272d;
+  --container-navigation: 12.5rem;
+  --container-filters: 13rem;
+  --container-cinema: 100rem;
+  --container-feature-copy: 36rem;
+  --container-reel: 10.25rem;
+  --spacing-cinema-header: 4.5rem;
+  --spacing-feature: 26rem;
+  --spacing-feature-mobile: 32rem;
+  --spacing-card-lift: -0.25rem;
+  --text-hero: clamp(1.875rem, 3.7vw, 3.5rem);
+  --text-movie: 0.9375rem;
+  --text-navigation: 0.75rem;
+  --radius-panel: 8px;
+  --duration-scene: 450ms;
+  --scale-card-hover: 1.035;
+  --shadow-movie: 0 12px 24px rgb(0 0 0 / 0.28);
+  --shadow-rank: 0 2px 8px rgb(0 0 0 / 0.9);
+  --background-image-feature-shade:
+    linear-gradient(
+      90deg,
+      rgb(18 19 21 / 0.97) 0%,
+      rgb(18 19 21 / 0.92) 38%,
+      rgb(18 19 21 / 0.55) 72%,
+      rgb(18 19 21 / 0.2) 100%
+    ),
+    linear-gradient(0deg, #121315 0%, rgb(18 19 21 / 0) 60%);
+  --background-image-feature-shade-mobile: linear-gradient(
+    0deg,
+    #121315 0%,
+    rgb(18 19 21 / 0.98) 54%,
+    rgb(18 19 21 / 0.15) 100%
+  );
 }
-
-[data-theme='light'] {
-  --color-canvas: #f6f0e5;
-  --color-surface: #fffbf3;
-  --color-ink: #28211c;
-  --color-muted: #695d52;
-  --color-accent: #9e3326;
-  --color-on-accent: #ffffff;
-  --color-line: #827365;
-}
-
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme]) {
-    --color-canvas: #f6f0e5;
-    --color-surface: #fffbf3;
-    --color-ink: #28211c;
-    --color-muted: #695d52;
-    --color-accent: #9e3326;
-    --color-on-accent: #ffffff;
-    --color-line: #827365;
-  }
-}
-
-/* Preview-only aliases: production pages continue using the legacy palette. */
 [data-design-preview] {
+  color-scheme: dark;
   --color-canvas: var(--color-preview-canvas);
   --color-surface: var(--color-preview-surface);
   --color-ink: var(--color-preview-ink);
@@ -112,32 +106,14 @@
   --color-line: var(--color-preview-line);
   --color-accent: var(--color-preview-accent);
   --color-on-accent: var(--color-preview-on-accent);
-  --font-display: var(--font-preview-bricolage);
-  --font-body: var(--font-preview-figtree);
-  --radius-poster: var(--radius-preview-poster);
-  --radius-control: var(--radius-preview-control);
 }
-
-[data-design-preview][data-design-theme='light'] {
-  --color-preview-canvas: #f3f4f6;
-  --color-preview-surface: #ffffff;
-  --color-preview-ink: #1a1c20;
-  --color-preview-muted: #4e535b;
-  --color-preview-line: #737b86;
-  --color-preview-accent-text: #a71f1f;
-  --color-preview-accent-soft: #fce8e8;
-  --color-preview-skeleton: #e0e2e6;
-}
-
 [data-design-preview] .preview-headline {
   letter-spacing: var(--tracking-preview-tight);
   font-weight: 800;
 }
-
 [data-design-preview][data-preview-size='mobile'] {
   width: var(--container-preview-mobile);
 }
-
 [data-design-preview][data-preview-size='wide'] {
   width: var(--container-preview-wide);
   --text-preview-display: var(--text-preview-display-wide);

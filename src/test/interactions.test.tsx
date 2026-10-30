@@ -1,234 +1,68 @@
-import { act, fireEvent, render, screen, within } from '@testing-library/react';
-import { MemoryRouter, useLocation } from 'react-router-dom';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import App from '../app/App';
-import Aside from '../components/layout/Aside';
-import AsideMobile from '../components/layout/AsideMobile';
-import Footer from '../components/layout/Footer';
-import FilmCard from '../components/movies/FilmCard';
-import NotFoundScreen from '../pages/not-found/NotFoundScreen';
 import { fixtureFetch } from './fixtures/fetch';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { createQueryClient } from '../app/queryClient';
-import { genreFixture } from './fixtures/genres';
+import { openApp, pathOf } from './helpers/app';
 import { searchControls } from './helpers/controls';
-
-beforeEach(() => {
-  window.history.replaceState(null, '', '/');
-  vi.stubGlobal('fetch', vi.fn(fixtureFetch));
-});
-
-function LocationDisplay() {
-  return <output aria-label="Rota atual">{useLocation().pathname}</output>;
-}
-
-describe('cards e paginação', () => {
-  it.each([null, '', 'https://image.tmdb.org/t/p/w500/null'])(
-    'não exibe um card sem pôster: %s',
-    (poster) => {
-      render(
-        <MemoryRouter>
-          <FilmCard movieId={1} title="Sem pôster" poster={poster} vote="—" />
-        </MemoryRouter>,
-      );
-      expect(screen.queryByRole('img')).not.toBeInTheDocument();
-      expect(screen.queryByRole('link')).not.toBeInTheDocument();
-    },
-  );
-
-  it.each(['', '—'])(
-    'mantém imagem e navegação sem nota numérica: %s',
-    (vote) => {
-      render(
-        <MemoryRouter>
-          <FilmCard
-            movieId={1}
-            title="Sessão de teste"
-            poster="/fixture.svg"
-            vote={vote}
-          />
-          <LocationDisplay />
-        </MemoryRouter>,
-      );
-      expect(
-        screen.getByRole('img', { name: 'Sessão de teste' }),
-      ).toHaveAttribute('src', '/fixture.svg');
-      const link = screen.getByRole('link', { name: 'View' });
-      expect(link).toHaveAttribute('href', '/movie-details/1');
-      fireEvent.click(link);
-      expect(screen.getByLabelText('Rota atual')).toHaveTextContent(
-        '/movie-details/1',
-      );
-      expect(document.body).not.toHaveTextContent(/NaN|undefined|null/);
-    },
-  );
-
-  it.each(['popular', 'top_rated'])(
-    'preserva as cinco páginas de %s e retorna ao topo',
-    (category) => {
-      render(
-        <MemoryRouter>
-          <Footer category={category} />
-          <LocationDisplay />
-        </MemoryRouter>,
-      );
-      const footer = within(screen.getByRole('contentinfo'));
-      expect(footer.getAllByRole('link')).toHaveLength(5);
-      for (const page of [1, 2, 3, 4, 5]) {
-        expect(
-          footer.getByRole('link', { name: `Página ${page}` }),
-        ).toHaveAttribute('href', `/catalog/${category}/${page}`);
-      }
-      document.body.scrollTop = 99;
-      document.documentElement.scrollTop = 88;
-      fireEvent.click(footer.getByRole('link', { name: 'Página 5' }));
-      expect(screen.getByLabelText('Rota atual')).toHaveTextContent(
-        `/catalog/${category}/5`,
-      );
-      expect(document.body.scrollTop).toBe(0);
-      expect(document.documentElement.scrollTop).toBe(0);
-    },
-  );
-});
-
-describe('busca vazia e limpeza', () => {
-  it('não consulta a busca para campo vazio e mantém o catálogo', async () => {
-    window.history.replaceState(null, '', '/catalog/popular/1');
-    render(<App />);
-    await screen.findByRole('link', { name: 'View' });
-    const calls = vi.mocked(fetch).mock.calls.length;
-    const { input, submit } = searchControls();
-    expect(input).toHaveValue('');
-    fireEvent.click(submit);
-    await new Promise((r) => setTimeout(r, 400));
-    expect(fetch).toHaveBeenCalledTimes(calls);
+beforeEach(() => vi.stubGlobal('fetch', vi.fn(fixtureFetch)));
+describe('controles acessíveis do catálogo', () => {
+  it('mantém campo e botões nomeados, com limpeza funcional', async () => {
+    openApp('/catalog/popular/1');
+    await screen.findByRole('link', { name: /Filme de exemplo.*Nota/ });
+    fireEvent.change(searchControls().input, { target: { value: 'Noite' } });
+    await screen.findByRole('heading', { name: 'Busca por “Noite”' });
+    fireEvent.click(searchControls().clear);
+    await screen.findByRole('heading', { name: 'Filmes populares' });
+    expect(searchControls().input).toHaveValue('');
+    expect(window.location.search).not.toContain('q=');
   });
-
-  it('limpa o resultado pelo X, restaura o catálogo e não faz outra consulta', async () => {
-    window.history.replaceState(null, '', '/catalog/popular/1');
-    render(<App />);
-    await screen.findByRole('link', { name: 'View' });
-    const { input, submit, clear } = searchControls();
-    fireEvent.change(input, { target: { value: 'Noite azul' } });
-    fireEvent.click(submit);
-    await screen.findByRole('heading', {
-      name: 'Movies by the name Noite azul',
-    });
-    expect(await screen.findAllByRole('link', { name: 'View' })).toHaveLength(
-      5,
-    );
-    const calls = vi.mocked(fetch).mock.calls.length;
-    fireEvent.click(clear);
+  it('não busca de novo ao enviar campo vazio', async () => {
+    openApp('/catalog/popular/1');
+    await screen.findByRole('link', { name: /Filme de exemplo.*Nota/ });
+    const count = vi.mocked(fetch).mock.calls.length;
+    fireEvent.click(searchControls().submit);
     await act(async () => {
-      await new Promise((r) => setTimeout(r, 400));
+      await Promise.resolve();
     });
-    expect(
-      screen.getByRole('heading', { name: 'Overviewing popular movies' }),
-    ).toBeInTheDocument();
-    expect(screen.getAllByRole('link', { name: 'View' })).toHaveLength(1);
-    expect(input).toHaveStyle({ width: '0px', opacity: '0' });
-    expect(fetch).toHaveBeenCalledTimes(calls);
+    expect(fetch).toHaveBeenCalledTimes(count);
   });
-});
-
-describe('menus de gêneros', () => {
-  beforeEach(() => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn(() =>
-        Promise.resolve(
-          new Response(JSON.stringify(genreFixture), {
-            headers: { 'Content-Type': 'application/json' },
-          }),
-        ),
-      ),
+  it('envia filtros validados ao discover e guarda seleção na URL', async () => {
+    openApp('/catalog/popular/1');
+    await screen.findByRole('link', { name: /Filme de exemplo.*Nota/ });
+    fireEvent.change(screen.getByRole('combobox', { name: 'Gênero' }), {
+      target: { value: '18' },
+    });
+    fireEvent.change(screen.getByRole('spinbutton', { name: 'Ano' }), {
+      target: { value: '2026' },
+    });
+    fireEvent.change(screen.getByRole('combobox', { name: 'Nota mínima' }), {
+      target: { value: '7' },
+    });
+    fireEvent.change(screen.getByRole('combobox', { name: 'Ordenar' }), {
+      target: { value: 'vote_average.desc' },
+    });
+    await waitFor(() =>
+      expect(
+        vi.mocked(fetch).mock.calls.some(([input]) => {
+          const url = pathOf(input);
+          return (
+            url.pathname === '/api/tmdb/discover/movie' &&
+            url.searchParams.get('primary_release_year') === '2026' &&
+            url.searchParams.get('with_genres') === '18' &&
+            url.searchParams.get('vote_average.gte') === '7' &&
+            url.searchParams.get('sort_by') === 'vote_average.desc'
+          );
+        }),
+      ).toBe(true),
     );
+    expect(window.location.search).toContain('year=2026');
   });
-
-  it('abre/fecha o menu desktop, filtra os gêneros legados e navega', async () => {
-    const client = createQueryClient();
-    render(
-      <QueryClientProvider client={client}>
-        <MemoryRouter>
-          <Aside />
-          <LocationDisplay />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-    const aside = within(screen.getByRole('complementary'));
-    const drama = await aside.findByRole('link', { name: 'Drama' });
-    expect(
-      aside.queryByRole('link', { name: 'Documentary' }),
-    ).not.toBeInTheDocument();
-    expect(
-      aside.queryByRole('link', { name: 'TV Movie' }),
-    ).not.toBeInTheDocument();
-    // No aria-expanded exists yet; inspect only the legacy state set by these controls.
-    const list = drama.closest('.menu-dropdown');
-    fireEvent.click(aside.getByRole('link', { name: 'MoviesLib' }));
-    const control = aside.getByRole('button', { name: 'Genres' });
-    fireEvent.click(control);
-    expect(list).toHaveStyle({ height: '230px' });
-    fireEvent.click(control);
-    expect(list).toHaveStyle({ height: '0px' });
-    fireEvent.click(control);
-    fireEvent.click(drama);
-    expect(screen.getByLabelText('Rota atual')).toHaveTextContent(
-      '/genres/18/Drama',
-    );
-    expect(list).toHaveStyle({ height: '0px' });
-  });
-
-  it('abre/fecha o menu móvel e segue o link do gênero', async () => {
-    const client = createQueryClient();
-    render(
-      <QueryClientProvider client={client}>
-        <MemoryRouter>
-          <AsideMobile />
-          <LocationDisplay />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-    const aside = within(screen.getByRole('complementary'));
-    const drama = await aside.findByRole('link', { name: 'Drama' });
-    expect(
-      aside.queryByRole('link', { name: 'Documentary' }),
-    ).not.toBeInTheDocument();
-    expect(
-      aside.queryByRole('link', { name: 'TV Movie' }),
-    ).not.toBeInTheDocument();
-    // The mobile icon has no accessible name until Phase 6; use its button role/order.
-    const [control] = aside.getAllByRole('button');
-    if (!control) throw new Error('Controle móvel ausente.');
-    const list = drama.closest('.menu-dropup');
-    fireEvent.click(control);
-    expect(list).toHaveStyle({ visibility: 'visible', opacity: '1' });
-    fireEvent.click(control);
-    expect(list).toHaveStyle({ visibility: 'hidden', opacity: '0' });
-    fireEvent.click(control);
-    fireEvent.click(drama);
-    expect(screen.getByLabelText('Rota atual')).toHaveTextContent(
+  it('a página de gênero permite trocar por link e mantém o ID no cliente', async () => {
+    openApp('/genres/18/Drama');
+    await screen.findByRole('link', { name: /Filme de exemplo.*Nota/ });
+    expect(screen.getByRole('combobox', { name: 'Gênero' })).toBeDisabled();
+    expect(screen.getByRole('link', { name: 'Drama' })).toHaveAttribute(
+      'href',
       '/genres/18/Drama',
     );
   });
-});
-
-it('404 oferece retorno à home sem consultar a API', () => {
-  render(
-    <MemoryRouter initialEntries={['/nao-existe']}>
-      <NotFoundScreen />
-      <LocationDisplay />
-    </MemoryRouter>,
-  );
-  expect(
-    screen.getByRole('heading', {
-      level: 1,
-      name: '404 — Página não encontrada',
-    }),
-  ).toBeInTheDocument();
-  const link = screen.getByRole('link', { name: 'Voltar ao início' });
-  expect(link).toHaveAttribute('href', '/');
-  fireEvent.click(link);
-  expect(screen.getByLabelText('Rota atual')).toHaveTextContent(/^\/$/);
-  expect(fetch).not.toHaveBeenCalled();
 });
