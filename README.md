@@ -99,7 +99,6 @@ O primeiro comando confere código, tipos, testes e build. Os testes de navegado
 - Minha lista fica neste navegador, sem sincronização entre dispositivos; limpar os dados do site apaga os filmes guardados.
 - Ao buscar por título, os filtros refinam apenas a página de resultados recebida. Sem busca por título, os filtros consultam o catálogo completo.
 - Algumas sinopses ou biografias podem não ter tradução no TMDB. A disponibilidade de trailers também depende do YouTube.
-- Publicação, atribuição visual do TMDB e conferência dos termos e limites da hospedagem ainda têm pendências no [STATUS.md](docs/STATUS.md).
 
 ## Documentação
 
